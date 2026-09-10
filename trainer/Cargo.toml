@@ -1,0 +1,20 @@
+[package]
+name = "trainer"
+version = "0.1.0"
+edition = "2021"
+
+# Pinned bullet revision (main @ 2026-08-29). Do not float this.
+[dependencies]
+bullet = { git = "https://github.com/jw1912/bullet", rev = "629ee50000b2afb7b3337595401c830d3b1e0f42", package = "bullet_lib" }
+sfbinpack = "0.6.5"
+bulletformat = "1.8.0"
+engine = { path = "../engine" }
+
+[features]
+default = []
+cuda = ["bullet/cuda"]
+
+[profile.release]
+opt-level = 3
+
+[workspace]
