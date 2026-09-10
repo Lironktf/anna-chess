@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Runs ON the rented vast.ai instance (nvidia/cuda devel image). Idempotent.
+# The laptop uploads the repo (minus data/target) to /workspace/chess first, then runs:
+#   ssh -p PORT root@HOST 'RUN_NAME=fable-v1 bash /workspace/chess/scripts/vast_setup_remote.sh'
+# Steps: system deps, Rust, build trainer with cuda, verified data download from the manifest,
+# decompress, `inspect stats` on the real data, smoke run (2 superbatches) into /workspace/checkpoints/smoke.
+set -euo pipefail
+RUN_NAME="${RUN_NAME:?set RUN_NAME}"
+WORK=/workspace
+REPO=$WORK/chess
+mkdir -p "$WORK/runs/$RUN_NAME" "$WORK/checkpoints" "$REPO/data"
+LOG="$WORK/runs/$RUN_NAME/setup.log"
+exec > >(tee -a "$LOG") 2>&1
+echo "=== setup start $(date -u +%FT%TZ) run=$RUN_NAME host=$(hostname)"
+
+nvidia-smi || { echo "NO GPU VISIBLE, ABORT"; exit 1; }
+export DEBIAN_FRONTEND=noninteractive
+apt-get update -qq && apt-get install -y -qq zstd rsync curl git build-essential pkg-config tmux > /dev/null
+
+if ! command -v cargo > /dev/null; then
+    curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal > /dev/null
+fi
+# shellcheck disable=SC1091
+source "$HOME/.cargo/env"
+rustc --version; cargo --version
+export CUDA_PATH="${CUDA_PATH:-/usr/local/cuda}"
+[[ -d "$CUDA_PATH" ]] || { echo "CUDA_PATH $CUDA_PATH missing"; exit 1; }
+nvcc --version | tail -1
+
+echo "=== build trainer (cuda)"
+cd "$REPO/trainer"
+cargo build --release --features cuda 2>&1 | tail -3
+ls -la target/release/trainer target/release/inspect
+
+echo "=== data"
+cd "$REPO"
+bash scripts/download_data.sh run train
+for z in data/downloads/*.zst; do
+    [[ -f "$z.ok" ]] || { echo "unverified $z, abort"; exit 1; }
+    out="data/$(basename "${z%.zst}")"
+    [[ -f "$out" ]] || { echo "decompressing $z"; zstd -d -T8 -q "$z" -o "$out"; }
+done
+ls -la data/*.binpack
+DATA_LIST=$(ls -1 "$REPO"/data/*.binpack | paste -sd, -)
+echo "DATA=$DATA_LIST" > "$WORK/runs/$RUN_NAME/data.env"
+
+echo "=== inspect real data (format + feature cross-check)"
+for f in "$REPO"/data/*.binpack; do
+    "$REPO/trainer/target/release/inspect" stats "$f" 3000000
+done
+
+echo "=== smoke run (2 superbatches, save every superbatch)"
+cd "$REPO/trainer"
+DATA="$DATA_LIST" NET_ID=smoke SUPERBATCHES=2 BATCHES_PER_SB=200 BATCH_SIZE=16384 SAVE_RATE=1 THREADS=4 \
+    LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/trainer 2>&1 | tail -15
+ls -la "$WORK/checkpoints"/smoke-*/quantised.bin
+echo "=== setup done $(date -u +%FT%TZ)"
