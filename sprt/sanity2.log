@@ -1,0 +1,59 @@
+Indexing opening suite...
+Started game 1 of 24 (new vs base)
+Started game 2 of 24 (base vs new)
+Started game 4 of 24 (base vs new)
+Started game 3 of 24 (new vs base)
+Finished game 4 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 5 of 24 (new vs base)
+Finished game 1 (new vs base): 1-0 {White mates}
+Started game 6 of 24 (base vs new)
+Finished game 2 (base vs new): 0-1 {Black mates}
+Started game 7 of 24 (new vs base)
+Finished game 3 (new vs base): 1-0 {White mates}
+Started game 8 of 24 (base vs new)
+Finished game 6 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 9 of 24 (new vs base)
+Finished game 7 (new vs base): 1-0 {White mates}
+Started game 10 of 24 (base vs new)
+Finished game 8 (base vs new): 0-1 {Black mates}
+Started game 11 of 24 (new vs base)
+Finished game 5 (new vs base): 1-0 {White mates}
+Started game 12 of 24 (base vs new)
+Finished game 9 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 13 of 24 (new vs base)
+Finished game 11 (new vs base): 0-1 {Black mates}
+Started game 14 of 24 (base vs new)
+Finished game 10 (base vs new): 1-0 {White mates}
+Started game 15 of 24 (new vs base)
+Finished game 13 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 16 of 24 (base vs new)
+Finished game 14 (base vs new): 0-1 {Black mates}
+Started game 17 of 24 (new vs base)
+Finished game 15 (new vs base): 1-0 {White mates}
+Started game 18 of 24 (base vs new)
+Finished game 12 (base vs new): 0-1 {Black mates}
+Started game 19 of 24 (new vs base)
+Finished game 16 (base vs new): 1-0 {White mates}
+Started game 20 of 24 (base vs new)
+Finished game 17 (new vs base): 1-0 {White mates}
+Started game 21 of 24 (new vs base)
+Finished game 18 (base vs new): 1-0 {White mates}
+Started game 22 of 24 (base vs new)
+Finished game 19 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 23 of 24 (new vs base)
+Finished game 20 (base vs new): 0-1 {Black mates}
+Started game 24 of 24 (base vs new)
+Finished game 21 (new vs base): 1-0 {White mates}
+Finished game 22 (base vs new): 0-1 {Black mates}
+Finished game 23 (new vs base): 0-1 {Black mates}
+Finished game 24 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+--------------------------------------------------
+Results of new vs base (2+0.02, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 120.41 +/- 119.65, nElo: 159.41 +/- 139.00
+LOS: 98.77 %, DrawRatio: 25.00 %, PairsRatio: 3.50
+Games: 24, Wins: 13, Losses: 5, Draws: 6, Points: 16.0 (66.67 %)
+Ptnml(0-2): [0, 2, 3, 4, 3], WL/DD Ratio: inf
+--------------------------------------------------
+Finished match
+Total Time: 00:00:47 (hours:minutes:seconds)
+

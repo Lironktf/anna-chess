@@ -1,0 +1,505 @@
+2026-09-10 14:50:40 sync loop start run=fable-v1 host=ssh1.vast.ai port=32726 interval=120
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 35 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -165 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 231 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/smoke-1/quantised.bin (25200704 bytes)
+2026-09-10 14:51:00 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/smoke-1/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 44 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -162 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 247 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/smoke-2/quantised.bin (25200704 bytes)
+2026-09-10 14:51:00 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/smoke-2/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 37 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1081 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1119 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-10/quantised.bin (25200704 bytes)
+2026-09-10 14:56:24 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-10/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 43 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -957 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1009 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-20/quantised.bin (25200704 bytes)
+2026-09-10 14:59:59 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-20/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 31 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1280 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1319 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-30/quantised.bin (25200704 bytes)
+2026-09-10 15:06:53 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-30/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 62 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1417 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1484 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-40/quantised.bin (25200704 bytes)
+2026-09-10 15:06:53 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-40/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 50 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1541 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1608 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-50/quantised.bin (25200704 bytes)
+2026-09-10 15:11:34 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-50/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 56 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1297 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1423 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-60/quantised.bin (25200704 bytes)
+2026-09-10 15:11:34 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-60/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 69 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1053 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1210 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-70/quantised.bin (25200704 bytes)
+2026-09-10 15:17:29 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-70/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 72 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -908 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1085 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-80/quantised.bin (25200704 bytes)
+2026-09-10 15:17:29 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-80/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 75 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1153 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1297 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-100/quantised.bin (25200704 bytes)
+2026-09-10 15:27:58 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-100/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 75 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1153 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1203 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-110/quantised.bin (25200704 bytes)
+2026-09-10 15:27:58 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-110/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 56 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1206 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1290 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-90/quantised.bin (25200704 bytes)
+2026-09-10 15:27:58 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-90/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 71 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1112 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1251 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-120/quantised.bin (25200704 bytes)
+2026-09-10 15:38:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-120/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 87 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1117 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1230 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-130/quantised.bin (25200704 bytes)
+2026-09-10 15:38:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-130/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 72 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1350 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1466 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-140/quantised.bin (25200704 bytes)
+2026-09-10 15:38:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-140/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 61 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -991 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1075 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-150/quantised.bin (25200704 bytes)
+2026-09-10 15:38:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-150/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 29 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1011 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1014 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-160/quantised.bin (25200704 bytes)
+2026-09-10 15:47:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-160/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 64 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1240 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1335 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-170/quantised.bin (25200704 bytes)
+2026-09-10 15:47:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-170/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 56 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1234 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1330 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-180/quantised.bin (25200704 bytes)
+2026-09-10 15:47:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-180/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 69 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1339 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1465 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-190/quantised.bin (25200704 bytes)
+2026-09-10 15:47:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-190/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 49 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1268 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1331 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-200/quantised.bin (25200704 bytes)
+2026-09-10 15:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-200/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 42 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1093 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1123 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-210/quantised.bin (25200704 bytes)
+2026-09-10 15:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-210/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 45 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1084 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1144 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-220/quantised.bin (25200704 bytes)
+2026-09-10 15:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-220/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 70 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1200 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1282 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-230/quantised.bin (25200704 bytes)
+2026-09-10 15:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-230/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 57 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1173 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1274 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-240/quantised.bin (25200704 bytes)
+2026-09-10 16:06:22 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-240/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 68 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1216 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1319 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-250/quantised.bin (25200704 bytes)
+2026-09-10 16:06:22 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-250/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 67 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1222 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1316 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-260/quantised.bin (25200704 bytes)
+2026-09-10 16:06:22 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-260/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 59 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1395 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1505 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-270/quantised.bin (25200704 bytes)
+2026-09-10 16:06:22 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-270/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 49 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1336 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1416 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-280/quantised.bin (25200704 bytes)
+2026-09-10 16:14:34 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-280/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 60 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1247 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1373 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-290/quantised.bin (25200704 bytes)
+2026-09-10 16:14:34 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-290/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 40 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1154 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1226 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-300/quantised.bin (25200704 bytes)
+2026-09-10 16:14:34 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-300/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 40 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1181 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1240 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-310/quantised.bin (25200704 bytes)
+2026-09-10 16:22:39 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-310/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 70 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1313 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1444 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-320/quantised.bin (25200704 bytes)
+2026-09-10 16:22:39 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-320/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 53 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1293 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1374 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-330/quantised.bin (25200704 bytes)
+2026-09-10 16:22:39 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-330/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 70 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1092 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1211 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-340/quantised.bin (25200704 bytes)
+2026-09-10 16:22:39 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-340/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 58 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1144 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1257 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-350/quantised.bin (25200704 bytes)
+2026-09-10 16:28:55 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-350/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 47 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1200 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1304 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-360/quantised.bin (25200704 bytes)
+2026-09-10 16:28:55 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-360/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 72 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1175 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1314 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-370/quantised.bin (25200704 bytes)
+2026-09-10 16:28:55 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-370/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 55 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1237 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1353 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-380/quantised.bin (25200704 bytes)
+2026-09-10 16:33:53 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-380/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 67 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1154 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1259 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-390/quantised.bin (25200704 bytes)
+2026-09-10 16:33:53 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-390/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 43 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1238 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1306 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-400/quantised.bin (25200704 bytes)
+2026-09-10 16:40:11 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-400/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 61 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1208 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1310 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-410/quantised.bin (25200704 bytes)
+2026-09-10 16:40:11 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-410/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 57 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1192 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1331 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-420/quantised.bin (25200704 bytes)
+2026-09-10 16:51:04 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-420/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 59 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1029 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1133 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-430/quantised.bin (25200704 bytes)
+2026-09-10 16:51:04 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-430/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 64 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1040 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1149 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-440/quantised.bin (25200704 bytes)
+2026-09-10 16:51:04 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-440/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 55 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1092 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1181 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-450/quantised.bin (25200704 bytes)
+2026-09-10 17:00:49 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-450/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 58 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1160 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1256 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-460/quantised.bin (25200704 bytes)
+2026-09-10 17:00:49 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-460/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 46 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1180 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1248 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-470/quantised.bin (25200704 bytes)
+2026-09-10 17:00:49 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-470/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 58 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1095 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1212 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-480/quantised.bin (25200704 bytes)
+2026-09-10 17:00:49 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-480/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 56 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1108 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1205 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-490/quantised.bin (25200704 bytes)
+2026-09-10 17:06:12 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-490/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 66 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1252 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1369 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-500/quantised.bin (25200704 bytes)
+2026-09-10 17:06:12 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-500/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 69 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1179 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1301 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-510/quantised.bin (25200704 bytes)
+2026-09-10 17:06:12 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-510/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 58 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1179 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1277 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-520/quantised.bin (25200704 bytes)
+2026-09-10 17:12:36 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-520/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 52 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1230 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1315 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-530/quantised.bin (25200704 bytes)
+2026-09-10 17:12:36 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-530/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 53 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1241 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1334 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-540/quantised.bin (25200704 bytes)
+2026-09-10 17:17:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-540/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 64 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1204 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1328 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-550/quantised.bin (25200704 bytes)
+2026-09-10 17:17:21 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-550/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 57 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1335 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1436 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-560/quantised.bin (25200704 bytes)
+2026-09-10 17:17:22 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-560/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 59 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1123 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1238 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-570/quantised.bin (25200704 bytes)
+2026-09-10 17:20:51 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-570/quantised.bin
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 64 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1293 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1403 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-580/quantised.bin (25200704 bytes)
+2026-09-10 17:20:51 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-580/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 55 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1254 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1368 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-590/quantised.bin (25200704 bytes)
+2026-09-10 17:23:52 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-590/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 53 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1331 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1434 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-600/quantised.bin (25200704 bytes)
+2026-09-10 17:27:08 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-600/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 48 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1279 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1384 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-610/quantised.bin (25200704 bytes)
+2026-09-10 17:29:46 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-610/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 63 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1302 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1418 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-620/quantised.bin (25200704 bytes)
+2026-09-10 17:32:16 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-620/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 53 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1360 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1457 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-630/quantised.bin (25200704 bytes)
+2026-09-10 17:34:55 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-630/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 50 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1302 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1399 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-640/quantised.bin (25200704 bytes)
+2026-09-10 17:37:36 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-640/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 44 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1369 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1433 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-650/quantised.bin (25200704 bytes)
+2026-09-10 17:40:25 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-650/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 61 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1444 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1557 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-660/quantised.bin (25200704 bytes)
+2026-09-10 17:42:58 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-660/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 48 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1354 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1444 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-670/quantised.bin (25200704 bytes)
+2026-09-10 17:45:43 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-670/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 58 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1403 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1508 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-680/quantised.bin (25200704 bytes)
+2026-09-10 17:48:31 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-680/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 55 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1388 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1496 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-690/quantised.bin (25200704 bytes)
+2026-09-10 17:51:24 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-690/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 54 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1363 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1467 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-700/quantised.bin (25200704 bytes)
+2026-09-10 17:53:59 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-700/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 52 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1367 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1474 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-710/quantised.bin (25200704 bytes)
+2026-09-10 17:56:45 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-710/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 65 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1382 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1516 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-720/quantised.bin (25200704 bytes)
+2026-09-10 17:59:15 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-720/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 55 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1498 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1602 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-730/quantised.bin (25200704 bytes)
+2026-09-10 18:03:47 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-730/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 62 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1491 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1611 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-740/quantised.bin (25200704 bytes)
+2026-09-10 18:06:27 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-740/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 61 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1478 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1601 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-750/quantised.bin (25200704 bytes)
+2026-09-10 18:09:05 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-750/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 69 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1505 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1643 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-760/quantised.bin (25200704 bytes)
+2026-09-10 18:11:48 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-760/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 63 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1463 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1586 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-770/quantised.bin (25200704 bytes)
+2026-09-10 18:14:17 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-770/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 59 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1510 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1627 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-780/quantised.bin (25200704 bytes)
+2026-09-10 18:16:45 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-780/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 63 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1497 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1621 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-790/quantised.bin (25200704 bytes)
+2026-09-10 18:19:25 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-790/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 61 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1492 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1611 expected [100, 2000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-800/quantised.bin (25200704 bytes)
+2026-09-10 18:24:11 checkpoint OK: /home/liron/Desktop/chess/runs/fable-v1/checkpoints/fable-v1-800/quantised.bin

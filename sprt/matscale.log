@@ -1,0 +1,1893 @@
+Indexing opening suite...
+Started game 2 of 100000 (base vs new)
+Started game 4 of 100000 (base vs new)
+Started game 1 of 100000 (new vs base)
+Started game 3 of 100000 (new vs base)
+Finished game 2 (base vs new): 1-0 {White mates}
+Started game 5 of 100000 (new vs base)
+Finished game 1 (new vs base): 1-0 {White mates}
+Started game 6 of 100000 (base vs new)
+Finished game 4 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 7 of 100000 (new vs base)
+Finished game 3 (new vs base): 1-0 {White mates}
+Started game 8 of 100000 (base vs new)
+Finished game 5 (new vs base): 0-1 {Black mates}
+Started game 9 of 100000 (new vs base)
+Finished game 7 (new vs base): 1-0 {White mates}
+Started game 10 of 100000 (base vs new)
+Finished game 6 (base vs new): 0-1 {Black mates}
+Started game 11 of 100000 (new vs base)
+Finished game 8 (base vs new): 1-0 {White mates}
+Started game 12 of 100000 (base vs new)
+Finished game 9 (new vs base): 1-0 {White mates}
+Started game 13 of 100000 (new vs base)
+Finished game 11 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 14 of 100000 (base vs new)
+Finished game 10 (base vs new): 1-0 {White mates}
+Started game 15 of 100000 (new vs base)
+Finished game 13 (new vs base): 0-1 {Black mates}
+Started game 16 of 100000 (base vs new)
+Finished game 14 (base vs new): 0-1 {Black mates}
+Started game 17 of 100000 (new vs base)
+Finished game 12 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 18 of 100000 (base vs new)
+Finished game 15 (new vs base): 1-0 {White mates}
+Started game 19 of 100000 (new vs base)
+Finished game 18 (base vs new): 0-1 {Black mates}
+Started game 20 of 100000 (base vs new)
+Finished game 16 (base vs new): 0-1 {Black mates}
+Started game 21 of 100000 (new vs base)
+Finished game 19 (new vs base): 1-0 {White mates}
+Started game 22 of 100000 (base vs new)
+Finished game 17 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 23 of 100000 (new vs base)
+Finished game 20 (base vs new): 0-1 {Black mates}
+Started game 24 of 100000 (base vs new)
+Finished game 21 (new vs base): 1-0 {White mates}
+Started game 25 of 100000 (new vs base)
+Finished game 23 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 26 of 100000 (base vs new)
+Finished game 22 (base vs new): 0-1 {Black mates}
+Started game 27 of 100000 (new vs base)
+Finished game 24 (base vs new): 0-1 {Black mates}
+Started game 28 of 100000 (base vs new)
+Finished game 25 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 29 of 100000 (new vs base)
+Finished game 26 (base vs new): 0-1 {Black mates}
+Started game 30 of 100000 (base vs new)
+Finished game 27 (new vs base): 0-1 {Black mates}
+Started game 31 of 100000 (new vs base)
+Finished game 28 (base vs new): 0-1 {Black mates}
+Started game 32 of 100000 (base vs new)
+Finished game 29 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 33 of 100000 (new vs base)
+Finished game 30 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 34 of 100000 (base vs new)
+Finished game 31 (new vs base): 0-1 {Black mates}
+Started game 35 of 100000 (new vs base)
+Finished game 32 (base vs new): 0-1 {Black mates}
+Started game 36 of 100000 (base vs new)
+Finished game 34 (base vs new): 0-1 {Black mates}
+Started game 37 of 100000 (new vs base)
+Finished game 33 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 38 of 100000 (base vs new)
+Finished game 35 (new vs base): 0-1 {Black mates}
+Started game 39 of 100000 (new vs base)
+Finished game 36 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 40 of 100000 (base vs new)
+Finished game 37 (new vs base): 1-0 {White mates}
+Started game 41 of 100000 (new vs base)
+Finished game 39 (new vs base): 0-1 {Black mates}
+Started game 42 of 100000 (base vs new)
+Finished game 38 (base vs new): 1-0 {White mates}
+Started game 43 of 100000 (new vs base)
+Finished game 40 (base vs new): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 88.74 +/- 66.42, nElo: 152.36 +/- 107.67
+LOS: 99.72 %, DrawRatio: 55.00 %, PairsRatio: 8.00
+Games: 40, Wins: 20, Losses: 10, Draws: 10, Points: 25.0 (62.50 %)
+Ptnml(0-2): [0, 1, 11, 5, 3], WL/DD Ratio: 4.50
+LLR: 0.20 (6.8%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 44 of 100000 (base vs new)
+Finished game 41 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 45 of 100000 (new vs base)
+Finished game 42 (base vs new): 1-0 {White mates}
+Started game 46 of 100000 (base vs new)
+Finished game 43 (new vs base): 1-0 {White mates}
+Started game 47 of 100000 (new vs base)
+Finished game 44 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 48 of 100000 (base vs new)
+Finished game 45 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 49 of 100000 (new vs base)
+Finished game 46 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 50 of 100000 (base vs new)
+Finished game 47 (new vs base): 1-0 {White mates}
+Started game 51 of 100000 (new vs base)
+Finished game 49 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 52 of 100000 (base vs new)
+Finished game 50 (base vs new): 0-1 {Black mates}
+Started game 53 of 100000 (new vs base)
+Finished game 51 (new vs base): 1-0 {White mates}
+Started game 54 of 100000 (base vs new)
+Finished game 48 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 55 of 100000 (new vs base)
+Finished game 52 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 56 of 100000 (base vs new)
+Finished game 55 (new vs base): 1-0 {White mates}
+Started game 57 of 100000 (new vs base)
+Finished game 53 (new vs base): 1-0 {White mates}
+Started game 58 of 100000 (base vs new)
+Finished game 54 (base vs new): 1-0 {White mates}
+Started game 59 of 100000 (new vs base)
+Finished game 56 (base vs new): 1-0 {White mates}
+Started game 60 of 100000 (base vs new)
+Finished game 57 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 61 of 100000 (new vs base)
+Finished game 59 (new vs base): 0-1 {Black mates}
+Started game 62 of 100000 (base vs new)
+Finished game 60 (base vs new): 0-1 {Black mates}
+Started game 63 of 100000 (new vs base)
+Finished game 58 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 64 of 100000 (base vs new)
+Finished game 61 (new vs base): 1-0 {White mates}
+Started game 65 of 100000 (new vs base)
+Finished game 62 (base vs new): 0-1 {Black mates}
+Started game 66 of 100000 (base vs new)
+Finished game 63 (new vs base): 0-1 {Black mates}
+Started game 67 of 100000 (new vs base)
+Finished game 64 (base vs new): 1-0 {White mates}
+Started game 68 of 100000 (base vs new)
+Finished game 65 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 69 of 100000 (new vs base)
+Finished game 66 (base vs new): 0-1 {Black mates}
+Started game 70 of 100000 (base vs new)
+Finished game 67 (new vs base): 0-1 {Black mates}
+Started game 71 of 100000 (new vs base)
+Finished game 68 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 72 of 100000 (base vs new)
+Finished game 70 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 73 of 100000 (new vs base)
+Finished game 71 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 74 of 100000 (base vs new)
+Finished game 69 (new vs base): 0-1 {Black mates}
+Started game 75 of 100000 (new vs base)
+Finished game 72 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 76 of 100000 (base vs new)
+Finished game 74 (base vs new): 0-1 {Black mates}
+Started game 77 of 100000 (new vs base)
+Finished game 75 (new vs base): 1-0 {White mates}
+Started game 78 of 100000 (base vs new)
+Finished game 73 (new vs base): 0-1 {Black mates}
+Started game 79 of 100000 (new vs base)
+Finished game 76 (base vs new): 1-0 {White mates}
+Started game 80 of 100000 (base vs new)
+Finished game 79 (new vs base): 0-1 {Black mates}
+Started game 81 of 100000 (new vs base)
+Finished game 78 (base vs new): 1-0 {White mates}
+Started game 82 of 100000 (base vs new)
+Finished game 77 (new vs base): 0-1 {Black mates}
+Started game 83 of 100000 (new vs base)
+Finished game 80 (base vs new): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 43.66 +/- 51.92, nElo: 65.20 +/- 76.13
+LOS: 95.34 %, DrawRatio: 50.00 %, PairsRatio: 2.33
+Games: 80, Wins: 33, Losses: 23, Draws: 24, Points: 45.0 (56.25 %)
+Ptnml(0-2): [2, 4, 20, 10, 4], WL/DD Ratio: 3.00
+LLR: 0.20 (6.6%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 84 of 100000 (base vs new)
+Finished game 82 (base vs new): 0-1 {Black mates}
+Started game 85 of 100000 (new vs base)
+Finished game 81 (new vs base): 0-1 {Black mates}
+Started game 86 of 100000 (base vs new)
+Finished game 83 (new vs base): 0-1 {Black mates}
+Started game 87 of 100000 (new vs base)
+Finished game 84 (base vs new): 1-0 {White mates}
+Started game 88 of 100000 (base vs new)
+Finished game 85 (new vs base): 1-0 {White mates}
+Started game 89 of 100000 (new vs base)
+Finished game 86 (base vs new): 1-0 {White mates}
+Started game 90 of 100000 (base vs new)
+Finished game 87 (new vs base): 1-0 {White mates}
+Started game 91 of 100000 (new vs base)
+Finished game 89 (new vs base): 0-1 {Black mates}
+Started game 92 of 100000 (base vs new)
+Finished game 88 (base vs new): 1-0 {White mates}
+Started game 93 of 100000 (new vs base)
+Finished game 91 (new vs base): 1-0 {White mates}
+Started game 94 of 100000 (base vs new)
+Finished game 90 (base vs new): 1-0 {White mates}
+Started game 95 of 100000 (new vs base)
+Finished game 93 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 96 of 100000 (base vs new)
+Finished game 92 (base vs new): 0-1 {Black mates}
+Started game 97 of 100000 (new vs base)
+Finished game 95 (new vs base): 1-0 {White mates}
+Started game 98 of 100000 (base vs new)
+Finished game 94 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 99 of 100000 (new vs base)
+Finished game 96 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 100 of 100000 (base vs new)
+Finished game 98 (base vs new): 1-0 {White mates}
+Started game 101 of 100000 (new vs base)
+Finished game 97 (new vs base): 0-1 {Black mates}
+Started game 102 of 100000 (base vs new)
+Finished game 99 (new vs base): 0-1 {Black mates}
+Started game 103 of 100000 (new vs base)
+Finished game 100 (base vs new): 1-0 {White mates}
+Started game 104 of 100000 (base vs new)
+Finished game 101 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 105 of 100000 (new vs base)
+Finished game 102 (base vs new): 1-0 {White mates}
+Started game 106 of 100000 (base vs new)
+Finished game 103 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 107 of 100000 (new vs base)
+Finished game 104 (base vs new): 1-0 {White mates}
+Started game 108 of 100000 (base vs new)
+Finished game 106 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 109 of 100000 (new vs base)
+Finished game 105 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 110 of 100000 (base vs new)
+Finished game 107 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 111 of 100000 (new vs base)
+Finished game 108 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 112 of 100000 (base vs new)
+Finished game 109 (new vs base): 0-1 {Black mates}
+Started game 113 of 100000 (new vs base)
+Finished game 110 (base vs new): 1-0 {White mates}
+Started game 114 of 100000 (base vs new)
+Finished game 111 (new vs base): 0-1 {Black mates}
+Started game 115 of 100000 (new vs base)
+Finished game 112 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 116 of 100000 (base vs new)
+Finished game 113 (new vs base): 1-0 {White mates}
+Started game 117 of 100000 (new vs base)
+Finished game 114 (base vs new): 1-0 {White mates}
+Started game 118 of 100000 (base vs new)
+Finished game 116 (base vs new): 0-1 {Black mates}
+Started game 119 of 100000 (new vs base)
+Finished game 115 (new vs base): 0-1 {Black mates}
+Started game 120 of 100000 (base vs new)
+Finished game 117 (new vs base): 1-0 {White mates}
+Started game 121 of 100000 (new vs base)
+Finished game 118 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 122 of 100000 (base vs new)
+Finished game 119 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 123 of 100000 (new vs base)
+Finished game 120 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 2.90 +/- 46.73, nElo: 3.88 +/- 62.16
+LOS: 54.86 %, DrawRatio: 48.33 %, PairsRatio: 1.21
+Games: 120, Wins: 42, Losses: 41, Draws: 37, Points: 60.5 (50.42 %)
+Ptnml(0-2): [7, 7, 29, 12, 5], WL/DD Ratio: 2.22
+LLR: 0.01 (0.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 124 of 100000 (base vs new)
+Finished game 122 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 125 of 100000 (new vs base)
+Finished game 123 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 126 of 100000 (base vs new)
+Finished game 121 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 127 of 100000 (new vs base)
+Finished game 125 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 128 of 100000 (base vs new)
+Finished game 124 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 129 of 100000 (new vs base)
+Finished game 126 (base vs new): 0-1 {Black mates}
+Started game 130 of 100000 (base vs new)
+Finished game 127 (new vs base): 1-0 {White mates}
+Started game 131 of 100000 (new vs base)
+Finished game 128 (base vs new): 0-1 {Black mates}
+Started game 132 of 100000 (base vs new)
+Finished game 130 (base vs new): 0-1 {Black mates}
+Started game 133 of 100000 (new vs base)
+Finished game 129 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 134 of 100000 (base vs new)
+Finished game 132 (base vs new): 1-0 {White mates}
+Started game 135 of 100000 (new vs base)
+Finished game 131 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 136 of 100000 (base vs new)
+Finished game 133 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 137 of 100000 (new vs base)
+Finished game 134 (base vs new): 1-0 {White mates}
+Started game 138 of 100000 (base vs new)
+Finished game 135 (new vs base): 1-0 {White mates}
+Started game 139 of 100000 (new vs base)
+Finished game 136 (base vs new): 0-1 {Black mates}
+Started game 140 of 100000 (base vs new)
+Finished game 137 (new vs base): 0-1 {Black mates}
+Started game 141 of 100000 (new vs base)
+Finished game 138 (base vs new): 1-0 {White mates}
+Started game 142 of 100000 (base vs new)
+Finished game 140 (base vs new): 1-0 {White mates}
+Started game 143 of 100000 (new vs base)
+Finished game 141 (new vs base): 1-0 {White mates}
+Started game 144 of 100000 (base vs new)
+Finished game 139 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 145 of 100000 (new vs base)
+Finished game 142 (base vs new): 1-0 {White mates}
+Started game 146 of 100000 (base vs new)
+Finished game 143 (new vs base): 1-0 {White mates}
+Started game 147 of 100000 (new vs base)
+Finished game 144 (base vs new): 1-0 {White mates}
+Started game 148 of 100000 (base vs new)
+Finished game 145 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 149 of 100000 (new vs base)
+Finished game 146 (base vs new): 0-1 {Black mates}
+Started game 150 of 100000 (base vs new)
+Finished game 147 (new vs base): 0-1 {Black mates}
+Started game 151 of 100000 (new vs base)
+Finished game 148 (base vs new): 0-1 {Black mates}
+Started game 152 of 100000 (base vs new)
+Finished game 150 (base vs new): 1-0 {White mates}
+Started game 153 of 100000 (new vs base)
+Finished game 149 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 154 of 100000 (base vs new)
+Finished game 151 (new vs base): 1-0 {White mates}
+Started game 155 of 100000 (new vs base)
+Finished game 152 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 156 of 100000 (base vs new)
+Finished game 153 (new vs base): 0-1 {Black mates}
+Started game 157 of 100000 (new vs base)
+Finished game 155 (new vs base): 1-0 {White mates}
+Started game 158 of 100000 (base vs new)
+Finished game 154 (base vs new): 0-1 {Black mates}
+Started game 159 of 100000 (new vs base)
+Finished game 156 (base vs new): 1-0 {White mates}
+Started game 160 of 100000 (base vs new)
+Finished game 157 (new vs base): 0-1 {Black mates}
+Started game 161 of 100000 (new vs base)
+Finished game 159 (new vs base): 1-0 {White mates}
+Started game 162 of 100000 (base vs new)
+Finished game 158 (base vs new): 1-0 {White mates}
+Started game 163 of 100000 (new vs base)
+Finished game 162 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 164 of 100000 (base vs new)
+Finished game 161 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 165 of 100000 (new vs base)
+Finished game 160 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 2.14 +/- 40.28, nElo: 2.86 +/- 53.50
+LOS: 54.17 %, DrawRatio: 46.91 %, PairsRatio: 1.15
+Games: 162, Wins: 56, Losses: 55, Draws: 51, Points: 81.5 (50.31 %)
+Ptnml(0-2): [9, 11, 38, 16, 7], WL/DD Ratio: 2.17
+LLR: 0.00 (0.1%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 166 of 100000 (base vs new)
+Finished game 163 (new vs base): 0-1 {Black mates}
+Started game 167 of 100000 (new vs base)
+Finished game 164 (base vs new): 1-0 {White mates}
+Started game 168 of 100000 (base vs new)
+Finished game 166 (base vs new): 1-0 {White mates}
+Started game 169 of 100000 (new vs base)
+Finished game 167 (new vs base): 0-1 {Black mates}
+Started game 170 of 100000 (base vs new)
+Finished game 165 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 171 of 100000 (new vs base)
+Finished game 168 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 172 of 100000 (base vs new)
+Finished game 169 (new vs base): 1-0 {White mates}
+Started game 173 of 100000 (new vs base)
+Finished game 170 (base vs new): 1-0 {White mates}
+Started game 174 of 100000 (base vs new)
+Finished game 171 (new vs base): 0-1 {Black mates}
+Started game 175 of 100000 (new vs base)
+Finished game 172 (base vs new): 0-1 {Black mates}
+Started game 176 of 100000 (base vs new)
+Finished game 173 (new vs base): 0-1 {Black mates}
+Started game 177 of 100000 (new vs base)
+Finished game 174 (base vs new): 0-1 {Black mates}
+Started game 178 of 100000 (base vs new)
+Finished game 175 (new vs base): 0-1 {Black mates}
+Started game 179 of 100000 (new vs base)
+Finished game 176 (base vs new): 1-0 {White mates}
+Started game 180 of 100000 (base vs new)
+Finished game 177 (new vs base): 1-0 {White mates}
+Started game 181 of 100000 (new vs base)
+Finished game 179 (new vs base): 1-0 {White mates}
+Started game 182 of 100000 (base vs new)
+Finished game 178 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 183 of 100000 (new vs base)
+Finished game 180 (base vs new): 0-1 {Black mates}
+Started game 184 of 100000 (base vs new)
+Finished game 181 (new vs base): 0-1 {Black mates}
+Started game 185 of 100000 (new vs base)
+Finished game 182 (base vs new): 1-0 {White mates}
+Started game 186 of 100000 (base vs new)
+Finished game 183 (new vs base): 0-1 {Black mates}
+Started game 187 of 100000 (new vs base)
+Finished game 184 (base vs new): 0-1 {Black mates}
+Started game 188 of 100000 (base vs new)
+Finished game 185 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 189 of 100000 (new vs base)
+Finished game 186 (base vs new): 0-1 {Black mates}
+Started game 190 of 100000 (base vs new)
+Finished game 187 (new vs base): 1-0 {White mates}
+Started game 191 of 100000 (new vs base)
+Finished game 188 (base vs new): 1-0 {White mates}
+Started game 192 of 100000 (base vs new)
+Finished game 189 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 193 of 100000 (new vs base)
+Finished game 190 (base vs new): 1-0 {White mates}
+Started game 194 of 100000 (base vs new)
+Finished game 191 (new vs base): 1-0 {White mates}
+Started game 195 of 100000 (new vs base)
+Finished game 192 (base vs new): 1-0 {White mates}
+Started game 196 of 100000 (base vs new)
+Finished game 193 (new vs base): 1-0 {White mates}
+Started game 197 of 100000 (new vs base)
+Finished game 194 (base vs new): 0-1 {Black mates}
+Started game 198 of 100000 (base vs new)
+Finished game 195 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 199 of 100000 (new vs base)
+Finished game 197 (new vs base): 0-1 {Black mates}
+Started game 200 of 100000 (base vs new)
+Finished game 196 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 201 of 100000 (new vs base)
+Finished game 198 (base vs new): 1-0 {White mates}
+Started game 202 of 100000 (base vs new)
+Finished game 199 (new vs base): 0-1 {Black mates}
+Started game 203 of 100000 (new vs base)
+Finished game 200 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -10.43 +/- 38.05, nElo: -13.26 +/- 48.15
+LOS: 29.47 %, DrawRatio: 45.00 %, PairsRatio: 0.96
+Games: 200, Wins: 68, Losses: 74, Draws: 58, Points: 97.0 (48.50 %)
+Ptnml(0-2): [14, 14, 45, 18, 9], WL/DD Ratio: 2.46
+LLR: -0.13 (-4.4%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 204 of 100000 (base vs new)
+Finished game 201 (new vs base): 1-0 {White mates}
+Started game 205 of 100000 (new vs base)
+Finished game 202 (base vs new): 1-0 {White mates}
+Started game 206 of 100000 (base vs new)
+Finished game 204 (base vs new): 1-0 {White mates}
+Started game 207 of 100000 (new vs base)
+Finished game 203 (new vs base): 1-0 {White mates}
+Started game 208 of 100000 (base vs new)
+Finished game 205 (new vs base): 1-0 {White mates}
+Started game 209 of 100000 (new vs base)
+Finished game 206 (base vs new): 1-0 {White mates}
+Started game 210 of 100000 (base vs new)
+Finished game 207 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 211 of 100000 (new vs base)
+Finished game 209 (new vs base): 0-1 {Black mates}
+Started game 212 of 100000 (base vs new)
+Finished game 208 (base vs new): 1-0 {White mates}
+Started game 213 of 100000 (new vs base)
+Finished game 210 (base vs new): 0-1 {Black mates}
+Started game 214 of 100000 (base vs new)
+Finished game 211 (new vs base): 1-0 {White mates}
+Started game 215 of 100000 (new vs base)
+Finished game 212 (base vs new): 1-0 {White mates}
+Started game 216 of 100000 (base vs new)
+Finished game 213 (new vs base): 0-1 {Black mates}
+Started game 217 of 100000 (new vs base)
+Finished game 214 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 218 of 100000 (base vs new)
+Finished game 215 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 219 of 100000 (new vs base)
+Finished game 217 (new vs base): 1-0 {White mates}
+Started game 220 of 100000 (base vs new)
+Finished game 216 (base vs new): 1-0 {White mates}
+Started game 221 of 100000 (new vs base)
+Finished game 218 (base vs new): 0-1 {Black mates}
+Started game 222 of 100000 (base vs new)
+Finished game 221 (new vs base): 0-1 {Black mates}
+Started game 223 of 100000 (new vs base)
+Finished game 220 (base vs new): 1-0 {White mates}
+Started game 224 of 100000 (base vs new)
+Finished game 219 (new vs base): 1-0 {White mates}
+Started game 225 of 100000 (new vs base)
+Finished game 222 (base vs new): 1-0 {White mates}
+Started game 226 of 100000 (base vs new)
+Finished game 223 (new vs base): 1-0 {White mates}
+Started game 227 of 100000 (new vs base)
+Finished game 225 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 228 of 100000 (base vs new)
+Finished game 224 (base vs new): 1-0 {White mates}
+Started game 229 of 100000 (new vs base)
+Finished game 226 (base vs new): 1-0 {White mates}
+Started game 230 of 100000 (base vs new)
+Finished game 227 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 231 of 100000 (new vs base)
+Finished game 228 (base vs new): 1-0 {White mates}
+Started game 232 of 100000 (base vs new)
+Finished game 230 (base vs new): 0-1 {Black mates}
+Started game 233 of 100000 (new vs base)
+Finished game 229 (new vs base): 0-1 {Black mates}
+Started game 234 of 100000 (base vs new)
+Finished game 233 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 235 of 100000 (new vs base)
+Finished game 232 (base vs new): 1-0 {White mates}
+Started game 236 of 100000 (base vs new)
+Finished game 231 (new vs base): 0-1 {Black mates}
+Started game 237 of 100000 (new vs base)
+Finished game 234 (base vs new): 1-0 {White mates}
+Started game 238 of 100000 (base vs new)
+Finished game 235 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 239 of 100000 (new vs base)
+Finished game 237 (new vs base): 1-0 {White mates}
+Started game 240 of 100000 (base vs new)
+Finished game 236 (base vs new): 0-1 {Black mates}
+Started game 241 of 100000 (new vs base)
+Finished game 238 (base vs new): 1-0 {White mates}
+Started game 242 of 100000 (base vs new)
+Finished game 239 (new vs base): 0-1 {Black mates}
+Started game 243 of 100000 (new vs base)
+Finished game 241 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 244 of 100000 (base vs new)
+Finished game 240 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -21.74 +/- 34.43, nElo: -27.92 +/- 43.96
+LOS: 10.65 %, DrawRatio: 45.00 %, PairsRatio: 0.78
+Games: 240, Wins: 80, Losses: 95, Draws: 65, Points: 112.5 (46.88 %)
+Ptnml(0-2): [17, 20, 54, 19, 10], WL/DD Ratio: 3.15
+LLR: -0.30 (-10.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 245 of 100000 (new vs base)
+Finished game 242 (base vs new): 0-1 {Black mates}
+Started game 246 of 100000 (base vs new)
+Finished game 243 (new vs base): 0-1 {Black mates}
+Started game 247 of 100000 (new vs base)
+Finished game 244 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 248 of 100000 (base vs new)
+Finished game 245 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 249 of 100000 (new vs base)
+Finished game 246 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 250 of 100000 (base vs new)
+Finished game 248 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 251 of 100000 (new vs base)
+Finished game 247 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 252 of 100000 (base vs new)
+Finished game 249 (new vs base): 1-0 {White mates}
+Started game 253 of 100000 (new vs base)
+Finished game 251 (new vs base): 0-1 {Black mates}
+Started game 254 of 100000 (base vs new)
+Finished game 250 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 255 of 100000 (new vs base)
+Finished game 252 (base vs new): 0-1 {Black mates}
+Started game 256 of 100000 (base vs new)
+Finished game 253 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 257 of 100000 (new vs base)
+Finished game 254 (base vs new): 0-1 {Black mates}
+Started game 258 of 100000 (base vs new)
+Finished game 256 (base vs new): 1-0 {White mates}
+Started game 259 of 100000 (new vs base)
+Finished game 255 (new vs base): 0-1 {Black mates}
+Started game 260 of 100000 (base vs new)
+Finished game 257 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 261 of 100000 (new vs base)
+Finished game 258 (base vs new): 0-1 {Black mates}
+Started game 262 of 100000 (base vs new)
+Finished game 260 (base vs new): 0-1 {Black mates}
+Started game 263 of 100000 (new vs base)
+Finished game 261 (new vs base): 0-1 {Black mates}
+Started game 264 of 100000 (base vs new)
+Finished game 259 (new vs base): 0-1 {Black mates}
+Started game 265 of 100000 (new vs base)
+Finished game 262 (base vs new): 0-1 {Black mates}
+Started game 266 of 100000 (base vs new)
+Finished game 263 (new vs base): 1-0 {White mates}
+Started game 267 of 100000 (new vs base)
+Finished game 265 (new vs base): 1-0 {White mates}
+Started game 268 of 100000 (base vs new)
+Finished game 264 (base vs new): 1-0 {White mates}
+Started game 269 of 100000 (new vs base)
+Finished game 268 (base vs new): 0-1 {Black mates}
+Started game 270 of 100000 (base vs new)
+Finished game 269 (new vs base): 1-0 {White mates}
+Started game 271 of 100000 (new vs base)
+Finished game 267 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 272 of 100000 (base vs new)
+Finished game 266 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 273 of 100000 (new vs base)
+Finished game 270 (base vs new): 0-1 {Black mates}
+Started game 274 of 100000 (base vs new)
+Finished game 271 (new vs base): 0-1 {Black mates}
+Started game 275 of 100000 (new vs base)
+Finished game 272 (base vs new): 0-1 {Black mates}
+Started game 276 of 100000 (base vs new)
+Finished game 273 (new vs base): 0-1 {Black mates}
+Started game 277 of 100000 (new vs base)
+Finished game 274 (base vs new): 0-1 {Black mates}
+Started game 278 of 100000 (base vs new)
+Finished game 275 (new vs base): 0-1 {Black mates}
+Started game 279 of 100000 (new vs base)
+Finished game 276 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 280 of 100000 (base vs new)
+Finished game 277 (new vs base): 0-1 {Black mates}
+Started game 281 of 100000 (new vs base)
+Finished game 279 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 282 of 100000 (base vs new)
+Finished game 278 (base vs new): 1-0 {White mates}
+Started game 283 of 100000 (new vs base)
+Finished game 281 (new vs base): 1-0 {White mates}
+Started game 284 of 100000 (base vs new)
+Finished game 280 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -17.39 +/- 31.56, nElo: -22.52 +/- 40.70
+LOS: 13.90 %, DrawRatio: 44.29 %, PairsRatio: 0.86
+Games: 280, Wins: 94, Losses: 108, Draws: 78, Points: 133.0 (47.50 %)
+Ptnml(0-2): [19, 23, 62, 25, 11], WL/DD Ratio: 3.13
+LLR: -0.29 (-9.9%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 285 of 100000 (new vs base)
+Finished game 282 (base vs new): 1-0 {White mates}
+Started game 286 of 100000 (base vs new)
+Finished game 283 (new vs base): 1-0 {White mates}
+Started game 287 of 100000 (new vs base)
+Finished game 284 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 288 of 100000 (base vs new)
+Finished game 285 (new vs base): 0-1 {Black mates}
+Started game 289 of 100000 (new vs base)
+Finished game 286 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 290 of 100000 (base vs new)
+Finished game 287 (new vs base): 1-0 {White mates}
+Started game 291 of 100000 (new vs base)
+Finished game 288 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 292 of 100000 (base vs new)
+Finished game 290 (base vs new): 1-0 {White mates}
+Started game 293 of 100000 (new vs base)
+Finished game 289 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 294 of 100000 (base vs new)
+Finished game 291 (new vs base): 0-1 {Black mates}
+Started game 295 of 100000 (new vs base)
+Finished game 292 (base vs new): 0-1 {Black mates}
+Started game 296 of 100000 (base vs new)
+Finished game 294 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 297 of 100000 (new vs base)
+Finished game 293 (new vs base): 1-0 {White mates}
+Started game 298 of 100000 (base vs new)
+Finished game 295 (new vs base): 1-0 {White mates}
+Started game 299 of 100000 (new vs base)
+Finished game 297 (new vs base): 1-0 {White mates}
+Started game 300 of 100000 (base vs new)
+Finished game 299 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 301 of 100000 (new vs base)
+Finished game 298 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 302 of 100000 (base vs new)
+Finished game 296 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 303 of 100000 (new vs base)
+Finished game 300 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 304 of 100000 (base vs new)
+Finished game 302 (base vs new): 0-1 {Black mates}
+Started game 305 of 100000 (new vs base)
+Finished game 303 (new vs base): 1-0 {White mates}
+Started game 306 of 100000 (base vs new)
+Finished game 301 (new vs base): 1-0 {White mates}
+Started game 307 of 100000 (new vs base)
+Finished game 306 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 308 of 100000 (base vs new)
+Finished game 305 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 309 of 100000 (new vs base)
+Finished game 304 (base vs new): 0-1 {Black mates}
+Started game 310 of 100000 (base vs new)
+Finished game 307 (new vs base): 0-1 {Black mates}
+Started game 311 of 100000 (new vs base)
+Finished game 308 (base vs new): 1-0 {White mates}
+Started game 312 of 100000 (base vs new)
+Finished game 309 (new vs base): 0-1 {Black mates}
+Started game 313 of 100000 (new vs base)
+Finished game 310 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 314 of 100000 (base vs new)
+Finished game 311 (new vs base): 0-1 {Black mates}
+Started game 315 of 100000 (new vs base)
+Finished game 312 (base vs new): 1-0 {White mates}
+Started game 316 of 100000 (base vs new)
+Finished game 313 (new vs base): 1-0 {White mates}
+Started game 317 of 100000 (new vs base)
+Finished game 314 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 318 of 100000 (base vs new)
+Finished game 316 (base vs new): 1-0 {White mates}
+Started game 319 of 100000 (new vs base)
+Finished game 315 (new vs base): 0-1 {Black mates}
+Started game 320 of 100000 (base vs new)
+Finished game 319 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 321 of 100000 (new vs base)
+Finished game 317 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 322 of 100000 (base vs new)
+Finished game 318 (base vs new): 0-1 {Black mates}
+Started game 323 of 100000 (new vs base)
+Finished game 320 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -14.12 +/- 30.06, nElo: -17.95 +/- 38.07
+LOS: 17.77 %, DrawRatio: 41.25 %, PairsRatio: 0.92
+Games: 320, Wins: 107, Losses: 120, Draws: 93, Points: 153.5 (47.97 %)
+Ptnml(0-2): [22, 27, 66, 32, 13], WL/DD Ratio: 2.88
+LLR: -0.27 (-9.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 324 of 100000 (base vs new)
+Finished game 322 (base vs new): 0-1 {Black mates}
+Started game 325 of 100000 (new vs base)
+Finished game 321 (new vs base): 1-0 {White mates}
+Started game 326 of 100000 (base vs new)
+Finished game 323 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 327 of 100000 (new vs base)
+Finished game 324 (base vs new): 1-0 {White mates}
+Started game 328 of 100000 (base vs new)
+Finished game 327 (new vs base): 1-0 {White mates}
+Started game 329 of 100000 (new vs base)
+Finished game 325 (new vs base): 1-0 {White mates}
+Started game 330 of 100000 (base vs new)
+Finished game 326 (base vs new): 1-0 {White mates}
+Started game 331 of 100000 (new vs base)
+Finished game 328 (base vs new): 1-0 {White mates}
+Started game 332 of 100000 (base vs new)
+Finished game 330 (base vs new): 1-0 {White mates}
+Started game 333 of 100000 (new vs base)
+Finished game 329 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 334 of 100000 (base vs new)
+Finished game 331 (new vs base): 0-1 {Black mates}
+Started game 335 of 100000 (new vs base)
+Finished game 332 (base vs new): 0-1 {Black mates}
+Started game 336 of 100000 (base vs new)
+Finished game 334 (base vs new): 1-0 {White mates}
+Started game 337 of 100000 (new vs base)
+Finished game 335 (new vs base): 1-0 {White mates}
+Started game 338 of 100000 (base vs new)
+Finished game 336 (base vs new): 0-1 {Black mates}
+Started game 339 of 100000 (new vs base)
+Finished game 333 (new vs base): 1-0 {White mates}
+Started game 340 of 100000 (base vs new)
+Finished game 338 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 341 of 100000 (new vs base)
+Finished game 339 (new vs base): 1-0 {White mates}
+Started game 342 of 100000 (base vs new)
+Finished game 337 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 343 of 100000 (new vs base)
+Finished game 340 (base vs new): 1-0 {White mates}
+Started game 344 of 100000 (base vs new)
+Finished game 341 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 345 of 100000 (new vs base)
+Finished game 343 (new vs base): 0-1 {Black mates}
+Started game 346 of 100000 (base vs new)
+Finished game 342 (base vs new): 1-0 {White mates}
+Started game 347 of 100000 (new vs base)
+Finished game 344 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 348 of 100000 (base vs new)
+Finished game 345 (new vs base): 1-0 {White mates}
+Started game 349 of 100000 (new vs base)
+Finished game 346 (base vs new): 0-1 {Black mates}
+Started game 350 of 100000 (base vs new)
+Finished game 347 (new vs base): 0-1 {Black mates}
+Started game 351 of 100000 (new vs base)
+Finished game 348 (base vs new): 1-0 {White mates}
+Started game 352 of 100000 (base vs new)
+Finished game 349 (new vs base): 1-0 {White mates}
+Started game 353 of 100000 (new vs base)
+Finished game 350 (base vs new): 1-0 {White mates}
+Started game 354 of 100000 (base vs new)
+Finished game 351 (new vs base): 0-1 {Black mates}
+Started game 355 of 100000 (new vs base)
+Finished game 352 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 356 of 100000 (base vs new)
+Finished game 353 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 357 of 100000 (new vs base)
+Finished game 354 (base vs new): 1-0 {White mates}
+Started game 358 of 100000 (base vs new)
+Finished game 356 (base vs new): 0-1 {Black mates}
+Started game 359 of 100000 (new vs base)
+Finished game 355 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 360 of 100000 (base vs new)
+Finished game 357 (new vs base): 1-0 {White mates}
+Started game 361 of 100000 (new vs base)
+Finished game 358 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 362 of 100000 (base vs new)
+Finished game 359 (new vs base): 1-0 {White mates}
+Started game 363 of 100000 (new vs base)
+Finished game 360 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -11.59 +/- 28.35, nElo: -14.71 +/- 35.89
+LOS: 21.09 %, DrawRatio: 40.56 %, PairsRatio: 0.91
+Games: 360, Wins: 122, Losses: 134, Draws: 104, Points: 174.0 (48.33 %)
+Ptnml(0-2): [23, 33, 73, 35, 16], WL/DD Ratio: 3.06
+LLR: -0.26 (-8.7%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 364 of 100000 (base vs new)
+Finished game 361 (new vs base): 0-1 {Black mates}
+Started game 365 of 100000 (new vs base)
+Finished game 362 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 366 of 100000 (base vs new)
+Finished game 363 (new vs base): 0-1 {Black mates}
+Started game 367 of 100000 (new vs base)
+Finished game 364 (base vs new): 0-1 {Black mates}
+Started game 368 of 100000 (base vs new)
+Finished game 365 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 369 of 100000 (new vs base)
+Finished game 367 (new vs base): 0-1 {Black mates}
+Started game 370 of 100000 (base vs new)
+Finished game 368 (base vs new): 0-1 {Black mates}
+Started game 371 of 100000 (new vs base)
+Finished game 366 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 372 of 100000 (base vs new)
+Finished game 369 (new vs base): 0-1 {Black mates}
+Started game 373 of 100000 (new vs base)
+Finished game 370 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 374 of 100000 (base vs new)
+Finished game 371 (new vs base): 0-1 {Black mates}
+Started game 375 of 100000 (new vs base)
+Finished game 372 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 376 of 100000 (base vs new)
+Finished game 373 (new vs base): 1-0 {White mates}
+Started game 377 of 100000 (new vs base)
+Finished game 374 (base vs new): 0-1 {Black mates}
+Started game 378 of 100000 (base vs new)
+Finished game 375 (new vs base): 0-1 {Black mates}
+Started game 379 of 100000 (new vs base)
+Finished game 376 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 380 of 100000 (base vs new)
+Finished game 378 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 381 of 100000 (new vs base)
+Finished game 379 (new vs base): 0-1 {Black mates}
+Started game 382 of 100000 (base vs new)
+Finished game 380 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 383 of 100000 (new vs base)
+Finished game 377 (new vs base): 0-1 {Black mates}
+Started game 384 of 100000 (base vs new)
+Finished game 383 (new vs base): 1-0 {White mates}
+Started game 385 of 100000 (new vs base)
+Finished game 381 (new vs base): 0-1 {Black mates}
+Started game 386 of 100000 (base vs new)
+Finished game 384 (base vs new): 1-0 {White mates}
+Started game 387 of 100000 (new vs base)
+Finished game 382 (base vs new): 1-0 {White mates}
+Started game 388 of 100000 (base vs new)
+Finished game 385 (new vs base): 0-1 {Black mates}
+Started game 389 of 100000 (new vs base)
+Finished game 386 (base vs new): 1-0 {White mates}
+Started game 390 of 100000 (base vs new)
+Finished game 388 (base vs new): 0-1 {Black mates}
+Started game 391 of 100000 (new vs base)
+Finished game 389 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 392 of 100000 (base vs new)
+Finished game 387 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 393 of 100000 (new vs base)
+Finished game 390 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 394 of 100000 (base vs new)
+Finished game 391 (new vs base): 1-0 {White mates}
+Started game 395 of 100000 (new vs base)
+Finished game 392 (base vs new): 0-1 {Black mates}
+Started game 396 of 100000 (base vs new)
+Finished game 393 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 397 of 100000 (new vs base)
+Finished game 394 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 398 of 100000 (base vs new)
+Finished game 397 (new vs base): 1-0 {White mates}
+Started game 399 of 100000 (new vs base)
+Finished game 396 (base vs new): 0-1 {Black mates}
+Started game 400 of 100000 (base vs new)
+Finished game 395 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 401 of 100000 (new vs base)
+Finished game 398 (base vs new): 1-0 {White mates}
+Started game 402 of 100000 (base vs new)
+Finished game 399 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 403 of 100000 (new vs base)
+Finished game 400 (base vs new): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -13.03 +/- 26.89, nElo: -16.55 +/- 34.05
+LOS: 17.04 %, DrawRatio: 40.00 %, PairsRatio: 0.88
+Games: 400, Wins: 133, Losses: 148, Draws: 119, Points: 192.5 (48.12 %)
+Ptnml(0-2): [25, 39, 80, 38, 18], WL/DD Ratio: 2.81
+LLR: -0.32 (-10.7%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 404 of 100000 (base vs new)
+Finished game 401 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 405 of 100000 (new vs base)
+Finished game 402 (base vs new): 1-0 {White mates}
+Started game 406 of 100000 (base vs new)
+Finished game 403 (new vs base): 0-1 {Black mates}
+Started game 407 of 100000 (new vs base)
+Finished game 404 (base vs new): 0-1 {Black mates}
+Started game 408 of 100000 (base vs new)
+Finished game 406 (base vs new): 1-0 {White mates}
+Started game 409 of 100000 (new vs base)
+Finished game 405 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 410 of 100000 (base vs new)
+Finished game 408 (base vs new): 1-0 {White mates}
+Started game 411 of 100000 (new vs base)
+Finished game 409 (new vs base): 1-0 {White mates}
+Started game 412 of 100000 (base vs new)
+Finished game 407 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 413 of 100000 (new vs base)
+Finished game 410 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 414 of 100000 (base vs new)
+Finished game 411 (new vs base): 1-0 {White mates}
+Started game 415 of 100000 (new vs base)
+Finished game 412 (base vs new): 1-0 {White mates}
+Started game 416 of 100000 (base vs new)
+Finished game 413 (new vs base): 0-1 {Black mates}
+Started game 417 of 100000 (new vs base)
+Finished game 414 (base vs new): 0-1 {Black mates}
+Started game 418 of 100000 (base vs new)
+Finished game 415 (new vs base): 0-1 {Black mates}
+Started game 419 of 100000 (new vs base)
+Finished game 416 (base vs new): 0-1 {Black mates}
+Started game 420 of 100000 (base vs new)
+Finished game 417 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 421 of 100000 (new vs base)
+Finished game 419 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 422 of 100000 (base vs new)
+Finished game 418 (base vs new): 1-0 {White mates}
+Started game 423 of 100000 (new vs base)
+Finished game 420 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 424 of 100000 (base vs new)
+Finished game 421 (new vs base): 1-0 {White mates}
+Started game 425 of 100000 (new vs base)
+Finished game 422 (base vs new): 0-1 {Black mates}
+Started game 426 of 100000 (base vs new)
+Finished game 423 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 427 of 100000 (new vs base)
+Finished game 424 (base vs new): 0-1 {Black mates}
+Started game 428 of 100000 (base vs new)
+Finished game 425 (new vs base): 1-0 {White mates}
+Started game 429 of 100000 (new vs base)
+Finished game 426 (base vs new): 1-0 {White mates}
+Started game 430 of 100000 (base vs new)
+Finished game 427 (new vs base): 1-0 {White mates}
+Started game 431 of 100000 (new vs base)
+Finished game 428 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 432 of 100000 (base vs new)
+Finished game 430 (base vs new): 1-0 {White mates}
+Started game 433 of 100000 (new vs base)
+Finished game 431 (new vs base): 1-0 {White mates}
+Started game 434 of 100000 (base vs new)
+Finished game 429 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 435 of 100000 (new vs base)
+Finished game 432 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 436 of 100000 (base vs new)
+Finished game 433 (new vs base): 1-0 {White mates}
+Started game 437 of 100000 (new vs base)
+Finished game 434 (base vs new): 0-1 {Black mates}
+Started game 438 of 100000 (base vs new)
+Finished game 436 (base vs new): 1-0 {White mates}
+Started game 439 of 100000 (new vs base)
+Finished game 435 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 440 of 100000 (base vs new)
+Finished game 437 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 441 of 100000 (new vs base)
+Finished game 438 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 442 of 100000 (base vs new)
+Finished game 439 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 443 of 100000 (new vs base)
+Finished game 440 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -11.06 +/- 25.36, nElo: -14.19 +/- 32.46
+LOS: 19.58 %, DrawRatio: 39.55 %, PairsRatio: 0.87
+Games: 440, Wins: 146, Losses: 160, Draws: 134, Points: 213.0 (48.41 %)
+Ptnml(0-2): [25, 46, 87, 42, 20], WL/DD Ratio: 2.78
+LLR: -0.30 (-10.3%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 444 of 100000 (base vs new)
+Finished game 441 (new vs base): 0-1 {Black mates}
+Started game 445 of 100000 (new vs base)
+Finished game 442 (base vs new): 0-1 {Black mates}
+Started game 446 of 100000 (base vs new)
+Finished game 443 (new vs base): 1-0 {White mates}
+Started game 447 of 100000 (new vs base)
+Finished game 445 (new vs base): 0-1 {Black mates}
+Started game 448 of 100000 (base vs new)
+Finished game 444 (base vs new): 1-0 {White mates}
+Started game 449 of 100000 (new vs base)
+Finished game 447 (new vs base): 1-0 {White mates}
+Started game 450 of 100000 (base vs new)
+Finished game 448 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 451 of 100000 (new vs base)
+Finished game 446 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 452 of 100000 (base vs new)
+Finished game 449 (new vs base): 1-0 {White mates}
+Started game 453 of 100000 (new vs base)
+Finished game 450 (base vs new): 1-0 {White mates}
+Started game 454 of 100000 (base vs new)
+Finished game 452 (base vs new): 1-0 {White mates}
+Started game 455 of 100000 (new vs base)
+Finished game 454 (base vs new): 0-1 {Black mates}
+Started game 456 of 100000 (base vs new)
+Finished game 451 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 457 of 100000 (new vs base)
+Finished game 453 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 458 of 100000 (base vs new)
+Finished game 455 (new vs base): 1-0 {White mates}
+Started game 459 of 100000 (new vs base)
+Finished game 457 (new vs base): 1-0 {White mates}
+Started game 460 of 100000 (base vs new)
+Finished game 456 (base vs new): 1-0 {White mates}
+Started game 461 of 100000 (new vs base)
+Finished game 458 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 462 of 100000 (base vs new)
+Finished game 459 (new vs base): 0-1 {Black mates}
+Started game 463 of 100000 (new vs base)
+Finished game 460 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 464 of 100000 (base vs new)
+Finished game 461 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 465 of 100000 (new vs base)
+Finished game 462 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 466 of 100000 (base vs new)
+Finished game 463 (new vs base): 0-1 {Black mates}
+Started game 467 of 100000 (new vs base)
+Finished game 465 (new vs base): 0-1 {Black mates}
+Started game 468 of 100000 (base vs new)
+Finished game 464 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 469 of 100000 (new vs base)
+Finished game 466 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 470 of 100000 (base vs new)
+Finished game 467 (new vs base): 1-0 {White mates}
+Started game 471 of 100000 (new vs base)
+Finished game 469 (new vs base): 1-0 {White mates}
+Started game 472 of 100000 (base vs new)
+Finished game 468 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 473 of 100000 (new vs base)
+Finished game 471 (new vs base): 0-1 {Black mates}
+Started game 474 of 100000 (base vs new)
+Finished game 470 (base vs new): 1-0 {White mates}
+Started game 475 of 100000 (new vs base)
+Finished game 472 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 476 of 100000 (base vs new)
+Finished game 473 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 477 of 100000 (new vs base)
+Finished game 474 (base vs new): 1-0 {White mates}
+Started game 478 of 100000 (base vs new)
+Finished game 475 (new vs base): 0-1 {Black mates}
+Started game 479 of 100000 (new vs base)
+Finished game 476 (base vs new): 0-1 {Black mates}
+Started game 480 of 100000 (base vs new)
+Finished game 477 (new vs base): 0-1 {Black mates}
+Started game 481 of 100000 (new vs base)
+Finished game 479 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 482 of 100000 (base vs new)
+Finished game 478 (base vs new): 0-1 {Black mates}
+Started game 483 of 100000 (new vs base)
+Finished game 480 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -13.03 +/- 23.75, nElo: -17.10 +/- 31.08
+LOS: 14.04 %, DrawRatio: 39.58 %, PairsRatio: 0.84
+Games: 480, Wins: 157, Losses: 175, Draws: 148, Points: 231.0 (48.12 %)
+Ptnml(0-2): [25, 54, 95, 46, 20], WL/DD Ratio: 2.96
+LLR: -0.39 (-13.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 484 of 100000 (base vs new)
+Finished game 481 (new vs base): 0-1 {Black mates}
+Started game 485 of 100000 (new vs base)
+Finished game 482 (base vs new): 0-1 {Black mates}
+Started game 486 of 100000 (base vs new)
+Finished game 483 (new vs base): 1-0 {White mates}
+Started game 487 of 100000 (new vs base)
+Finished game 484 (base vs new): 0-1 {Black mates}
+Started game 488 of 100000 (base vs new)
+Finished game 485 (new vs base): 0-1 {Black mates}
+Started game 489 of 100000 (new vs base)
+Finished game 486 (base vs new): 0-1 {Black mates}
+Started game 490 of 100000 (base vs new)
+Finished game 487 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 491 of 100000 (new vs base)
+Finished game 488 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 492 of 100000 (base vs new)
+Finished game 489 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 493 of 100000 (new vs base)
+Finished game 490 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 494 of 100000 (base vs new)
+Finished game 491 (new vs base): 0-1 {Black mates}
+Started game 495 of 100000 (new vs base)
+Finished game 493 (new vs base): 1-0 {White mates}
+Started game 496 of 100000 (base vs new)
+Finished game 492 (base vs new): 0-1 {Black mates}
+Started game 497 of 100000 (new vs base)
+Finished game 494 (base vs new): 0-1 {Black mates}
+Started game 498 of 100000 (base vs new)
+Finished game 495 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 499 of 100000 (new vs base)
+Finished game 496 (base vs new): 0-1 {Black mates}
+Started game 500 of 100000 (base vs new)
+Finished game 497 (new vs base): 1-0 {White mates}
+Started game 501 of 100000 (new vs base)
+Finished game 498 (base vs new): 1-0 {White mates}
+Started game 502 of 100000 (base vs new)
+Finished game 499 (new vs base): 1-0 {White mates}
+Started game 503 of 100000 (new vs base)
+Finished game 501 (new vs base): 1-0 {White mates}
+Started game 504 of 100000 (base vs new)
+Finished game 500 (base vs new): 1-0 {White mates}
+Started game 505 of 100000 (new vs base)
+Finished game 503 (new vs base): 1-0 {White mates}
+Started game 506 of 100000 (base vs new)
+Finished game 502 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 507 of 100000 (new vs base)
+Finished game 504 (base vs new): 1-0 {White mates}
+Started game 508 of 100000 (base vs new)
+Finished game 506 (base vs new): 1-0 {White mates}
+Started game 509 of 100000 (new vs base)
+Finished game 505 (new vs base): 0-1 {Black mates}
+Started game 510 of 100000 (base vs new)
+Finished game 507 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 511 of 100000 (new vs base)
+Finished game 509 (new vs base): 1-0 {White mates}
+Started game 512 of 100000 (base vs new)
+Finished game 508 (base vs new): 1-0 {White mates}
+Started game 513 of 100000 (new vs base)
+Finished game 510 (base vs new): 0-1 {Black mates}
+Started game 514 of 100000 (base vs new)
+Finished game 511 (new vs base): 1-0 {White mates}
+Started game 515 of 100000 (new vs base)
+Finished game 512 (base vs new): 1-0 {White mates}
+Started game 516 of 100000 (base vs new)
+Finished game 513 (new vs base): 0-1 {Black mates}
+Started game 517 of 100000 (new vs base)
+Finished game 515 (new vs base): 1-0 {White mates}
+Started game 518 of 100000 (base vs new)
+Finished game 514 (base vs new): 0-1 {Black mates}
+Started game 519 of 100000 (new vs base)
+Finished game 516 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 520 of 100000 (base vs new)
+Finished game 517 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 521 of 100000 (new vs base)
+Finished game 518 (base vs new): 0-1 {Black mates}
+Started game 522 of 100000 (base vs new)
+Finished game 519 (new vs base): 1-0 {White mates}
+Started game 523 of 100000 (new vs base)
+Finished game 520 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -6.68 +/- 22.78, nElo: -8.77 +/- 29.86
+LOS: 28.24 %, DrawRatio: 40.38 %, PairsRatio: 0.91
+Games: 520, Wins: 176, Losses: 186, Draws: 158, Points: 255.0 (49.04 %)
+Ptnml(0-2): [26, 55, 105, 51, 23], WL/DD Ratio: 3.04
+LLR: -0.24 (-8.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 524 of 100000 (base vs new)
+Finished game 521 (new vs base): 0-1 {Black mates}
+Started game 525 of 100000 (new vs base)
+Finished game 522 (base vs new): 0-1 {Black mates}
+Started game 526 of 100000 (base vs new)
+Finished game 523 (new vs base): 1-0 {White mates}
+Started game 527 of 100000 (new vs base)
+Finished game 525 (new vs base): 0-1 {Black mates}
+Started game 528 of 100000 (base vs new)
+Finished game 524 (base vs new): 1-0 {White mates}
+Started game 529 of 100000 (new vs base)
+Finished game 526 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 530 of 100000 (base vs new)
+Finished game 527 (new vs base): 1-0 {White mates}
+Started game 531 of 100000 (new vs base)
+Finished game 529 (new vs base): 1-0 {White mates}
+Started game 532 of 100000 (base vs new)
+Finished game 528 (base vs new): 1-0 {White mates}
+Started game 533 of 100000 (new vs base)
+Finished game 530 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 534 of 100000 (base vs new)
+Finished game 531 (new vs base): 0-1 {Black mates}
+Started game 535 of 100000 (new vs base)
+Finished game 532 (base vs new): 1-0 {White mates}
+Started game 536 of 100000 (base vs new)
+Finished game 534 (base vs new): 0-1 {Black mates}
+Started game 537 of 100000 (new vs base)
+Finished game 533 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 538 of 100000 (base vs new)
+Finished game 535 (new vs base): 0-1 {Black mates}
+Started game 539 of 100000 (new vs base)
+Finished game 536 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 540 of 100000 (base vs new)
+Finished game 538 (base vs new): 0-1 {Black mates}
+Started game 541 of 100000 (new vs base)
+Finished game 537 (new vs base): 0-1 {Black mates}
+Started game 542 of 100000 (base vs new)
+Finished game 539 (new vs base): 0-1 {Black mates}
+Started game 543 of 100000 (new vs base)
+Finished game 540 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 544 of 100000 (base vs new)
+Finished game 541 (new vs base): 1-0 {White mates}
+Started game 545 of 100000 (new vs base)
+Finished game 544 (base vs new): 0-1 {Black mates}
+Started game 546 of 100000 (base vs new)
+Finished game 542 (base vs new): 1-0 {White mates}
+Started game 547 of 100000 (new vs base)
+Finished game 543 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 548 of 100000 (base vs new)
+Finished game 545 (new vs base): 1-0 {White mates}
+Started game 549 of 100000 (new vs base)
+Finished game 546 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 550 of 100000 (base vs new)
+Finished game 547 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 551 of 100000 (new vs base)
+Finished game 548 (base vs new): 1-0 {White mates}
+Started game 552 of 100000 (base vs new)
+Finished game 550 (base vs new): 1-0 {White mates}
+Started game 553 of 100000 (new vs base)
+Finished game 549 (new vs base): 1-0 {White mates}
+Started game 554 of 100000 (base vs new)
+Finished game 553 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 555 of 100000 (new vs base)
+Finished game 551 (new vs base): 1-0 {White mates}
+Started game 556 of 100000 (base vs new)
+Finished game 552 (base vs new): 1-0 {White mates}
+Started game 557 of 100000 (new vs base)
+Finished game 554 (base vs new): 1-0 {White mates}
+Started game 558 of 100000 (base vs new)
+Finished game 555 (new vs base): 1-0 {White mates}
+Started game 559 of 100000 (new vs base)
+Finished game 556 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 560 of 100000 (base vs new)
+Finished game 557 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 561 of 100000 (new vs base)
+Finished game 558 (base vs new): 0-1 {White loses on time (1ms overrun)}
+Started game 562 of 100000 (base vs new)
+Finished game 559 (new vs base): 1-0 {White mates}
+Started game 563 of 100000 (new vs base)
+Finished game 560 (base vs new): 1-0 {White mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -6.83 +/- 21.67, nElo: -9.08 +/- 28.78
+LOS: 26.82 %, DrawRatio: 40.36 %, PairsRatio: 0.92
+Games: 560, Wins: 190, Losses: 201, Draws: 169, Points: 274.5 (49.02 %)
+Ptnml(0-2): [27, 60, 113, 57, 23], WL/DD Ratio: 3.35
+LLR: -0.27 (-9.1%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 564 of 100000 (base vs new)
+Finished game 561 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 565 of 100000 (new vs base)
+Finished game 562 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 566 of 100000 (base vs new)
+Finished game 563 (new vs base): 0-1 {Black mates}
+Started game 567 of 100000 (new vs base)
+Finished game 564 (base vs new): 0-1 {Black mates}
+Started game 568 of 100000 (base vs new)
+Finished game 565 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 569 of 100000 (new vs base)
+Finished game 567 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 570 of 100000 (base vs new)
+Finished game 566 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 571 of 100000 (new vs base)
+Finished game 569 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 572 of 100000 (base vs new)
+Finished game 568 (base vs new): 1-0 {White mates}
+Started game 573 of 100000 (new vs base)
+Finished game 571 (new vs base): 1-0 {White mates}
+Started game 574 of 100000 (base vs new)
+Finished game 570 (base vs new): 0-1 {Black mates}
+Started game 575 of 100000 (new vs base)
+Finished game 572 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 576 of 100000 (base vs new)
+Finished game 573 (new vs base): 0-1 {Black mates}
+Started game 577 of 100000 (new vs base)
+Finished game 574 (base vs new): 0-1 {Black mates}
+Started game 578 of 100000 (base vs new)
+Finished game 575 (new vs base): 0-1 {Black mates}
+Started game 579 of 100000 (new vs base)
+Finished game 576 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 580 of 100000 (base vs new)
+Finished game 577 (new vs base): 1-0 {White mates}
+Started game 581 of 100000 (new vs base)
+Finished game 578 (base vs new): 1-0 {White mates}
+Started game 582 of 100000 (base vs new)
+Finished game 579 (new vs base): 1-0 {White mates}
+Started game 583 of 100000 (new vs base)
+Finished game 580 (base vs new): 1-0 {White mates}
+Started game 584 of 100000 (base vs new)
+Finished game 581 (new vs base): 0-1 {Black mates}
+Started game 585 of 100000 (new vs base)
+Finished game 582 (base vs new): 0-1 {Black mates}
+Started game 586 of 100000 (base vs new)
+Finished game 583 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 587 of 100000 (new vs base)
+Finished game 584 (base vs new): 1-0 {White mates}
+Started game 588 of 100000 (base vs new)
+Finished game 585 (new vs base): 0-1 {Black mates}
+Started game 589 of 100000 (new vs base)
+Finished game 586 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 590 of 100000 (base vs new)
+Finished game 589 (new vs base): 1-0 {White mates}
+Started game 591 of 100000 (new vs base)
+Finished game 587 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 592 of 100000 (base vs new)
+Finished game 588 (base vs new): 1-0 {White mates}
+Started game 593 of 100000 (new vs base)
+Finished game 590 (base vs new): 1-0 {White mates}
+Started game 594 of 100000 (base vs new)
+Finished game 591 (new vs base): 0-1 {Black mates}
+Started game 595 of 100000 (new vs base)
+Finished game 592 (base vs new): 1-0 {White mates}
+Started game 596 of 100000 (base vs new)
+Finished game 593 (new vs base): 1-0 {White mates}
+Started game 597 of 100000 (new vs base)
+Finished game 594 (base vs new): 0-1 {Black mates}
+Started game 598 of 100000 (base vs new)
+Finished game 595 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 599 of 100000 (new vs base)
+Finished game 597 (new vs base): 0-1 {Black mates}
+Started game 600 of 100000 (base vs new)
+Finished game 598 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 601 of 100000 (new vs base)
+Finished game 596 (base vs new): 0-1 {Black mates}
+Started game 602 of 100000 (base vs new)
+Finished game 599 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 603 of 100000 (new vs base)
+Finished game 602 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 604 of 100000 (base vs new)
+Finished game 600 (base vs new): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -7.53 +/- 20.79, nElo: -10.08 +/- 27.80
+LOS: 23.86 %, DrawRatio: 40.33 %, PairsRatio: 0.90
+Games: 600, Wins: 202, Losses: 215, Draws: 183, Points: 293.5 (48.92 %)
+Ptnml(0-2): [28, 66, 121, 61, 24], WL/DD Ratio: 3.32
+LLR: -0.31 (-10.6%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 605 of 100000 (new vs base)
+Finished game 601 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 606 of 100000 (base vs new)
+Finished game 603 (new vs base): 1-0 {White mates}
+Started game 607 of 100000 (new vs base)
+Finished game 604 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 608 of 100000 (base vs new)
+Finished game 606 (base vs new): 1-0 {White mates}
+Started game 609 of 100000 (new vs base)
+Finished game 605 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 610 of 100000 (base vs new)
+Finished game 607 (new vs base): 1-0 {White mates}
+Started game 611 of 100000 (new vs base)
+Finished game 608 (base vs new): 1-0 {White mates}
+Started game 612 of 100000 (base vs new)
+Finished game 609 (new vs base): 1-0 {White mates}
+Started game 613 of 100000 (new vs base)
+Finished game 611 (new vs base): 1-0 {White mates}
+Started game 614 of 100000 (base vs new)
+Finished game 610 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 615 of 100000 (new vs base)
+Finished game 612 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 616 of 100000 (base vs new)
+Finished game 613 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 617 of 100000 (new vs base)
+Finished game 615 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 618 of 100000 (base vs new)
+Finished game 614 (base vs new): 0-1 {Black mates}
+Started game 619 of 100000 (new vs base)
+Finished game 616 (base vs new): 1-0 {White mates}
+Started game 620 of 100000 (base vs new)
+Finished game 617 (new vs base): 1-0 {White mates}
+Started game 621 of 100000 (new vs base)
+Finished game 618 (base vs new): 1-0 {White mates}
+Started game 622 of 100000 (base vs new)
+Finished game 619 (new vs base): 0-1 {Black mates}
+Started game 623 of 100000 (new vs base)
+Finished game 620 (base vs new): 0-1 {Black mates}
+Started game 624 of 100000 (base vs new)
+Finished game 621 (new vs base): 0-1 {Black mates}
+Started game 625 of 100000 (new vs base)
+Finished game 622 (base vs new): 1-0 {White mates}
+Started game 626 of 100000 (base vs new)
+Finished game 623 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 627 of 100000 (new vs base)
+Finished game 624 (base vs new): 1-0 {White mates}
+Started game 628 of 100000 (base vs new)
+Finished game 626 (base vs new): 1-0 {White mates}
+Started game 629 of 100000 (new vs base)
+Finished game 625 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 630 of 100000 (base vs new)
+Finished game 627 (new vs base): 0-1 {Black mates}
+Started game 631 of 100000 (new vs base)
+Finished game 628 (base vs new): 0-1 {Black mates}
+Started game 632 of 100000 (base vs new)
+Finished game 629 (new vs base): 0-1 {Black mates}
+Started game 633 of 100000 (new vs base)
+Finished game 630 (base vs new): 0-1 {Black mates}
+Started game 634 of 100000 (base vs new)
+Finished game 631 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 635 of 100000 (new vs base)
+Finished game 632 (base vs new): 0-1 {Black mates}
+Started game 636 of 100000 (base vs new)
+Finished game 633 (new vs base): 1-0 {White mates}
+Started game 637 of 100000 (new vs base)
+Finished game 634 (base vs new): 1-0 {White mates}
+Started game 638 of 100000 (base vs new)
+Finished game 635 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 639 of 100000 (new vs base)
+Finished game 637 (new vs base): 1-0 {White mates}
+Started game 640 of 100000 (base vs new)
+Finished game 636 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 641 of 100000 (new vs base)
+Finished game 638 (base vs new): 1-0 {White mates}
+Started game 642 of 100000 (base vs new)
+Finished game 639 (new vs base): 1-0 {White mates}
+Started game 643 of 100000 (new vs base)
+Finished game 641 (new vs base): 0-1 {Black mates}
+Started game 644 of 100000 (base vs new)
+Finished game 640 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -7.06 +/- 19.89, nElo: -9.56 +/- 26.92
+LOS: 24.31 %, DrawRatio: 40.62 %, PairsRatio: 0.92
+Games: 640, Wins: 215, Losses: 228, Draws: 197, Points: 313.5 (48.98 %)
+Ptnml(0-2): [29, 70, 130, 67, 24], WL/DD Ratio: 3.33
+LLR: -0.32 (-10.9%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 645 of 100000 (new vs base)
+Finished game 642 (base vs new): 1-0 {White mates}
+Started game 646 of 100000 (base vs new)
+Finished game 645 (new vs base): 0-1 {Black mates}
+Started game 647 of 100000 (new vs base)
+Finished game 644 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 648 of 100000 (base vs new)
+Finished game 643 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 649 of 100000 (new vs base)
+Finished game 646 (base vs new): 1-0 {White mates}
+Started game 650 of 100000 (base vs new)
+Finished game 647 (new vs base): 1-0 {White mates}
+Started game 651 of 100000 (new vs base)
+Finished game 648 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 652 of 100000 (base vs new)
+Finished game 649 (new vs base): 1-0 {White mates}
+Started game 653 of 100000 (new vs base)
+Finished game 650 (base vs new): 1-0 {White mates}
+Started game 654 of 100000 (base vs new)
+Finished game 651 (new vs base): 0-1 {Black mates}
+Started game 655 of 100000 (new vs base)
+Finished game 652 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 656 of 100000 (base vs new)
+Finished game 653 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 657 of 100000 (new vs base)
+Finished game 654 (base vs new): 1-0 {White mates}
+Started game 658 of 100000 (base vs new)
+Finished game 656 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 659 of 100000 (new vs base)
+Finished game 655 (new vs base): 0-1 {Black mates}
+Started game 660 of 100000 (base vs new)
+Finished game 657 (new vs base): 1-0 {White mates}
+Started game 661 of 100000 (new vs base)
+Finished game 659 (new vs base): 1-0 {White mates}
+Started game 662 of 100000 (base vs new)
+Finished game 658 (base vs new): 0-1 {Black mates}
+Started game 663 of 100000 (new vs base)
+Finished game 660 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 664 of 100000 (base vs new)
+Finished game 661 (new vs base): 0-1 {Black mates}
+Started game 665 of 100000 (new vs base)
+Finished game 662 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 666 of 100000 (base vs new)
+Finished game 663 (new vs base): 1-0 {White mates}
+Started game 667 of 100000 (new vs base)
+Finished game 665 (new vs base): 0-1 {Black mates}
+Started game 668 of 100000 (base vs new)
+Finished game 664 (base vs new): 0-1 {Black mates}
+Started game 669 of 100000 (new vs base)
+Finished game 667 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 670 of 100000 (base vs new)
+Finished game 666 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 671 of 100000 (new vs base)
+Finished game 668 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 672 of 100000 (base vs new)
+Finished game 669 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 673 of 100000 (new vs base)
+Finished game 670 (base vs new): 0-1 {Black mates}
+Started game 674 of 100000 (base vs new)
+Finished game 671 (new vs base): 1-0 {White mates}
+Started game 675 of 100000 (new vs base)
+Finished game 672 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 676 of 100000 (base vs new)
+Finished game 673 (new vs base): 1-0 {White mates}
+Started game 677 of 100000 (new vs base)
+Finished game 675 (new vs base): 0-1 {Black mates}
+Started game 678 of 100000 (base vs new)
+Finished game 674 (base vs new): 1-0 {White mates}
+Started game 679 of 100000 (new vs base)
+Finished game 676 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 680 of 100000 (base vs new)
+Finished game 677 (new vs base): 1-0 {White mates}
+Started game 681 of 100000 (new vs base)
+Finished game 678 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 682 of 100000 (base vs new)
+Finished game 679 (new vs base): 0-1 {Black mates}
+Started game 683 of 100000 (new vs base)
+Finished game 680 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -7.67 +/- 19.46, nElo: -10.30 +/- 26.11
+LOS: 21.97 %, DrawRatio: 39.41 %, PairsRatio: 0.91
+Games: 680, Wins: 226, Losses: 241, Draws: 213, Points: 332.5 (48.90 %)
+Ptnml(0-2): [31, 77, 134, 72, 26], WL/DD Ratio: 3.19
+LLR: -0.36 (-12.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 684 of 100000 (base vs new)
+Finished game 681 (new vs base): 0-1 {Black mates}
+Started game 685 of 100000 (new vs base)
+Finished game 683 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 686 of 100000 (base vs new)
+Finished game 682 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 687 of 100000 (new vs base)
+Finished game 684 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 688 of 100000 (base vs new)
+Finished game 686 (base vs new): 1-0 {White mates}
+Started game 689 of 100000 (new vs base)
+Finished game 687 (new vs base): 0-1 {Black mates}
+Started game 690 of 100000 (base vs new)
+Finished game 685 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 691 of 100000 (new vs base)
+Finished game 688 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 692 of 100000 (base vs new)
+Finished game 689 (new vs base): 0-1 {Black mates}
+Started game 693 of 100000 (new vs base)
+Finished game 691 (new vs base): 1-0 {White mates}
+Started game 694 of 100000 (base vs new)
+Finished game 690 (base vs new): 0-1 {Black mates}
+Started game 695 of 100000 (new vs base)
+Finished game 693 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 696 of 100000 (base vs new)
+Finished game 692 (base vs new): 1-0 {White mates}
+Started game 697 of 100000 (new vs base)
+Finished game 694 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 698 of 100000 (base vs new)
+Finished game 695 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 699 of 100000 (new vs base)
+Finished game 696 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 700 of 100000 (base vs new)
+Finished game 697 (new vs base): 0-1 {Black mates}
+Started game 701 of 100000 (new vs base)
+Finished game 698 (base vs new): 0-1 {Black mates}
+Started game 702 of 100000 (base vs new)
+Finished game 699 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 703 of 100000 (new vs base)
+Finished game 700 (base vs new): 0-1 {Black mates}
+Started game 704 of 100000 (base vs new)
+Finished game 701 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 705 of 100000 (new vs base)
+Finished game 702 (base vs new): 1-0 {White mates}
+Started game 706 of 100000 (base vs new)
+Finished game 703 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 707 of 100000 (new vs base)
+Finished game 704 (base vs new): 1-0 {White mates}
+Started game 708 of 100000 (base vs new)
+Finished game 706 (base vs new): 1-0 {White mates}
+Started game 709 of 100000 (new vs base)
+Finished game 705 (new vs base): 1-0 {White mates}
+Started game 710 of 100000 (base vs new)
+Finished game 707 (new vs base): 0-1 {Black mates}
+Started game 711 of 100000 (new vs base)
+Finished game 709 (new vs base): 1-0 {White mates}
+Started game 712 of 100000 (base vs new)
+Finished game 710 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 713 of 100000 (new vs base)
+Finished game 708 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 714 of 100000 (base vs new)
+Finished game 711 (new vs base): 0-1 {Black mates}
+Started game 715 of 100000 (new vs base)
+Finished game 712 (base vs new): 0-1 {Black mates}
+Started game 716 of 100000 (base vs new)
+Finished game 714 (base vs new): 0-1 {Black mates}
+Started game 717 of 100000 (new vs base)
+Finished game 713 (new vs base): 1-0 {White mates}
+Started game 718 of 100000 (base vs new)
+Finished game 715 (new vs base): 0-1 {Black mates}
+Started game 719 of 100000 (new vs base)
+Finished game 716 (base vs new): 0-1 {Black mates}
+Started game 720 of 100000 (base vs new)
+Finished game 717 (new vs base): 1-0 {White mates}
+Started game 721 of 100000 (new vs base)
+Finished game 718 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 722 of 100000 (base vs new)
+Finished game 719 (new vs base): 1-0 {White mates}
+Started game 723 of 100000 (new vs base)
+Finished game 721 (new vs base): 1-0 {White mates}
+Started game 724 of 100000 (base vs new)
+Finished game 720 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -7.24 +/- 18.71, nElo: -9.83 +/- 25.38
+LOS: 22.39 %, DrawRatio: 39.72 %, PairsRatio: 0.90
+Games: 720, Wins: 238, Losses: 253, Draws: 229, Points: 352.5 (48.96 %)
+Ptnml(0-2): [31, 83, 143, 76, 27], WL/DD Ratio: 3.09
+LLR: -0.37 (-12.5%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 725 of 100000 (new vs base)
+Finished game 722 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 726 of 100000 (base vs new)
+Finished game 725 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 727 of 100000 (new vs base)
+Finished game 723 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 728 of 100000 (base vs new)
+Finished game 724 (base vs new): 1-0 {White mates}
+Started game 729 of 100000 (new vs base)
+Finished game 726 (base vs new): 1-0 {White mates}
+Started game 730 of 100000 (base vs new)
+Finished game 727 (new vs base): 1-0 {White mates}
+Started game 731 of 100000 (new vs base)
+Finished game 728 (base vs new): 1-0 {White mates}
+Started game 732 of 100000 (base vs new)
+Finished game 729 (new vs base): 0-1 {Black mates}
+Started game 733 of 100000 (new vs base)
+Finished game 730 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 734 of 100000 (base vs new)
+Finished game 731 (new vs base): 1-0 {White mates}
+Started game 735 of 100000 (new vs base)
+Finished game 733 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 736 of 100000 (base vs new)
+Finished game 732 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 737 of 100000 (new vs base)
+Finished game 734 (base vs new): 1-0 {White mates}
+Started game 738 of 100000 (base vs new)
+Finished game 735 (new vs base): 0-1 {Black mates}
+Started game 739 of 100000 (new vs base)
+Finished game 736 (base vs new): 0-1 {Black mates}
+Started game 740 of 100000 (base vs new)
+Finished game 737 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 741 of 100000 (new vs base)
+Finished game 738 (base vs new): 1-0 {White mates}
+Started game 742 of 100000 (base vs new)
+Finished game 740 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 743 of 100000 (new vs base)
+Finished game 741 (new vs base): 1-0 {White mates}
+Started game 744 of 100000 (base vs new)
+Finished game 742 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 745 of 100000 (new vs base)
+Finished game 739 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 746 of 100000 (base vs new)
+Finished game 743 (new vs base): 1-0 {White mates}
+Started game 747 of 100000 (new vs base)
+Finished game 744 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 748 of 100000 (base vs new)
+Finished game 745 (new vs base): 1-0 {White mates}
+Started game 749 of 100000 (new vs base)
+Finished game 746 (base vs new): 1-0 {White mates}
+Started game 750 of 100000 (base vs new)
+Finished game 747 (new vs base): 1-0 {White mates}
+Started game 751 of 100000 (new vs base)
+Finished game 750 (base vs new): 0-1 {Black mates}
+Started game 752 of 100000 (base vs new)
+Finished game 748 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 753 of 100000 (new vs base)
+Finished game 749 (new vs base): 0-1 {Black mates}
+Started game 754 of 100000 (base vs new)
+Finished game 751 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 755 of 100000 (new vs base)
+Finished game 752 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 756 of 100000 (base vs new)
+Finished game 754 (base vs new): 1-0 {White mates}
+Started game 757 of 100000 (new vs base)
+Finished game 753 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 758 of 100000 (base vs new)
+Finished game 756 (base vs new): 1-0 {White mates}
+Started game 759 of 100000 (new vs base)
+Finished game 758 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 760 of 100000 (base vs new)
+Finished game 757 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 761 of 100000 (new vs base)
+Finished game 755 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 762 of 100000 (base vs new)
+Finished game 759 (new vs base): 1-0 {White mates}
+Started game 763 of 100000 (new vs base)
+Finished game 760 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -7.32 +/- 18.02, nElo: -10.04 +/- 24.70
+LOS: 21.28 %, DrawRatio: 39.47 %, PairsRatio: 0.90
+Games: 760, Wins: 248, Losses: 264, Draws: 248, Points: 372.0 (48.95 %)
+Ptnml(0-2): [31, 90, 150, 82, 27], WL/DD Ratio: 2.95
+LLR: -0.39 (-13.4%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 764 of 100000 (base vs new)
+Finished game 761 (new vs base): 1-0 {White mates}
+Started game 765 of 100000 (new vs base)
+Finished game 764 (base vs new): 1-0 {White mates}
+Started game 766 of 100000 (base vs new)
+Finished game 762 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 767 of 100000 (new vs base)
+Finished game 763 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 768 of 100000 (base vs new)
+Finished game 765 (new vs base): 0-1 {Black mates}
+Started game 769 of 100000 (new vs base)
+Finished game 767 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 770 of 100000 (base vs new)
+Finished game 768 (base vs new): 1-0 {White mates}
+Started game 771 of 100000 (new vs base)
+Finished game 769 (new vs base): 0-1 {Black mates}
+Started game 772 of 100000 (base vs new)
+Finished game 766 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 773 of 100000 (new vs base)
+Finished game 771 (new vs base): 0-1 {Black mates}
+Started game 774 of 100000 (base vs new)
+Finished game 770 (base vs new): 1-0 {White mates}
+Started game 775 of 100000 (new vs base)
+Finished game 772 (base vs new): 1-0 {White mates}
+Started game 776 of 100000 (base vs new)
+Finished game 773 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 777 of 100000 (new vs base)
+Finished game 775 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 778 of 100000 (base vs new)
+Finished game 774 (base vs new): 0-1 {Black mates}
+Started game 779 of 100000 (new vs base)
+Finished game 777 (new vs base): 0-1 {Black mates}
+Started game 780 of 100000 (base vs new)
+Finished game 776 (base vs new): 0-1 {Black mates}
+Started game 781 of 100000 (new vs base)
+Finished game 778 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 782 of 100000 (base vs new)
+Finished game 781 (new vs base): 0-1 {Black mates}
+Started game 783 of 100000 (new vs base)
+Finished game 780 (base vs new): 0-1 {Black mates}
+Started game 784 of 100000 (base vs new)
+Finished game 779 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 785 of 100000 (new vs base)
+Finished game 783 (new vs base): 1-0 {White mates}
+Started game 786 of 100000 (base vs new)
+Finished game 782 (base vs new): 0-1 {Black mates}
+Started game 787 of 100000 (new vs base)
+Finished game 785 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 788 of 100000 (base vs new)
+Finished game 784 (base vs new): 0-1 {Black mates}
+Started game 789 of 100000 (new vs base)
+Finished game 786 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 790 of 100000 (base vs new)
+Finished game 787 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 791 of 100000 (new vs base)
+Finished game 788 (base vs new): 1-0 {White mates}
+Started game 792 of 100000 (base vs new)
+Finished game 789 (new vs base): 0-1 {Black mates}
+Started game 793 of 100000 (new vs base)
+Finished game 790 (base vs new): 1-0 {White mates}
+Started game 794 of 100000 (base vs new)
+Finished game 792 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 795 of 100000 (new vs base)
+Finished game 791 (new vs base): 1-0 {White mates}
+Started game 796 of 100000 (base vs new)
+Finished game 793 (new vs base): 0-1 {Black mates}
+Started game 797 of 100000 (new vs base)
+Finished game 794 (base vs new): 0-1 {Black mates}
+Started game 798 of 100000 (base vs new)
+Finished game 795 (new vs base): 1-0 {White mates}
+Started game 799 of 100000 (new vs base)
+Finished game 796 (base vs new): 1-0 {White mates}
+Started game 800 of 100000 (base vs new)
+Finished game 797 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 801 of 100000 (new vs base)
+Finished game 798 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 802 of 100000 (base vs new)
+Finished game 800 (base vs new): 1-0 {White mates}
+Started game 803 of 100000 (new vs base)
+Finished game 799 (new vs base): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -9.56 +/- 17.74, nElo: -12.99 +/- 24.08
+LOS: 14.51 %, DrawRatio: 38.75 %, PairsRatio: 0.88
+Games: 800, Wins: 258, Losses: 280, Draws: 262, Points: 389.0 (48.62 %)
+Ptnml(0-2): [35, 95, 155, 87, 28], WL/DD Ratio: 2.88
+LLR: -0.51 (-17.4%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 804 of 100000 (base vs new)
+Finished game 801 (new vs base): 1-0 {White mates}
+Started game 805 of 100000 (new vs base)
+Finished game 802 (base vs new): 1-0 {White mates}
+Started game 806 of 100000 (base vs new)
+Finished game 804 (base vs new): 0-1 {Black mates}
+Started game 807 of 100000 (new vs base)
+Finished game 803 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 808 of 100000 (base vs new)
+Finished game 805 (new vs base): 0-1 {Black mates}
+Started game 809 of 100000 (new vs base)
+Finished game 806 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 810 of 100000 (base vs new)
+Finished game 807 (new vs base): 0-1 {Black mates}
+Started game 811 of 100000 (new vs base)
+Finished game 808 (base vs new): 0-1 {Black mates}
+Started game 812 of 100000 (base vs new)
+Finished game 809 (new vs base): 0-1 {Black mates}
+Started game 813 of 100000 (new vs base)
+Finished game 810 (base vs new): 1-0 {White mates}
+Started game 814 of 100000 (base vs new)
+Finished game 811 (new vs base): 1-0 {White mates}
+Started game 815 of 100000 (new vs base)
+Finished game 812 (base vs new): 1-0 {White mates}
+Started game 816 of 100000 (base vs new)
+Finished game 813 (new vs base): 0-1 {Black mates}
+Started game 817 of 100000 (new vs base)
+Finished game 814 (base vs new): 0-1 {Black mates}
+Started game 818 of 100000 (base vs new)
+Finished game 815 (new vs base): 0-1 {Black mates}
+Started game 819 of 100000 (new vs base)
+Finished game 816 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 820 of 100000 (base vs new)
+Finished game 817 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 821 of 100000 (new vs base)
+Finished game 818 (base vs new): 1-0 {White mates}
+Started game 822 of 100000 (base vs new)
+Finished game 819 (new vs base): 1-0 {White mates}
+Started game 823 of 100000 (new vs base)
+Finished game 820 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 824 of 100000 (base vs new)
+Finished game 821 (new vs base): 1-0 {White mates}
+Started game 825 of 100000 (new vs base)
+Finished game 822 (base vs new): 1-0 {White mates}
+Started game 826 of 100000 (base vs new)
+Finished game 823 (new vs base): 0-1 {Black mates}
+Started game 827 of 100000 (new vs base)
+Finished game 824 (base vs new): 0-1 {Black mates}
+Started game 828 of 100000 (base vs new)
+Finished game 825 (new vs base): 0-1 {Black mates}
+Started game 829 of 100000 (new vs base)
+Finished game 826 (base vs new): 1-0 {White mates}
+Started game 830 of 100000 (base vs new)
+Finished game 827 (new vs base): 0-1 {Black mates}
+Started game 831 of 100000 (new vs base)
+Finished game 828 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 832 of 100000 (base vs new)
+Finished game 829 (new vs base): 0-1 {Black mates}
+Started game 833 of 100000 (new vs base)
+Finished game 830 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 834 of 100000 (base vs new)
+Finished game 831 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 835 of 100000 (new vs base)
+Finished game 832 (base vs new): 1-0 {White mates}
+Started game 836 of 100000 (base vs new)
+Finished game 834 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 837 of 100000 (new vs base)
+Finished game 833 (new vs base): 1/2-1/2 {Draw by fifty moves rule}
+Started game 838 of 100000 (base vs new)
+Finished game 835 (new vs base): 1-0 {White mates}
+Started game 839 of 100000 (new vs base)
+Finished game 836 (base vs new): 0-1 {Black mates}
+Started game 840 of 100000 (base vs new)
+Finished game 837 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 841 of 100000 (new vs base)
+Finished game 838 (base vs new): 0-1 {Black mates}
+Started game 842 of 100000 (base vs new)
+Finished game 839 (new vs base): 1-0 {White mates}
+Started game 843 of 100000 (new vs base)
+Finished game 840 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+--------------------------------------------------
+Results of new vs base (4+0.04, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: -10.76 +/- 17.31, nElo: -14.62 +/- 23.50
+LOS: 11.13 %, DrawRatio: 38.57 %, PairsRatio: 0.87
+Games: 840, Wins: 270, Losses: 296, Draws: 274, Points: 407.0 (48.45 %)
+Ptnml(0-2): [37, 101, 162, 91, 29], WL/DD Ratio: 2.95
+LLR: -0.59 (-20.2%) (-2.94, 2.94) [0.00, 5.00]
+--------------------------------------------------
+Started game 844 of 100000 (base vs new)
+Finished game 841 (new vs base): 0-1 {Black mates}
+Started game 845 of 100000 (new vs base)
+Finished game 842 (base vs new): 0-1 {Black mates}
+Started game 846 of 100000 (base vs new)
+Finished game 844 (base vs new): 0-1 {Black mates}
+Started game 847 of 100000 (new vs base)
+Finished game 843 (new vs base): 1-0 {White mates}
+Started game 848 of 100000 (base vs new)
+Finished game 846 (base vs new): 0-1 {Black mates}
+Started game 849 of 100000 (new vs base)
+Finished game 845 (new vs base): 1-0 {White mates}
+Started game 850 of 100000 (base vs new)
+Finished game 847 (new vs base): 0-1 {Black mates}
+Started game 851 of 100000 (new vs base)
+Finished game 848 (base vs new): 1/2-1/2 {Draw by fifty moves rule}
+Started game 852 of 100000 (base vs new)
+Finished game 849 (new vs base): 1-0 {White mates}
+Started game 853 of 100000 (new vs base)
+Finished game 851 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 854 of 100000 (base vs new)
+Finished game 850 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 855 of 100000 (new vs base)
+Finished game 852 (base vs new): 1-0 {White mates}
+Started game 856 of 100000 (base vs new)
+Finished game 853 (new vs base): 0-1 {Black mates}
+Started game 857 of 100000 (new vs base)
+Finished game 854 (base vs new): 1-0 {White mates}
+Started game 858 of 100000 (base vs new)
+Finished game 856 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 859 of 100000 (new vs base)
+Finished game 855 (new vs base): 1-0 {White mates}
+Started game 860 of 100000 (base vs new)
+Finished game 857 (new vs base): 0-1 {Black mates}
+Started game 861 of 100000 (new vs base)
+Finished game 858 (base vs new): 1/2-1/2 {Draw by insufficient mating material}
+Started game 862 of 100000 (base vs new)
+Finished game 859 (new vs base): 0-1 {Black mates}
+Started game 863 of 100000 (new vs base)
+Finished game 860 (base vs new): 1-0 {White mates}
+Started game 864 of 100000 (base vs new)

@@ -1,0 +1,16 @@
+2026-09-10T17:41:27Z create offer=44217727 run=fable-v1 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "<redacted>",
+ "new_contract": 50512138,
+ "success": false
+}
+2026-09-10T17:50:18Z destroyed stuck instance 50512138 (never ran: resources unavailable)
+2026-09-10T17:51:01Z create offer=47635760 run=fable-v1 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=80
+{
+ "instance_api_key": "<redacted>",
+ "new_contract": 50512726,
+ "success": true
+}
+2026-09-10T18:51:21Z train start superbatches=800
+2026-09-10T22:24:34Z destroyed instance 50512726
+2026-09-10T22:25:53Z run complete; instance destroyed; instances: 0 (verified); restricted key 27591934 deleted

@@ -1,0 +1,93 @@
+=== setup start 2026-09-10T17:50:02Z run=fable-v1 host=9c311d9c61c6
+Thu Sep 10 17:50:02 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 560.35.03              Driver Version: 560.35.03      CUDA Version: 12.6     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:01:00.0 Off |                  Off |
+| 33%   33C    P8             25W /  450W |       1MiB /  49140MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+debconf: delaying package configuration, since apt-utils is not installed
+info: downloading installer
+info: profile set to minimal
+info: default host tuple is x86_64-unknown-linux-gnu
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 3 components
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+Build cuda_12.4.r12.4/compiler.34097967_0
+=== build trainer (cuda)
+   Compiling bullet_lib v1.0.0 (https://github.com/jw1912/bullet?rev=629ee50000b2afb7b3337595401c830d3b1e0f42#629ee500)
+   Compiling trainer v0.1.0 (/workspace/chess/trainer)
+    Finished `release` profile [optimized] target(s) in 23.18s
+-rwxr-xr-x 2 root root  820416 Sep 10 17:51 target/release/inspect
+-rwxr-xr-x 2 root root 2826864 Sep 10 17:51 target/release/trainer
+=== data
+2026-09-10 17:51:21 === downloader run start, groups: train, pid 2767
+2026-09-10 17:51:21 START test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst group=train size=6908056676 resume_from=0
+2026-09-10 18:09:45 VERIFIED test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst (6908056676 bytes, sha256 ok)
+2026-09-10 18:09:45 START test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst group=train size=7687798524 resume_from=0
+2026-09-10 18:37:14 VERIFIED test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst (7687798524 bytes, sha256 ok)
+2026-09-10 18:37:14 === downloader run finished, failures=0
+decompressing data/downloads/test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst
+decompressing data/downloads/test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst
+-rw-r--r-- 1 root root 9184785274 Sep 10 18:36 data/test80-2024-01-jan-2tb7p.min-v2.v6.binpack
+-rw-r--r-- 1 root root 8262651516 Sep 10 18:09 data/test80-2024-02-feb-2tb7p.min-v2.v6.binpack
+=== inspect real data (format + feature cross-check)
+file: /workspace/chess/data/test80-2024-01-jan-2tb7p.min-v2.v6.binpack (9184785274 bytes)
+entries read: 3000000  kept by filter: 1468997 (49.0%)
+bytes consumed: 8389793  -> estimated entries in file: 3284M, kept after filter: 1608M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [39395, 124587, 158069, 279713, 156585, 368952, 180066, 123209, 38421]
+results (stm loss/draw/win): [281207, 926687, 261103]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 366312, 514346, 302996, 188955, 96388]
+feature cross-checks passed: 1468
+sample: rn1qkb1r/pp3pp1/2p1bn1p/3p4/3P3N/2N1P1P1/PP3P1P/R1BQKB1R w KQkq - 2 9 | score -40 | result 0 | ply 16
+sample: 6k1/p4pp1/1p5p/2prP3/P7/1P5P/4RPP1/6K1 w - - 0 31 | score -135 | result 0 | ply 60
+sample: 1r4k1/1p1brppp/np6/p5N1/3pP3/P2P3P/1P2BPP1/2R1K2R w K - 0 21 | score 272 | result 0 | ply 40
+sample: 2bq1rk1/1pbn1pp1/r3p2p/p1pp4/P3P3/2PP1NB1/1P1NQPPP/1R2R1K1 b - - 8 21 | score -44 | result -1 | ply 41
+sample: 8/8/6r1/8/3k4/8/7R/4K3 w - - 21 91 | score 0 | result 0 | ply 180
+file: /workspace/chess/data/test80-2024-02-feb-2tb7p.min-v2.v6.binpack (8262651516 bytes)
+entries read: 3000000  kept by filter: 1467981 (48.9%)
+bytes consumed: 8390302  -> estimated entries in file: 2954M, kept after filter: 1446M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [39675, 123392, 155572, 281448, 157652, 370292, 178832, 122128, 38990]
+results (stm loss/draw/win): [280503, 926426, 261052]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 366078, 515554, 304764, 184175, 97410]
+feature cross-checks passed: 1467
+sample: 2r1k1r1/p2p4/2b1pB2/1p3p1p/8/PP4P1/2PR1P1P/2K1R3 b - - 0 28 | score -6 | result 0 | ply 55
+sample: r1k4r/4ppb1/1pP3p1/p2p4/PP1Nn2p/2P1P3/R4PPP/1N3RK1 w - - 1 19 | score 400 | result 0 | ply 36
+sample: r1bqr1k1/1p1n1pb1/2p3p1/p2p2n1/3P1B1N/2N1P2P/PP3PB1/R2QK2R w KQ - 0 16 | score -258 | result 0 | ply 30
+sample: 5b2/6pk/4Qp1p/1p2p3/1P2p3/2B1P1PP/2q2P2/6K1 w - - 5 45 | score -10 | result 0 | ply 88
+sample: 1R6/5pk1/2N3pp/3B4/p7/rp4P1/7P/6K1 b - - 1 39 | score -584 | result -1 | ply 77
+=== smoke run (2 superbatches, save every superbatch)
+Threads                : [31m4[0m
+Output Path            : [32;1m/workspace/checkpoints[0m
+[34;1mTraining on NVIDIA GeForce RTX 4090 (sm_89)[0m
+superbatch [36m1[0m [[35m0.0[0m% ([36m0[0m/[36m200[0m batches, [36m141476[0m pos/sec)]
+Estimated time to end of superbatch: [36minf[0ms     [Fsuperbatch [36m1[0m [[35m64.0[0m% ([36m128[0m/[36m200[0m batches, [36m4086678[0m pos/sec)]
+Estimated time to end of superbatch: [36m0.3[0ms     [Fsuperbatch [36m1[0m | time [36m0.7[0ms | running loss [36m0.028652[0m | [36m4466652[0m pos/sec | total time [36m5.0[0ms
+Estimated time remaining in training: [36m0[0mh [36m0[0mm [36m4[0ms
+Saved [[31msmoke-1[0m]
+LR dropped to [36m0.0000024300007[0m
+superbatch [36m2[0m [[35m0.0[0m% ([36m0[0m/[36m200[0m batches, [36m5196768[0m pos/sec)]
+Estimated time to end of superbatch: [36minf[0ms     [Fsuperbatch [36m2[0m [[35m64.0[0m% ([36m128[0m/[36m200[0m batches, [36m5002932[0m pos/sec)]
+Estimated time to end of superbatch: [36m0.2[0ms     [Fsuperbatch [36m2[0m | time [36m0.7[0ms | running loss [36m0.033023[0m | [36m4555044[0m pos/sec | total time [36m6.9[0ms
+Estimated time remaining in training: [36m0[0mh [36m0[0mm [36m0[0ms
+Saved [[31msmoke-2[0m]
+Total Training Time: [36m0[0mh [36m0[0mm [36m8[0ms
+-rw-r--r-- 1 root root 25200704 Sep 10 18:38 /workspace/checkpoints/smoke-1/quantised.bin
+-rw-r--r-- 1 root root 25200704 Sep 10 18:38 /workspace/checkpoints/smoke-2/quantised.bin
+=== setup done 2026-09-10T18:38:41Z

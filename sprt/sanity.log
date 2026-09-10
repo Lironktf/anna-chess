@@ -1,0 +1,48 @@
+Indexing opening suite...
+Started game 1 of 16 (new vs base)
+Started game 2 of 16 (base vs new)
+Started game 3 of 16 (new vs base)
+Started game 4 of 16 (base vs new)
+Finished game 2 (base vs new): 0-1 {White loses on time (1ms overrun)}
+Started game 5 of 16 (new vs base)
+Finished game 4 (base vs new): 1/2-1/2 {Draw by 3-fold repetition}
+Started game 6 of 16 (base vs new)
+Finished game 3 (new vs base): 1-0 {White mates}
+Started game 7 of 16 (new vs base)
+Finished game 1 (new vs base): 1-0 {White mates}
+Started game 8 of 16 (base vs new)
+Finished game 6 (base vs new): 1-0 {White mates}
+Started game 9 of 16 (new vs base)
+Finished game 5 (new vs base): 1-0 {White mates}
+Started game 10 of 16 (base vs new)
+Finished game 7 (new vs base): 0-1 {Black mates}
+Started game 11 of 16 (new vs base)
+Finished game 8 (base vs new): 1-0 {White mates}
+Started game 12 of 16 (base vs new)
+Finished game 9 (new vs base): 1/2-1/2 {Draw by insufficient mating material}
+Started game 13 of 16 (new vs base)
+Finished game 10 (base vs new): 0-1 {Black mates}
+Started game 14 of 16 (base vs new)
+Finished game 11 (new vs base): 0-1 {Black mates}
+Started game 15 of 16 (new vs base)
+Finished game 12 (base vs new): 0-1 {Black mates}
+Started game 16 of 16 (base vs new)
+Finished game 13 (new vs base): 1/2-1/2 {Draw by 3-fold repetition}
+Finished game 14 (base vs new): 0-1 {Black mates}
+Finished game 16 (base vs new): 1-0 {White mates}
+Finished game 15 (new vs base): 0-1 {Black mates}
+--------------------------------------------------
+Results of new vs base (2+0.02, 1t, 16MB, UHO_Lichess_4852_v1.epd):
+Elo: 21.74 +/- 179.38, nElo: 22.52 +/- 170.24
+LOS: 60.23 %, DrawRatio: 25.00 %, PairsRatio: 2.00
+Games: 16, Wins: 7, Losses: 6, Draws: 3, Points: 8.5 (53.12 %)
+Ptnml(0-2): [2, 0, 2, 3, 1], WL/DD Ratio: inf
+--------------------------------------------------
+
+Player: base
+  Timeouts: 1
+  Crashed: 0
+
+Finished match
+Total Time: 00:00:29 (hours:minutes:seconds)
+
