@@ -1,0 +1,15 @@
+target/
+*.pgn
+data/
+checkpoints/
+*.bin
+!nets/*.bin
+config.json
+runs/*/selfdestruct_key.txt
+tools/
+books/
+sprt/*.pgn
+sprt/bin/
+data/downloads/
+runs/*/checkpoints/
+trainer/checkpoints/
