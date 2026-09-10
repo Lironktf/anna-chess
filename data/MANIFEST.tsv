@@ -1,0 +1,5 @@
+#group	filename	size_bytes	sha256	url
+validate	test77-jan2022-2tb7p.high-simple-eval-1k.min-v2.binpack	62742754	71401e20bac4113353c7ee983b74ae30877af529cdc48dd59669912f9530ecdd	https://huggingface.co/datasets/official-stockfish/master-smallnet-binpacks/resolve/main/test77-jan2022-2tb7p.high-simple-eval-1k.min-v2.binpack
+validate	test79-may2022-16tb7p-filter-v6-dd.min-mar2023.unmin.high-simple-eval-1k.min-v2.binpack	907788314	56a783aa31cbf69ee9b96bd9d30c65742771821ec6610145acb83d656c75ab6a	https://huggingface.co/datasets/official-stockfish/master-smallnet-binpacks/resolve/main/test79-may2022-16tb7p-filter-v6-dd.min-mar2023.unmin.high-simple-eval-1k.min-v2.binpack
+train	test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst	6908056676	3343adf28e40d531166308d9ba4b26bdaccfbc52b6259fdea4496c441e409e40	https://huggingface.co/datasets/linrock/test80-2024/resolve/main/test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst
+train	test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst	7687798524	dd233aea41b23bc5fbecade91e78080d785472742f02d04e83d66192d634d9c7	https://huggingface.co/datasets/linrock/test80-2024/resolve/main/test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst
