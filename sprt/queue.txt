@@ -1,4 +1,6 @@
 # name | new options | base options   (one constant per test; base = current default)
+lmp4        | option.LmpBase=4       | option.LmpBase=3
+syzygy      | option.SyzygyPath=syzygy | option.SyzygyProbeLimit=0
 tm_opt85    | option.TmOptPct=85     | option.TmOptPct=100
 tm_opt120   | option.TmOptPct=120    | option.TmOptPct=100
 fut160      | option.FutMargin=160   | option.FutMargin=119

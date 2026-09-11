@@ -1,0 +1,3 @@
+lmr115 STOPPED games=276 | Elo: 0 (79-79-118) | neutral, manual | new=[option.LmrScalePct=115] base=[option.LmrScalePct=100]
+rfp60 FAIL games=4190 | Elo: -8.54 +/- 6.15 | LLR -2.96 | new=[option.RfpMult=60] base=[option.RfpMult=45]
+nmp4 STOPPED Games:2440, | Elo: -11.40 +/- 8.26, nElo: -1 | neutral, stopped for TC switch | new=[option.NmpBase=4] base=[option.NmpBase=5]

@@ -34,7 +34,7 @@ ls -la target/release/trainer target/release/inspect
 
 echo "=== data"
 cd "$REPO"
-bash scripts/download_data.sh run train
+bash scripts/download_data.sh run train ${EXTRA_GROUPS:-}
 for z in data/downloads/*.zst; do
     [[ -f "$z.ok" ]] || { echo "unverified $z, abort"; exit 1; }
     out="data/$(basename "${z%.zst}")"

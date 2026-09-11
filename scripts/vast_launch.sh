@@ -58,7 +58,7 @@ for o in json.load(sys.stdin)[:12]:
             --exclude sprt --exclude runs --exclude tools --exclude books --exclude '*.pgn' --exclude checkpoints \
             -e "ssh -p $PORT -o StrictHostKeyChecking=no" "$ROOT/" root@"$HOST":/workspace/chess/
         echo "=== remote setup + smoke (this takes ~10-15 min)"
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN bash /workspace/chess/scripts/vast_setup_remote.sh"
+        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN EXTRA_GROUPS='${EXTRA_GROUPS:-}' bash /workspace/chess/scripts/vast_setup_remote.sh"
         echo "=== pull smoke checkpoint and netcheck"
         mkdir -p "$ROOT/runs/$RUN/checkpoints"
         rsync -az -e "ssh -p $PORT -o StrictHostKeyChecking=no" root@"$HOST":/workspace/checkpoints/ "$ROOT/runs/$RUN/checkpoints/"

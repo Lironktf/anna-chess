@@ -77,3 +77,4 @@ GO=1 scripts/vast_launch.sh destroy fable-v1         # pulls final checkpoint, d
 | 2026-09-10 | Final net measurements 8+0.08, 100 games: vs ck10 +215 +/- 62 (67-12-21); vs SF19 UCI_Elo 3100 +139 +/- 66 (60-22-18). UCI_Elo 3300/3500 results INVALID (option max is 3190; out-of-range breaks the limiter -> 100-0). | | | |
 | 2026-09-10 | TmFallingFix (time management falling-eval term fixed) on vs off, final net | 8+0.08 | +86 +/- 17 after 620 games, LLR 2.95 | PASSED; default on |
 | 2026-09-11 | Ranking with TM fix (fable_v1b), 8+0.08, 1 thread: vs Stash 37 (3420) +238 +/- 44 (200 g); vs Weiss 2.1-dev (~3355) +137 +/- 35 (200 g); vs Stormphrax 8.0.0 (3744) -139 +/- 45 (100 g: 11-49-40); vs Stockfish 19 full -301 +/- 47 (100 g: 0-70-30). LmrScalePct 115 vs 100: 0 after 276 games (stopped, neutral). | | | |
+| 2026-09-11 | RfpMult 60 vs 45 | 8+0.08 | -8.5 +/- 6.2 after 4190 games, LLR -2.96 | FAILED; default stays 45 |
