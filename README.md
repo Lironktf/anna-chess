@@ -1,10 +1,10 @@
-# chess — a Rust NNUE chess engine
+# Anna — a Rust NNUE chess engine
 
 > ## ⚠️ Never start, rent, resume, or bid on anything on vast.ai without the owner's explicit go-ahead for that specific run.
 > This applies to Claude and to any script. Present the plan, the expected cost and the local validation evidence first,
 > then wait for a "go". Budget cap: $10 total, tracked in `BUDGET.md`. See `scripts/VAST.md` for the checklist.
 
-A UCI chess engine written in Rust with an efficiently-updatable neural network (NNUE) evaluation and a
+Anna is a UCI chess engine written in Rust with an efficiently-updatable neural network (NNUE) evaluation and a
 Stockfish-class alpha-beta search. Networks are trained with [bullet](https://github.com/jw1912/bullet) on
 Leela/Stockfish data and the engine's own self-play data.
 

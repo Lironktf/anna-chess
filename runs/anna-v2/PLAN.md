@@ -1,4 +1,4 @@
-# Run plan: fable-v2 (second NNUE)
+# Run plan: anna-v2 (second NNUE)
 
 Status: **DRAFT, not launched. Needs the owner's explicit "go".**
 
@@ -34,7 +34,7 @@ Measured v1 throughput on the same class of box: 17 s per superbatch at 5.9M pos
 Identical to v1 (`scripts/vast_launch.sh`), with:
 - `data/MANIFEST.tsv` groups `train` + `train2` (both pulled by `vast_setup_remote.sh`: update it to `run train train2`).
 - Restricted API key created fresh for the run, self-destruct armed with `MAX_HOURS=10`, cost guard at $4.00.
-- Smoke run first, netcheck, then `GO=1 scripts/vast_launch.sh train fable-v2 1600`.
+- Smoke run first, netcheck, then `GO=1 scripts/vast_launch.sh train anna-v2 1600`.
 
 ## Acceptance
 

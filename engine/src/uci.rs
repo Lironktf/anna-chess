@@ -13,7 +13,7 @@ use std::sync::atomic::Ordering;
 use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
-pub const NAME: &str = "Fable";
+pub const NAME: &str = "Anna";
 pub const VERSION: &str = "0.1";
 pub const AUTHOR: &str = "Liron and Claude";
 pub const DEFAULT_NET: &str = "nets/default.bin";
