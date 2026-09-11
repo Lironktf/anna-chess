@@ -101,8 +101,9 @@ pub fn probe_root(pos: &Position) -> Option<Vec<(Move, u32, u32)>> {
             break;
         }
         let wdl = rv & 0xF;
-        let from = ((rv >> 4) & 0x3F) as Square;
-        let to = ((rv >> 10) & 0x3F) as Square;
+        // Fathom: TO in bits 4-9, FROM in bits 10-15 (tbprobe.h TB_RESULT_*_SHIFT).
+        let to = ((rv >> 4) & 0x3F) as Square;
+        let from = ((rv >> 10) & 0x3F) as Square;
         let promo = (rv >> 16) & 0x7; // 0 none, 1 Q, 2 R, 3 B, 4 N
         let is_ep = (rv >> 19) & 1 == 1;
         let dtz = (rv >> 20) & 0xFFF;
@@ -155,7 +156,8 @@ mod tests {
         assert!(!root.is_empty());
         assert_eq!(root.iter().map(|r| r.1).max(), Some(TB_WIN), "best KQvK move is a win");
         // Qf1-f8+ hangs the queen (Kxf8): a draw, so root filtering must be able to exclude it.
-        let qf8 = root.iter().find(|r| r.0 == Move::new(5, 61)).expect("Qf8+ listed");
+        let listed: Vec<String> = root.iter().map(|r| format!("{}:{}:{}", r.0, r.1, r.2)).collect();
+        let qf8 = root.iter().find(|r| r.0 == Move::new(5, 61)).unwrap_or_else(|| panic!("Qf8+ listed; got {:?}", listed));
         assert_eq!(qf8.1, TB_DRAW, "Qf8+ is a draw");
         let legal = crate::movegen::legal_moves(&pos);
         for (m, _, _) in &root {
