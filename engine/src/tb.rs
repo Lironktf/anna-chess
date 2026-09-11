@@ -153,7 +153,10 @@ mod tests {
         assert_eq!(probe_wdl(&draw), Some(TB_DRAW));
         let root = probe_root(&pos).unwrap();
         assert!(!root.is_empty());
-        assert!(root.iter().all(|(_, wdl, _)| *wdl == TB_WIN), "every KQvK move keeps the win");
+        assert_eq!(root.iter().map(|r| r.1).max(), Some(TB_WIN), "best KQvK move is a win");
+        // Qf1-f8+ hangs the queen (Kxf8): a draw, so root filtering must be able to exclude it.
+        let qf8 = root.iter().find(|r| r.0 == Move::new(5, 61)).expect("Qf8+ listed");
+        assert_eq!(qf8.1, TB_DRAW, "Qf8+ is a draw");
         let legal = crate::movegen::legal_moves(&pos);
         for (m, _, _) in &root {
             assert!(legal.contains(*m), "root probe move {} not legal", m);
