@@ -249,6 +249,7 @@ pub fn uci_loop() {
                 println!("option name Move Overhead type spin default 10 min 0 max 5000");
                 println!("option name UCI_Chess960 type check default false");
                 println!("option name EvalFile type string default {}", DEFAULT_NET);
+                println!("option name SyzygyPath type string default <empty>");
                 crate::params::print_uci_options();
                 println!("uciok");
             }
@@ -296,6 +297,10 @@ pub fn uci_loop() {
                         e.chess960 = value == "true";
                         let fen = e.pos.to_fen();
                         let _ = e.set_position(&fen, &[]);
+                    }
+                    "syzygypath" => {
+                        let n = crate::tb::init(&value);
+                        println!("info string syzygy: {} ({} men)", if n > 0 { "loaded" } else { "not loaded" }, n);
                     }
                     "evalfile" => {
                         e.eval_file = value.clone();

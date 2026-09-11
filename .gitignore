@@ -16,3 +16,4 @@ trainer/checkpoints/
 *.profraw
 *.log
 !runs/**/*.log
+syzygy/

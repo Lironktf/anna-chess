@@ -5,6 +5,7 @@ pub mod datagen;
 pub mod history;
 pub mod movepick;
 pub mod search;
+pub mod tb;
 pub mod timeman;
 pub mod tt;
 pub mod uci;

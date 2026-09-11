@@ -39,6 +39,9 @@ params! {
     FUT_MARGIN, "FutMargin", 119, 40, 300;
     RAZOR_MULT, "RazorMult", 482, 100, 1000;
     SE_MARGIN, "SeMargin", 59, 20, 120;
+    // Syzygy
+    TB_PROBE_DEPTH, "SyzygyProbeDepth", 1, 1, 100;
+    TB_PROBE_LIMIT, "SyzygyProbeLimit", 7, 0, 7;
 }
 
 impl Param {

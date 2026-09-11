@@ -462,6 +462,7 @@ impl<'a> Thread<'a> {
             self.ss(ply).tt_pv = pv_node || (tt_hit && tt.is_pv);
         }
         let tt_pv = self.ss_at(ply).tt_pv;
+        let mut best_value_floor = -VALUE_INFINITE;
 
         // TT cutoff
         if !pv_node
@@ -486,6 +487,44 @@ impl<'a> Thread<'a> {
             }
             if pos.rule50() < 90 {
                 return tt_value;
+            }
+        }
+
+        // ---- Syzygy tablebase probe ----
+        let mut max_value = VALUE_INFINITE;
+        if !root && crate::tb::largest() > 0 && excluded.is_none() {
+            let cardinality = (crate::params::TB_PROBE_LIMIT.get() as u32).min(crate::tb::largest());
+            let pieces = pos.piece_count();
+            if pieces <= cardinality
+                && (pieces < cardinality || depth >= crate::params::TB_PROBE_DEPTH.get())
+                && pos.rule50() == 0
+                && pos.castling_rights() == 0
+            {
+                if let Some(wdl) = crate::tb::probe_wdl(pos) {
+                    self.shared.tb_hits.fetch_add(1, Ordering::Relaxed);
+                    let draw_score = 1; // treat cursed wins / blessed losses as draws
+                    let wdl_i = wdl as i32 - 2; // -2..2
+                    let tb_value = VALUE_TB_WIN - pieces as Value;
+                    let (value, bound) = if wdl_i < -draw_score {
+                        (-tb_value + ply as Value, Bound::Upper)
+                    } else if wdl_i > draw_score {
+                        (tb_value - ply as Value, Bound::Lower)
+                    } else {
+                        (VALUE_DRAW + 2 * wdl_i * draw_score, Bound::Exact)
+                    };
+                    if bound == Bound::Exact || (if bound == Bound::Lower { value >= beta } else { value <= alpha }) {
+                        self.shared.tt.save(&writer, key, value_to_tt(value, ply), tt_pv, bound, (depth + 6).min(MAX_PLY as i32 - 1), Move::NONE, VALUE_NONE);
+                        return value;
+                    }
+                    if pv_node {
+                        if bound == Bound::Lower {
+                            best_value_floor = value;
+                            alpha = alpha.max(value);
+                        } else {
+                            max_value = value;
+                        }
+                    }
+                }
             }
         }
 
@@ -666,7 +705,7 @@ impl<'a> Thread<'a> {
         let killers = self.hist.killers[ply];
         let mut mp = MovePicker::new(pos, tt_move, killers, counter, cont_idx, depth, ply);
 
-        let mut best_value = -VALUE_INFINITE;
+        let mut best_value = best_value_floor;
         let mut best_move = Move::NONE;
         let mut move_count = 0;
         let mut quiets_searched: Vec<Move> = Vec::with_capacity(32);
@@ -939,6 +978,9 @@ impl<'a> Thread<'a> {
             }
         }
 
+        if pv_node {
+            best_value = best_value.min(max_value);
+        }
         if best_value <= alpha {
             let prev_tt_pv = ply >= 1 && self.ss_prev(ply, 1).tt_pv;
             let s = self.ss(ply);
@@ -1179,6 +1221,28 @@ impl<'a> Thread<'a> {
         if self.root_moves.is_empty() {
             return;
         }
+        // Syzygy root filtering: keep only moves that preserve the best tablebase result.
+        if crate::tb::largest() > 0 && self.is_main() || crate::tb::largest() > 0 {
+            if let Some(res) = crate::tb::probe_root(root) {
+                if !res.is_empty() {
+                    self.shared.tb_hits.fetch_add(1, Ordering::Relaxed);
+                    let best_wdl = res.iter().map(|r| r.1).max().unwrap();
+                    // Among winning moves prefer the smallest DTZ (fastest progress); among losing
+                    // moves the largest.
+                    let mut keep: Vec<Move> = Vec::new();
+                    if best_wdl >= crate::tb::TB_CURSED_WIN {
+                        let min_dtz = res.iter().filter(|r| r.1 == best_wdl).map(|r| r.2).min().unwrap();
+                        keep.extend(res.iter().filter(|r| r.1 == best_wdl && r.2 <= min_dtz + 4).map(|r| r.0));
+                    } else {
+                        keep.extend(res.iter().filter(|r| r.1 == best_wdl).map(|r| r.0));
+                    }
+                    let filtered: Vec<RootMove> = self.root_moves.iter().filter(|rm| keep.contains(&rm.mv)).cloned().collect();
+                    if !filtered.is_empty() {
+                        self.root_moves = filtered;
+                    }
+                }
+            }
+        }
         let multi_pv = self.multi_pv.min(self.root_moves.len());
         let max_depth = if self.limits.max_depth > 0 { self.limits.max_depth.min(MAX_PLY as i32 - 1) } else { MAX_PLY as i32 - 1 };
         let mut last_info_depth = 0;
@@ -1336,7 +1400,7 @@ impl<'a> Thread<'a> {
             };
             let pv: Vec<String> = rm.pv.iter().map(|m| root.move_to_uci(*m)).collect();
             println!(
-                "info depth {} seldepth {} multipv {} score {}{} nodes {} nps {} hashfull {} time {} pv {}",
+                "info depth {} seldepth {} multipv {} score {}{} nodes {} nps {} hashfull {} tbhits {} time {} pv {}",
                 depth,
                 rm.sel_depth,
                 i + 1,
@@ -1345,6 +1409,7 @@ impl<'a> Thread<'a> {
                 nodes,
                 (nodes as f64 / elapsed * 1000.0) as u64,
                 hashfull,
+                self.shared.tb_hits.load(Ordering::Relaxed),
                 elapsed as u64,
                 pv.join(" ")
             );
@@ -1379,6 +1444,7 @@ pub fn go(
         n.store(0, Ordering::Relaxed);
     }
     shared.tt.new_search();
+    shared.tb_hits.store(0, Ordering::Relaxed);
     let threads = opts.threads.max(1);
     while hists.len() < threads {
         hists.push(History::new());
