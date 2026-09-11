@@ -75,3 +75,4 @@ GO=1 scripts/vast_launch.sh destroy fable-v1         # pulls final checkpoint, d
 | 2026-09-10 | MatScale (eval * (700+mat/16)/1024) vs off, net ck10 | 4+0.04 | -10.8 +/- 17.3 after 840 games, LLR -0.59 | REJECTED (stopped early, clearly negative); default stays off |
 | 2026-09-10 | Cuckoo upcoming-repetition on vs off, net ck10, MatScale off | 4+0.04 | +2.5 +/- 13.5 after 1278 games, LLR +0.05 | INCONCLUSIVE, kept ON (correctness feature, matches Stockfish) |
 | 2026-09-10 | Final net measurements 8+0.08, 100 games: vs ck10 +215 +/- 62 (67-12-21); vs SF19 UCI_Elo 3100 +139 +/- 66 (60-22-18). UCI_Elo 3300/3500 results INVALID (option max is 3190; out-of-range breaks the limiter -> 100-0). | | | |
+| 2026-09-10 | TmFallingFix (time management falling-eval term fixed) on vs off, final net | 8+0.08 | +86 +/- 17 after 620 games, LLR 2.95 | PASSED; default on |
