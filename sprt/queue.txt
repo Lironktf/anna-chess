@@ -1,0 +1,13 @@
+# name | new options | base options   (one constant per test; base = current default)
+tm_opt85    | option.TmOptPct=85     | option.TmOptPct=100
+tm_opt120   | option.TmOptPct=120    | option.TmOptPct=100
+fut160      | option.FutMargin=160   | option.FutMargin=119
+se45        | option.SeMargin=45     | option.SeMargin=59
+lmrcut2200  | option.LmrCutNode=2200 | option.LmrCutNode=3000
+razor350    | option.RazorMult=350   | option.RazorMult=482
+lmrbase700  | option.LmrBase=700     | option.LmrBase=982
+lmrhist12k  | option.LmrHistDiv=12288| option.LmrHistDiv=16384
+tm_instab120| option.TmInstabPct=120 | option.TmInstabPct=180
+nmp6        | option.NmpBase=6       | option.NmpBase=5
+lmp2        | option.LmpBase=2       | option.LmpBase=3
+fut90       | option.FutMargin=90    | option.FutMargin=119
