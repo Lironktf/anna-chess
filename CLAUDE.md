@@ -76,7 +76,9 @@ A GPU run costs real money from a $10 budget and cannot be redone casually. Trea
 - **`unsafe` only in SIMD and TT code**, each block with a comment stating the invariant that makes it sound.
 - Keep the engine buildable with plain `cargo build --release`; `target-cpu=native` comes from
   `.cargo/config.toml`. Provide a scalar fallback so the binary still runs without AVX2.
-- No dependencies in `engine/` beyond the standard library unless there is a strong reason.
+- No crate dependencies in `engine/` beyond the standard library unless there is a strong reason. The one C
+  dependency is the vendored Fathom Syzygy prober (`engine/csrc/fathom`), compiled by `build.rs` with the system
+  C compiler; keep it self-contained.
 - Prefer copy-make for position state and a separate accumulator stack; keep the search stack explicit.
 
 ## A/B testing with one binary
