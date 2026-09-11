@@ -3,7 +3,16 @@ use engine::position::*;
 use engine::uci;
 use std::time::Instant;
 
+extern "C" {
+    fn signal(sig: i32, handler: usize) -> usize;
+}
+
 fn main() {
+    // Die quietly (like a C program) if the GUI closes our stdout instead of panicking on EPIPE.
+    #[cfg(unix)]
+    unsafe {
+        signal(13, 0); // SIGPIPE, SIG_DFL
+    }
     engine::init();
     let args: Vec<String> = std::env::args().collect();
     match args.get(1).map(|s| s.as_str()) {
