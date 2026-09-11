@@ -13,3 +13,6 @@ sprt/bin/
 data/downloads/
 runs/*/checkpoints/
 trainer/checkpoints/
+*.profraw
+*.log
+!runs/**/*.log
