@@ -14,6 +14,7 @@
 
 pub mod simd;
 pub mod threats;
+pub mod v3;
 
 use crate::bitboard::*;
 use crate::position::Position;

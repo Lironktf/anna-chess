@@ -355,3 +355,141 @@ mod tests {
         assert!(aw.len() > 20 && aw.len() <= MAX_PAIRS + MAX_THREATS);
     }
 }
+
+// ---------------------------------------------------------------------------------------------
+// Restricted emission for incremental updates
+// ---------------------------------------------------------------------------------------------
+
+impl FeatureMapper {
+    /// Threat features (both perspectives of the relative board) emitted by attackers whose
+    /// (relative-board) squares are in `attacker_mask`, plus pawn-pair features involving pawns on
+    /// squares in `pawn_mask` (relative-board coordinates). Used for incremental diffs.
+    pub fn map_restricted(
+        &self,
+        bbs: &RelBoard,
+        attacker_mask: u64,
+        pawn_mask: u64,
+        mut on_stm: impl FnMut(usize),
+        mut on_ntm: impl FnMut(usize),
+    ) {
+        let t = &self.threats;
+        let b = &bbs.0;
+        let stm_king = (b[0] & b[7]).trailing_zeros() as usize;
+        let ntm_king = (b[1] & b[7]).trailing_zeros() as usize;
+        let stm_mask = if stm_king % 8 > 3 { 7 } else { 0 };
+        let ntm_mask = 56 ^ if ntm_king % 8 > 3 { 7 } else { 0 };
+        let mut pieces = [13usize; 64];
+        for side in 0..2 {
+            for piece in PAWN..=KING {
+                for sq in bits(b[side] & b[piece]) {
+                    pieces[sq as usize] = 6 * side + piece - 2;
+                }
+            }
+        }
+        let occ = b[0] | b[1];
+        for side in 0..2 {
+            let stm_offset = t.side_offset(side);
+            let ntm_offset = t.side_offset(side ^ 1);
+            for piece in PAWN..KING {
+                for sq in bits(b[side] & b[piece] & attacker_mask) {
+                    let sq = sq as usize;
+                    let threats = attacks_rel(piece, sq, side, occ) & occ;
+                    for dest in bits(threats) {
+                        let dest = dest as usize;
+                        let target = pieces[dest];
+                        if let Some(idx) = t.map_single(piece, sq ^ stm_mask, dest ^ stm_mask, target) {
+                            on_stm(TOTAL_PAIRS + stm_offset + idx);
+                        }
+                        let ntm_target = (target + 6) % 12;
+                        if let Some(idx) = t.map_single(piece, sq ^ ntm_mask, dest ^ ntm_mask, ntm_target) {
+                            on_ntm(TOTAL_PAIRS + ntm_offset + idx);
+                        }
+                    }
+                }
+            }
+        }
+        // Pawn pairs involving pawns on `pawn_mask`.
+        if pawn_mask & b[2] != 0 {
+            let stm_board = bbs.normalize_hm();
+            let stm_pmask = if stm_king % 8 > 3 { mirror_h(pawn_mask) } else { pawn_mask };
+            collect_pairs_restricted(&self.masks, &stm_board, stm_pmask, &mut on_stm);
+            let ntm_board = bbs.flip_view().normalize_hm();
+            let flipped = pawn_mask.swap_bytes();
+            let ntm_pmask = if ntm_king % 8 > 3 { mirror_h(flipped) } else { flipped };
+            collect_pairs_restricted(&self.masks, &ntm_board, ntm_pmask, &mut on_ntm);
+        }
+    }
+}
+
+#[inline(always)]
+fn mirror_h(b: u64) -> u64 {
+    b.swap_bytes().reverse_bits()
+}
+
+/// Pairs where at least one pawn is on `pmask` (each pair emitted once).
+fn collect_pairs_restricted(masks: &[u64; 64], bbs: &RelBoard, pmask: u64, f: &mut impl FnMut(usize)) {
+    let friendly = bbs.0[0] & bbs.0[2];
+    let enemy = bbs.0[1] & bbs.0[2];
+    for (colour_a, bb_a) in [(0usize, friendly), (1, enemy)] {
+        for sq_a in bits(bb_a & pmask) {
+            let sq_a = sq_a as usize;
+            let id_a = pawn_id(colour_a, sq_a);
+            for (colour_b, bb_b) in [(0usize, friendly), (1, enemy)] {
+                // Avoid double counting pairs where both pawns are in pmask: require b not in pmask,
+                // or (b in pmask and b "after" a in a fixed order).
+                for sq_b in bits(bb_b & masks[sq_a]) {
+                    let sq_b = sq_b as usize;
+                    if colour_a == colour_b && sq_b == sq_a {
+                        continue;
+                    }
+                    let b_in = (pmask >> sq_b) & 1 == 1;
+                    if b_in {
+                        let id_b = pawn_id(colour_b, sq_b);
+                        if id_b <= id_a {
+                            continue; // emitted from the other side
+                        }
+                    }
+                    f(pair_index(id_a, pawn_id(colour_b, sq_b)));
+                }
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod restricted_tests {
+    use super::*;
+    use crate::movegen::legal_moves;
+
+    /// Full-board restricted emission (all attackers, all pawns) must equal the full mapping.
+    #[test]
+    fn restricted_full_equals_full() {
+        crate::init();
+        let m = FeatureMapper::new();
+        let mut rng = 77u64;
+        for fen in [crate::position::START_FEN, "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"] {
+            let mut pos = Position::from_fen(fen).unwrap();
+            for _ in 0..80 {
+                let rel = RelBoard::from_position(&pos, pos.side_to_move());
+                let (mut fs, mut fn_) = (Vec::new(), Vec::new());
+                m.map_features(&rel, |s| fs.push(s), |n| fn_.push(n));
+                let (mut rs, mut rn) = (Vec::new(), Vec::new());
+                m.map_restricted(&rel, !0, !0, |s| rs.push(s), |n| rn.push(n));
+                fs.sort_unstable();
+                fn_.sort_unstable();
+                rs.sort_unstable();
+                rn.sort_unstable();
+                assert_eq!(fs, rs, "stm {}", pos.to_fen());
+                assert_eq!(fn_, rn, "ntm {}", pos.to_fen());
+                let moves = legal_moves(&pos);
+                if moves.is_empty() {
+                    break;
+                }
+                rng ^= rng << 13;
+                rng ^= rng >> 7;
+                rng ^= rng << 17;
+                pos = pos.make_move(moves.moves[(rng % moves.len() as u64) as usize].mv);
+            }
+        }
+    }
+}
