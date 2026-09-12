@@ -17,3 +17,4 @@ trainer/checkpoints/
 *.log
 !runs/**/*.log
 syzygy/
+runs/*/selfdestruct_key_id.txt

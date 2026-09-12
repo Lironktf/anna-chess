@@ -49,9 +49,16 @@ for f in "$REPO"/data/*.binpack; do
     "$REPO/trainer/target/release/inspect" stats "$f" 3000000
 done
 
-echo "=== smoke run (2 superbatches, save every superbatch)"
+echo "=== smoke run"
 cd "$REPO/trainer"
-DATA="$DATA_LIST" NET_ID=smoke SUPERBATCHES=2 BATCHES_PER_SB=200 BATCH_SIZE=16384 SAVE_RATE=1 THREADS=4 \
-    LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/trainer 2>&1 | tail -15
-ls -la "$WORK/checkpoints"/smoke-*/quantised.bin
+if [[ "${ARCH:-v1}" == "v3" ]]; then
+    # v3: one superbatch per stage, 50 batches each, save each -> smoke3-s{0,1,2}-1
+    DATA="$DATA_LIST" NET_ID=smoke3 SB0=1 SB1=1 SB2=1 BATCHES_PER_SB=50 SAVE_RATE=1 THREADS="${MAP_THREADS:-12}" \
+        LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/train_v3 2>&1 | tail -25
+    ls -la "$WORK/checkpoints"/smoke3-*/quantised.bin
+else
+    DATA="$DATA_LIST" NET_ID=smoke SUPERBATCHES=2 BATCHES_PER_SB=200 BATCH_SIZE=16384 SAVE_RATE=1 THREADS=4 \
+        LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/trainer 2>&1 | tail -15
+    ls -la "$WORK/checkpoints"/smoke-*/quantised.bin
+fi
 echo "=== setup done $(date -u +%FT%TZ)"
