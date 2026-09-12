@@ -19,7 +19,28 @@ run_file() { echo "$ROOT/runs/$1/instance.env"; }
 load_run() { # shellcheck disable=SC1090
     source "$(run_file "$1")"; }
 
+do_setup() { # RUN (instance.env must have HOST/PORT)
+    local RUN="$1"; load_run "$RUN"
+echo "=== prepare box (rsync is not in the CUDA image)"
+    ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "mkdir -p /workspace/chess && (command -v rsync >/dev/null || (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq rsync >/dev/null))"
+    echo "=== upload repo"
+    rsync -az --exclude target --exclude 'data/downloads' --exclude 'data/*.bin' --exclude 'data/*.binpack' --exclude 'data/*.log' \
+        --exclude sprt --exclude runs --exclude tools --exclude books --exclude syzygy --exclude nets --exclude '*.pgn' --exclude checkpoints \
+        -e "ssh -p $PORT -o StrictHostKeyChecking=no" "$ROOT/" root@"$HOST":/workspace/chess/
+    echo "=== remote setup + smoke (this takes ~10-15 min)"
+    ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN ARCH='${ARCH:-v1}' EXTRA_GROUPS='${EXTRA_GROUPS:-}' bash /workspace/chess/scripts/vast_setup_remote.sh"
+    echo "=== pull smoke checkpoint and netcheck"
+    mkdir -p "$ROOT/runs/$RUN/checkpoints"
+    rsync -az -e "ssh -p $PORT -o StrictHostKeyChecking=no" --include='*/' --include='quantised.bin' --include='*.txt' --include='*.log' --exclude='*' root@"$HOST":/workspace/checkpoints/ "$ROOT/runs/$RUN/checkpoints/"
+    for q in "$ROOT/runs/$RUN/checkpoints"/smoke*/quantised.bin; do "$ROOT/target/release/engine" netcheck "$q" || { echo "NETCHECK FAILED on $q"; exit 6; }; done
+}
+
 case "$cmd" in
+    setup)
+        # Re-run upload + remote setup + smoke on an existing instance (idempotent).
+        RUN="${1:?run}"; do_setup "$RUN"
+        echo "SMOKE OK. Next: scripts/vast_launch.sh sync $RUN (in another terminal), then GO=1 scripts/vast_launch.sh train $RUN"
+        ;;
     search)
         vastai search offers 'gpu_name=RTX_4090 num_gpus=1 reliability>0.98 disk_space>=120 inet_down>=500 cuda_vers>=12.4 rentable=true verified=true' -o 'dph+' --raw 2>/dev/null | python3 -c "
 import sys,json
@@ -51,18 +72,7 @@ for o in json.load(sys.stdin)[:12]:
         [[ -n "${HOST:-}" ]] || { echo "instance did not come up; check 'vastai show instances' and destroy it"; exit 1; }
         echo "ssh -p $PORT root@$HOST"
         for _ in $(seq 1 30); do ssh -p "$PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@"$HOST" true 2>/dev/null && break; sleep 10; done
-        echo "=== prepare box (rsync is not in the CUDA image)"
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "mkdir -p /workspace/chess && (command -v rsync >/dev/null || (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq rsync >/dev/null))"
-        echo "=== upload repo"
-        rsync -az --exclude target --exclude 'data/downloads' --exclude 'data/*.bin' --exclude 'data/*.binpack' --exclude 'data/*.log' \
-            --exclude sprt --exclude runs --exclude tools --exclude books --exclude '*.pgn' --exclude checkpoints \
-            -e "ssh -p $PORT -o StrictHostKeyChecking=no" "$ROOT/" root@"$HOST":/workspace/chess/
-        echo "=== remote setup + smoke (this takes ~10-15 min)"
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN ARCH='${ARCH:-v1}' EXTRA_GROUPS='${EXTRA_GROUPS:-}' bash /workspace/chess/scripts/vast_setup_remote.sh"
-        echo "=== pull smoke checkpoint and netcheck"
-        mkdir -p "$ROOT/runs/$RUN/checkpoints"
-        rsync -az -e "ssh -p $PORT -o StrictHostKeyChecking=no" --include='*/' --include='quantised.bin' --include='*.txt' --include='*.log' --exclude='*' root@"$HOST":/workspace/checkpoints/ "$ROOT/runs/$RUN/checkpoints/"
-        for q in "$ROOT/runs/$RUN/checkpoints"/smoke*/quantised.bin; do "$ROOT/target/release/engine" netcheck "$q" || { echo "NETCHECK FAILED on $q"; exit 6; }; done
+        do_setup "$RUN"
         echo "SMOKE OK. Next: scripts/vast_launch.sh sync $RUN (in another terminal), then GO=1 scripts/vast_launch.sh train $RUN"
         ;;
     sync)
