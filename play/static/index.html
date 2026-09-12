@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Anna</title>
+<style>
+  :root { --light: #f0d9b5; --dark: #b58863; --sel: rgba(20,85,30,.5); --last: rgba(255,255,0,.35); --bg: #1e1e22; --fg: #e8e8e8; --panel: #2a2a30; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 20px; padding: 16px; justify-content: center; }
+  .boardcol { display: flex; gap: 8px; }
+  .evalbar { width: 18px; height: min(90vw, 560px); background: #333; border-radius: 3px; overflow: hidden; display: flex; flex-direction: column-reverse; }
+  .evalbar div { background: #eee; width: 100%; height: 50%; transition: height .3s; }
+  .board { display: grid; grid-template-columns: repeat(8, 1fr); width: min(90vw, 560px); height: min(90vw, 560px); border: 2px solid #111; user-select: none; }
+  .sq { position: relative; display: flex; align-items: center; justify-content: center; font-size: min(9vw, 56px); cursor: pointer; }
+  .sq.light { background: var(--light); } .sq.dark { background: var(--dark); }
+  .sq.last { box-shadow: inset 0 0 0 100px var(--last); }
+  .sq.sel { box-shadow: inset 0 0 0 100px var(--sel); }
+  .sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(0,0,0,.25); }
+  .sq.target.cap::after { width: 90%; height: 90%; background: none; border: 5px solid rgba(0,0,0,.25); }
+  .sq.check { background: radial-gradient(circle, #f33 0%, #f33 40%, transparent 75%); }
+  .pc { line-height: 1; }
+  .pc.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000; }
+  .pc.b { color: #111; }
+  .coord { position: absolute; font-size: 11px; font-weight: 600; pointer-events: none; }
+  .sq.light .coord { color: var(--dark); } .sq.dark .coord { color: var(--light); }
+  .coord.f { right: 3px; bottom: 1px; } .coord.r { left: 3px; top: 1px; }
+  .panel { width: min(90vw, 360px); display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--panel); border-radius: 8px; padding: 12px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .muted { opacity: .7; font-size: 13px; }
+  button { background: #3a3a44; color: var(--fg); border: 1px solid #555; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 14px; }
+  button:hover { background: #4a4a56; } button:disabled { opacity: .4; cursor: default; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  input[type=range] { width: 100%; }
+  select { background: #3a3a44; color: var(--fg); border: 1px solid #555; border-radius: 6px; padding: 6px; }
+  .status { font-weight: 600; min-height: 1.4em; }
+  .moves { max-height: 200px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 14px; display: grid; grid-template-columns: 3em 1fr 1fr; gap: 2px 6px; }
+  .moves .n { opacity: .6; }
+  .moves .cur { background: #4a4a56; border-radius: 3px; padding: 0 3px; }
+  .pv { font-family: ui-monospace, monospace; font-size: 13px; word-break: break-word; opacity: .9; }
+  .promo { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; }
+  .promo div { background: var(--panel); padding: 16px; border-radius: 8px; display: flex; gap: 8px; }
+  .promo button { font-size: 40px; padding: 6px 14px; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #c33; margin-right: 6px; }
+  .dot.on { background: #3c3; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="boardcol">
+    <div class="evalbar" title="evaluation (white's point of view)"><div id="evalfill"></div></div>
+    <div class="board" id="board"></div>
+  </div>
+  <div class="panel">
+    <div class="card">
+      <h1><span class="dot" id="dot"></span><span id="title">Anna</span></h1>
+      <div class="muted" id="sub">connecting…</div>
+    </div>
+    <div class="card">
+      <div class="row">
+        <button id="newW">Play as White</button>
+        <button id="newB">Play as Black</button>
+        <button id="flip">Flip</button>
+      </div>
+      <div style="margin-top:10px">
+        <label>Engine time per move: <b id="mtLabel">1.0 s</b></label>
+        <input type="range" id="mt" min="0" max="100" value="50">
+      </div>
+      <div class="row" style="margin-top:6px">
+        <label>or fixed depth: <select id="depth"><option value="">off</option></select></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button id="undo">Undo</button>
+        <button id="resign">Resign</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="status" id="status"></div>
+      <div id="think" class="muted"></div>
+      <div class="pv" id="pv"></div>
+    </div>
+    <div class="card">
+      <div class="moves" id="moves"></div>
+    </div>
+    <div class="card muted" id="fen" style="font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all"></div>
+  </div>
+</div>
+<div class="promo" id="promo"><div>
+  <button data-p="q">♛</button><button data-p="r">♜</button><button data-p="b">♝</button><button data-p="n">♞</button>
+</div></div>
+
+<script>
+(() => {
+  const GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
+  const $ = id => document.getElementById(id);
+  const boardEl = $('board');
+  let ws = null, state = null, hello = null, flipped = false, selected = null, pendingPromo = null;
+  let lastInfo = null;
+
+  // --- strength slider: 100 ms .. max_movetime, log scale
+  function sliderToMs(v) {
+    const max = (hello && hello.max_movetime) || 10000;
+    const lo = Math.log(100), hi = Math.log(max);
+    return Math.round(Math.exp(lo + (hi - lo) * v / 100) / 50) * 50;
+  }
+  function currentMs() { return sliderToMs(+$('mt').value); }
+  function fmtMs(ms) { return ms >= 1000 ? (ms / 1000).toFixed(1) + ' s' : ms + ' ms'; }
+  $('mt').oninput = () => { $('mtLabel').textContent = fmtMs(currentMs()); };
+
+  // --- board rendering
+  function sqName(f, r) { return 'abcdefgh'[f] + (r + 1); }
+  function parseFen(fen) {
+    const rows = fen.split(' ')[0].split('/');
+    const pieces = {};
+    rows.forEach((row, i) => {
+      let f = 0;
+      for (const ch of row) {
+        if (/\d/.test(ch)) { f += +ch; continue; }
+        pieces[sqName(f, 7 - i)] = ch; f++;
+      }
+    });
+    return pieces;
+  }
+  function render() {
+    boardEl.innerHTML = '';
+    if (!state) return;
+    const pieces = parseFen(state.fen);
+    const last = state.last ? [state.last.slice(0, 2), state.last.slice(2, 4)] : [];
+    const targets = selected ? state.legal.filter(m => m.startsWith(selected)).map(m => m.slice(2, 4)) : [];
+    const inCheck = state.status === 'checkmate' || isCheckNow();
+    for (let i = 0; i < 64; i++) {
+      const r = flipped ? (i >> 3) : 7 - (i >> 3);
+      const f = flipped ? 7 - (i & 7) : (i & 7);
+      const name = sqName(f, r);
+      const d = document.createElement('div');
+      d.className = 'sq ' + (((f + r) & 1) ? 'light' : 'dark');
+      if (last.includes(name)) d.classList.add('last');
+      if (selected === name) d.classList.add('sel');
+      if (targets.includes(name)) { d.classList.add('target'); if (pieces[name]) d.classList.add('cap'); }
+      const p = pieces[name];
+      if (p) {
+        const isW = p === p.toUpperCase();
+        if (inCheck && p.toLowerCase() === 'k' && ((state.turn === 'w') === isW)) d.classList.add('check');
+        const s = document.createElement('span');
+        s.className = 'pc ' + (isW ? 'w' : 'b');
+        s.textContent = GLYPH[p.toLowerCase()];
+        d.appendChild(s);
+      }
+      if (f === (flipped ? 7 : 0)) { const c = document.createElement('span'); c.className = 'coord r'; c.textContent = r + 1; d.appendChild(c); }
+      if (r === (flipped ? 7 : 0)) { const c = document.createElement('span'); c.className = 'coord f'; c.textContent = 'abcdefgh'[f]; d.appendChild(c); }
+      d.onclick = () => clickSquare(name, pieces[name]);
+      boardEl.appendChild(d);
+    }
+  }
+  // The server does not send a check flag; infer it from the last SAN.
+  function isCheckNow() {
+    const h = state.history; if (!h.length) return false;
+    return h[h.length - 1].san.endsWith('+');
+  }
+
+  function myTurn() { return state && !state.thinking && state.status === 'playing' && state.turn === state.human; }
+  function clickSquare(name, piece) {
+    if (!myTurn()) return;
+    const mine = piece && ((piece === piece.toUpperCase()) === (state.human === 'w'));
+    if (selected && selected !== name) {
+      const cands = state.legal.filter(m => m.startsWith(selected + name));
+      if (cands.length === 1) { send({ t: 'move', uci: cands[0] }); selected = null; render(); return; }
+      if (cands.length > 1) { pendingPromo = selected + name; $('promo').style.display = 'flex'; return; }
+    }
+    selected = mine ? (selected === name ? null : name) : null;
+    render();
+  }
+  $('promo').querySelectorAll('button').forEach(b => b.onclick = () => {
+    $('promo').style.display = 'none';
+    if (pendingPromo) send({ t: 'move', uci: pendingPromo + b.dataset.p });
+    pendingPromo = null; selected = null; render();
+  });
+  $('promo').onclick = e => { if (e.target === $('promo')) { $('promo').style.display = 'none'; pendingPromo = null; } };
+
+  // --- side panel
+  function renderPanel() {
+    if (!state) return;
+    const st = state.status, you = state.human === 'w' ? 'White' : 'Black';
+    let text;
+    if (st === 'playing') text = state.thinking ? (hello.engine + ' is thinking…') : (state.turn === state.human ? 'Your move (' + you + ')' : 'Waiting for engine');
+    else if (st === 'checkmate') text = 'Checkmate — ' + (state.result === '1-0' ? 'White' : 'Black') + ' wins (' + state.result + ')';
+    else if (st === 'resigned') text = 'You resigned (' + state.result + ')';
+    else text = 'Draw by ' + st.replace(/_/g, ' ') + ' (' + state.result + ')';
+    $('status').textContent = text;
+    $('fen').textContent = state.fen;
+    const mv = $('moves'); mv.innerHTML = '';
+    state.history.forEach((m, i) => {
+      if (i % 2 === 0) { const n = document.createElement('span'); n.className = 'n'; n.textContent = (i / 2 + 1) + '.'; mv.appendChild(n); }
+      const s = document.createElement('span'); s.textContent = m.san; if (i === state.history.length - 1) s.className = 'cur'; mv.appendChild(s);
+    });
+    if (state.history.length % 2 === 1) mv.appendChild(document.createElement('span'));
+    mv.scrollTop = mv.scrollHeight;
+    $('undo').disabled = !state.history.length || (state.status !== 'playing' && state.status !== 'resigned');
+    $('resign').disabled = state.status !== 'playing';
+    if (!state.thinking && st !== 'playing') { $('think').textContent = ''; }
+  }
+  function renderInfo(info) {
+    lastInfo = info;
+    let score, pct;
+    if (info.mate_white != null) { score = (info.mate_white > 0 ? '+M' : '-M') + Math.abs(info.mate_white); pct = info.mate_white > 0 ? 100 : 0; }
+    else if (info.cp_white != null) { const p = info.cp_white / 100; score = (p >= 0 ? '+' : '') + p.toFixed(2); pct = 100 / (1 + Math.exp(-info.cp_white / 250)); }
+    else { score = '?'; pct = 50; }
+    $('evalfill').style.height = pct + '%';
+    $('think').textContent = `depth ${info.depth ?? '?'}/${info.seldepth ?? '?'}  eval ${score}  ${info.nps ? Math.round(info.nps / 1000) + 'k nps' : ''}  ${info.nodes ? (info.nodes / 1e6).toFixed(2) + 'M nodes' : ''}`;
+    $('pv').textContent = (info.pv_san || info.pv || []).join(' ');
+  }
+
+  // --- websocket
+  function send(o) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); }
+  function connect() {
+    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    ws = new WebSocket(proto + '//' + location.host + '/ws');
+    ws.onopen = () => { $('dot').classList.add('on'); $('sub').textContent = 'connected'; };
+    ws.onclose = () => { $('dot').classList.remove('on'); $('sub').textContent = 'disconnected, retrying…'; setTimeout(connect, 2000); };
+    ws.onmessage = ev => {
+      const m = JSON.parse(ev.data);
+      if (m.t === 'hello') {
+        hello = m;
+        $('title').textContent = m.engine;
+        $('sub').textContent = `net: ${m.net} · ${m.threads} thread${m.threads > 1 ? 's' : ''} · max ${fmtMs(m.max_movetime)}/move`;
+        const sel = $('depth'); sel.innerHTML = '<option value="">off</option>';
+        for (let d = 1; d <= Math.min(m.max_depth, 30); d++) { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); }
+        $('mtLabel').textContent = fmtMs(currentMs());
+      } else if (m.t === 'state') {
+        state = m; selected = null;
+        if (!m.thinking) { /* keep the last engine line visible */ }
+        render(); renderPanel();
+      } else if (m.t === 'info') {
+        renderInfo(m);
+      } else if (m.t === 'error') {
+        $('sub').textContent = 'error: ' + m.msg;
+      }
+    };
+  }
+  function newGame(color) {
+    const depth = $('depth').value ? +$('depth').value : null;
+    flipped = color === 'black';
+    $('think').textContent = ''; $('pv').textContent = ''; $('evalfill').style.height = '50%';
+    send({ t: 'new', color, movetime: currentMs(), depth });
+  }
+  $('newW').onclick = () => newGame('white');
+  $('newB').onclick = () => newGame('black');
+  $('flip').onclick = () => { flipped = !flipped; render(); };
+  $('undo').onclick = () => send({ t: 'undo' });
+  $('resign').onclick = () => { if (myTurn() || state.thinking) send({ t: 'resign' }); };
+  setInterval(() => send({ t: 'ping' }), 25000);
+  connect();
+})();
+</script>
+</body>
+</html>
