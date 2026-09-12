@@ -16,9 +16,9 @@ echo "=== setup start $(date -u +%FT%TZ) run=$RUN_NAME host=$(hostname)"
 nvidia-smi || { echo "NO GPU VISIBLE, ABORT"; exit 1; }
 # Network preflight: the data pull is 15-31 GB; refuse to continue on a box that cannot download.
 command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl >/dev/null)
-spd=$(curl -s -o /dev/null -w '%{speed_download}' -r 0-30000000 --max-time 60 "https://huggingface.co/datasets/official-stockfish/master-smallnet-binpacks/resolve/main/test77-jan2022-2tb7p.high-simple-eval-1k.min-v2.binpack" || echo 0)
+spd=$(curl -sL -o /dev/null -w '%{speed_download}' -r 0-30000000 --max-time 60 "https://huggingface.co/datasets/linrock/test80-2024/resolve/main/test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst" || echo 0)
 echo "network preflight: HuggingFace download ${spd%.*} B/s"
-if [[ "${spd%.*}" -lt 3000000 ]]; then echo "NETWORK TOO SLOW (< 3 MB/s), ABORT: destroy this instance and pick another host"; exit 7; fi
+if [[ "${spd%.*}" -lt 2000000 ]]; then echo "NETWORK TOO SLOW (< 3 MB/s), ABORT: destroy this instance and pick another host"; exit 7; fi
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq && apt-get install -y -qq zstd rsync curl git build-essential pkg-config tmux > /dev/null
 

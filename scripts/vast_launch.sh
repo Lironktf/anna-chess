@@ -61,8 +61,9 @@ for o in json.load(sys.stdin)[:12]:
             info=$(vastai show instance "$ID" --raw 2>/dev/null || true)
             st=$(echo "$info" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('actual_status',''))" 2>/dev/null || true)
             if [[ "$st" == "running" ]]; then
-                HOST=$(echo "$info" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ssh_host',''))")
-                PORT=$(echo "$info" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('ssh_port',''))")
+                # Prefer the direct endpoint (public ip + mapped port 22); the proxy can lag by minutes.
+                HOST=$(echo "$info" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('public_ipaddr') or d.get('ssh_host',''))")
+                PORT=$(echo "$info" | python3 -c "import sys,json; d=json.load(sys.stdin); p=(d.get('ports') or {}).get('22/tcp') or []; print(p[0]['HostPort'] if p else d.get('ssh_port',''))")
                 { echo "HOST=$HOST"; echo "PORT=$PORT"; } >> "$(run_file "$RUN")"
                 break
             fi
@@ -71,7 +72,8 @@ for o in json.load(sys.stdin)[:12]:
         load_run "$RUN"
         [[ -n "${HOST:-}" ]] || { echo "instance did not come up; check 'vastai show instances' and destroy it"; exit 1; }
         echo "ssh -p $PORT root@$HOST"
-        for _ in $(seq 1 30); do ssh -p "$PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@"$HOST" true 2>/dev/null && break; sleep 10; done
+        for _ in $(seq 1 60); do ssh -p "$PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@"$HOST" true 2>/dev/null && break; sleep 10; done
+        ssh -p "$PORT" -o StrictHostKeyChecking=no -o ConnectTimeout=10 root@"$HOST" true 2>/dev/null || { echo "ssh never came up on $HOST:$PORT; destroy the instance and retry"; exit 2; }
         do_setup "$RUN"
         echo "SMOKE OK. Next: scripts/vast_launch.sh sync $RUN (in another terminal), then GO=1 scripts/vast_launch.sh train $RUN"
         ;;
