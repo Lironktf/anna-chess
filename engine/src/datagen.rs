@@ -7,7 +7,7 @@
 use crate::bitboard::*;
 use crate::history::History;
 use crate::movegen::legal_moves;
-use crate::nnue::Network;
+use crate::nnue::AnyNet;
 use crate::position::{Position, START_FEN};
 use crate::search::{self, Limits, Options, Shared};
 use crate::timeman::{GoParams, TimeManager};
@@ -95,7 +95,7 @@ struct Pending {
     score_white: i16,
 }
 
-fn play_game(rng: &mut Rng, cfg: &DatagenConfig, shared: &Shared, net: Option<&Network>, hists: &mut Vec<History>) -> (Vec<Pending>, f32) {
+fn play_game(rng: &mut Rng, cfg: &DatagenConfig, shared: &Shared, net: Option<&AnyNet>, hists: &mut Vec<History>) -> (Vec<Pending>, f32) {
     let mut pos = Position::from_fen(START_FEN).unwrap();
     let mut keys: Vec<u64> = Vec::new();
     // Random opening.
@@ -178,7 +178,7 @@ fn play_game(rng: &mut Rng, cfg: &DatagenConfig, shared: &Shared, net: Option<&N
     }
 }
 
-pub fn run(cfg: DatagenConfig, net: Option<Arc<Network>>) {
+pub fn run(cfg: DatagenConfig, net: Option<Arc<AnyNet>>) {
     let start = Instant::now();
     let positions = Arc::new(AtomicU64::new(0));
     let games = Arc::new(AtomicU64::new(0));

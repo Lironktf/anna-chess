@@ -2,7 +2,7 @@
 //! (only used for bootstrapping and tests).
 
 use crate::bitboard::*;
-use crate::nnue::{Network, NnueState};
+use crate::nnue::{AnyNet, AnyState, Network};
 use crate::position::Position;
 use crate::types::*;
 
@@ -88,7 +88,7 @@ pub struct Evaluator<'a> {
 
 /// Full evaluation from the side to move's perspective, with material/50-move scaling.
 #[inline]
-pub fn evaluate(pos: &Position, net: Option<&Network>, st: &mut NnueState) -> Value {
+pub fn evaluate(pos: &Position, net: Option<&AnyNet>, st: &mut AnyState) -> Value {
     let mut v = match net {
         Some(n) => {
             let raw = st.evaluate(pos, n);

@@ -5,7 +5,7 @@ use crate::eval;
 use crate::history::*;
 use crate::movegen::*;
 use crate::movepick::MovePicker;
-use crate::nnue::{Network, NnueState};
+use crate::nnue::{AnyNet, AnyState};
 use crate::position::Position;
 use crate::timeman::{GoParams, TimeManager};
 use crate::tt::*;
@@ -102,8 +102,8 @@ const SS_OFFSET: usize = 8;
 pub struct Thread<'a> {
     pub id: usize,
     shared: &'a Shared,
-    net: Option<&'a Network>,
-    nnue: NnueState,
+    net: Option<&'a AnyNet>,
+    nnue: AnyState,
     pub hist: History,
     ss: Vec<StackEntry>,
     pv: Vec<[Move; MAX_PLY + 2]>,
@@ -139,7 +139,7 @@ fn value_draw(nodes: u64) -> Value {
 }
 
 impl<'a> Thread<'a> {
-    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a Network>, limits: Limits, opts: &Options, hist: History) -> Self {
+    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
         let mut reductions = [0i32; 256];
         for (i, r) in reductions.iter_mut().enumerate().skip(1) {
             *r = ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32;
@@ -148,7 +148,7 @@ impl<'a> Thread<'a> {
             id,
             shared,
             net,
-            nnue: NnueState::new(),
+            nnue: AnyState::for_net(net),
             hist,
             ss: vec![StackEntry::default(); MAX_PLY + SS_OFFSET + 8],
             pv: vec![[Move::NONE; MAX_PLY + 2]; MAX_PLY + 2],
@@ -615,7 +615,7 @@ impl<'a> Thread<'a> {
                     s.cont_corr_idx = Piece::None.idx() * 64;
                 }
                 let child = pos.make_null_move();
-                self.nnue.push_null();
+                self.nnue.push_null(&child);
                 self.keys.push(key);
                 self.nodes += 1;
                 let null_value = -self.search(&child, NodeType::NonPv, -beta, -beta + 1, depth - r, false, ply + 1);
@@ -1434,7 +1434,7 @@ pub fn go(
     root: &Position,
     game_keys: &[u64],
     shared: &Shared,
-    net: Option<&Network>,
+    net: Option<&AnyNet>,
     limits: &Limits,
     opts: &Options,
     hists: &mut Vec<History>,

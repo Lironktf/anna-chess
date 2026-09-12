@@ -3,9 +3,9 @@
 //!   inputs (per perspective):  psq 768 x 16 king buckets (mirrored)  -> FT (i16 weights, x255)
 //!                              pawn pairs 4560 + threats 59808       -> FT (i8 weights, x255)
 //!   FT:      L1 = 1024 accumulators per perspective, CReLU to [0,255], pairwise product of the two
-//!            halves >> 8 -> 512 u8 per perspective, concatenated to 1024.
+//!            halves >> 9 -> 512 u8 (0..127) per perspective, concatenated to 1024.
 //!   L1:      1024 -> 16 per output bucket, i8 weights (x128), i32 sums, converted to f32 with the
-//!            exact scale 256 / (128 * 255 * 255); f32 biases.
+//!            exact scale 512 / (128 * 255 * 255); f32 biases.
 //!   act:     dual activation [crelu(v), clamp(v^2, 0, 1)] -> 32
 //!   L2:      32 -> 32 (f32), crelu.   L3: 32 -> 1 (f32).   eval = out * 400.
 //!
@@ -30,8 +30,10 @@ pub const PP_FEATURES: usize = 4560 + 59808;
 pub const QA: i32 = 255;
 pub const QB: i32 = 128;
 pub const SCALE: f32 = 400.0;
-/// Real value of one L1 input unit: (a*b)>>8 with a,b in [0,255] representing [0,1].
-pub const L1_INPUT_SCALE: f32 = 255.0 * 255.0 / 256.0;
+/// Real value of one L1 input unit: (a*b)>>9 with a,b in [0,255] representing [0,1] (max 127, so the
+/// u8 x i8 multiply-add cannot saturate).
+pub const L1_INPUT_SCALE: f32 = 255.0 * 255.0 / 512.0;
+pub const PAIR_SHIFT: u32 = 9;
 
 pub const NET_BYTES_UNPADDED: usize = PSQ_FEATURES * L1 * 2
     + PP_FEATURES * L1
@@ -253,20 +255,29 @@ impl NetworkV3 {
         acc.copy_from_slice(&self.ft_b.0);
         let ksq = pos.king_sq(p);
         let rk = if p == Color::Black { ksq ^ 56 } else { ksq };
+        let mut psq = [0usize; 32];
+        let mut np = 0;
         for s in bits(pos.occupied()) {
             let f = feature_index(p, rk, pos.piece_on(s), s);
-            for i in 0..L1 {
-                acc[i] = acc[i].wrapping_add(self.psq_w[f].0[i]);
-            }
+            prefetch_row(&self.psq_w[f]);
+            psq[np] = f;
+            np += 1;
         }
         let rel = RelBoard::from_position(pos, p);
-        let mut feats = Vec::with_capacity(256);
-        self.mapper.map_features(&rel, |s| feats.push(s), |_| {});
-        for f in feats {
-            let w = &self.pp_w[f].0;
-            for i in 0..L1 {
-                acc[i] = acc[i].wrapping_add(w[i] as i16);
-            }
+        let mut feats = [0usize; 320];
+        let mut n = 0;
+        self.mapper.map_features(&rel, |s| {
+            feats[n] = s;
+            n += 1;
+        }, |_| {});
+        for &f in &feats[..n] {
+            prefetch_row(&self.pp_w[f]);
+        }
+        for &f in &psq[..np] {
+            add_i16_row(acc, &self.psq_w[f].0);
+        }
+        for &f in &feats[..n] {
+            add_i8_row(acc, &self.pp_w[f].0);
         }
     }
 
@@ -277,29 +288,45 @@ impl NetworkV3 {
             for i in 0..HALF {
                 let a = (acc[i] as i32).clamp(0, QA);
                 let b = (acc[i + HALF] as i32).clamp(0, QA);
-                x[k * HALF + i] = ((a * b) >> 8) as u8;
+                x[k * HALF + i] = ((a * b) >> PAIR_SHIFT) as u8;
             }
         }
-        let mut h1 = [0f32; L2_DUAL];
+        let mut sums = [0i32; L2];
         for o in 0..L2 {
             let w = &self.l1_w[bucket * L2 + o].0;
             let mut sum: i32 = 0;
             for i in 0..L1 {
                 sum += x[i] as i32 * w[i] as i32;
             }
-            let v = sum as f32 / (QB as f32 * L1_INPUT_SCALE) + self.l1_b[bucket * L2 + o];
+            sums[o] = sum;
+        }
+        self.tail(&sums, bucket)
+    }
+
+    /// Forward pass using the SIMD kernels (bit-identical to `forward_scalar`).
+    pub fn forward(&self, us: &[i16; L1], them: &[i16; L1], bucket: usize) -> Value {
+        use super::simd::v3k::{l1_dots, pairwise};
+        let mut x = Align64([0u8; L1]);
+        pairwise(us, &mut x.0, 0);
+        pairwise(them, &mut x.0, HALF);
+        let mut sums = [0i32; L2];
+        // SAFETY-free reinterpretation: l1_w rows are Align64<[i8; L1]>, contiguous; build a slice of rows.
+        let rows: &[[i8; L1]] = unsafe { std::slice::from_raw_parts(self.l1_w[bucket * L2..].as_ptr() as *const [i8; L1], L2) };
+        // (Align64<[i8;L1]> has the same size as [i8;L1] rounded to 64 = 1024, so the stride is exact.)
+        l1_dots(&x.0, rows, &mut sums);
+        self.tail(&sums, bucket)
+    }
+
+    #[inline]
+    fn tail(&self, sums: &[i32; L2], bucket: usize) -> Value {
+        let mut h1 = [0f32; L2_DUAL];
+        for o in 0..L2 {
+            let v = sums[o] as f32 / (QB as f32 * L1_INPUT_SCALE) + self.l1_b[bucket * L2 + o];
             h1[o] = v.clamp(0.0, 1.0);
             h1[L2 + o] = (v * v).clamp(0.0, 1.0);
         }
         let mut h2 = [0f32; L3];
-        for o in 0..L3 {
-            let w = &self.l2_w[bucket * L3 + o];
-            let mut v = self.l2_b[bucket * L3 + o];
-            for i in 0..L2_DUAL {
-                v += w[i] * h1[i];
-            }
-            h2[o] = v.clamp(0.0, 1.0);
-        }
+        super::simd::v3k::l2_forward(&h1, &self.l2_w[bucket * L3..bucket * L3 + L3], &self.l2_b[bucket * L3..bucket * L3 + L3], &mut h2);
         let w = &self.l3_w[bucket];
         let mut out = self.l3_b[bucket];
         for i in 0..L3 {
@@ -342,36 +369,37 @@ pub struct StateV3 {
     stack: Vec<Entry3>,
     scratch_old: Vec<usize>,
     scratch_new: Vec<usize>,
+    scratch_old_b: Vec<usize>,
+    scratch_new_b: Vec<usize>,
 }
 
+use super::simd::v3k::{add_i8_row, sub_i8_row};
+
+/// Prefetch every cache line of a weight row (rows are 1 KB = 16 lines).
 #[inline(always)]
-fn add_i8_row(acc: &mut [i16; L1], w: &[i8; L1]) {
-    for i in 0..L1 {
-        acc[i] = acc[i].wrapping_add(w[i] as i16);
+fn prefetch_row<T>(row: &T) {
+    #[cfg(target_arch = "x86_64")]
+    unsafe {
+        let p = row as *const T as *const i8;
+        let bytes = std::mem::size_of::<T>();
+        let mut off = 0;
+        while off < bytes {
+            std::arch::x86_64::_mm_prefetch(p.add(off), std::arch::x86_64::_MM_HINT_T0);
+            off += 64;
+        }
     }
 }
-#[inline(always)]
-fn sub_i8_row(acc: &mut [i16; L1], w: &[i8; L1]) {
-    for i in 0..L1 {
-        acc[i] = acc[i].wrapping_sub(w[i] as i16);
-    }
-}
-#[inline(always)]
-fn add_i16_row(acc: &mut [i16; L1], w: &[i16; L1]) {
-    for i in 0..L1 {
-        acc[i] = acc[i].wrapping_add(w[i]);
-    }
-}
-#[inline(always)]
-fn sub_i16_row(acc: &mut [i16; L1], w: &[i16; L1]) {
-    for i in 0..L1 {
-        acc[i] = acc[i].wrapping_sub(w[i]);
-    }
-}
+use super::simd::{add_feature as add_i16_row, sub_feature as sub_i16_row};
 
 impl StateV3 {
     pub fn new() -> Self {
-        StateV3 { stack: Vec::with_capacity(MAX_PLY + 8), scratch_old: Vec::with_capacity(512), scratch_new: Vec::with_capacity(512) }
+        StateV3 {
+            stack: Vec::with_capacity(MAX_PLY + 8),
+            scratch_old: Vec::with_capacity(512),
+            scratch_new: Vec::with_capacity(512),
+            scratch_old_b: Vec::with_capacity(512),
+            scratch_new_b: Vec::with_capacity(512),
+        }
     }
 
     pub fn reset(&mut self, pos: &Position, net: &NetworkV3) {
@@ -422,104 +450,161 @@ impl StateV3 {
         king_bucket(ra) != king_bucket(rb) || (file_of(ra) > 3) != (file_of(rb) > 3)
     }
 
-    /// Compute entry j's accumulator for perspective p from entry j-1's.
-    fn apply_incremental(&mut self, j: usize, p: Color, net: &NetworkV3) {
-        let pi = p.idx();
+    /// Compute entry j's accumulators from entry j-1's for the requested perspectives. The threat
+    /// diff is computed once (both perspectives come out of one pass over the affected attackers).
+    fn apply_incremental(&mut self, j: usize, need: [bool; 2], net: &NetworkV3) {
         let (old_pos, new_pos, dirty, changed, is_null) = {
             let e = &self.stack[j];
             (self.stack[j - 1].pos, e.pos, e.dirty, e.changed, e.is_null)
         };
-        let prev = self.stack[j - 1].acc[pi];
-        let mut acc = prev;
+        let mut accs = self.stack[j - 1].acc;
         if !is_null {
-            // Piece-square part.
-            let rk = Self::rel_king(p, new_pos.king_sq(p));
-            for k in 0..dirty.n_add as usize {
-                let (pc, s) = dirty.adds[k];
-                add_i16_row(&mut acc.0, &net.psq_w[feature_index(p, rk, pc, s)].0);
+            // Piece-square part, per perspective (rows prefetched first).
+            let mut psq_idx = [[0usize; 4]; 2];
+            for p in [Color::White, Color::Black] {
+                if !need[p.idx()] {
+                    continue;
+                }
+                let rk = Self::rel_king(p, new_pos.king_sq(p));
+                let mut k2 = 0;
+                for k in 0..dirty.n_add as usize {
+                    let (pc, s) = dirty.adds[k];
+                    let f = feature_index(p, rk, pc, s);
+                    prefetch_row(&net.psq_w[f]);
+                    psq_idx[p.idx()][k2] = f;
+                    k2 += 1;
+                }
+                for k in 0..dirty.n_sub as usize {
+                    let (pc, s) = dirty.subs[k];
+                    let f = feature_index(p, rk, pc, s);
+                    prefetch_row(&net.psq_w[f]);
+                    psq_idx[p.idx()][k2] = f;
+                    k2 += 1;
+                }
             }
-            for k in 0..dirty.n_sub as usize {
-                let (pc, s) = dirty.subs[k];
-                sub_i16_row(&mut acc.0, &net.psq_w[feature_index(p, rk, pc, s)].0);
-            }
-            // Threat + pawn-pair part: diff of features emitted by affected attackers.
+            // Threat + pawn-pair part: features emitted by affected attackers, old vs new, both
+            // perspectives from the white-relative board (on_stm = white, on_ntm = black).
             let mut att_old = changed;
             let mut att_new = changed;
             for s in bits(changed) {
                 att_old |= old_pos.attackers_to_occ(s, old_pos.occupied());
                 att_new |= new_pos.attackers_to_occ(s, new_pos.occupied());
             }
-            let flip = |m: u64| if p == Color::Black { m.swap_bytes() } else { m };
-            let rel_old = RelBoard::from_position(&old_pos, p);
-            let rel_new = RelBoard::from_position(&new_pos, p);
-            self.scratch_old.clear();
-            self.scratch_new.clear();
-            let so = &mut self.scratch_old;
-            let sn = &mut self.scratch_new;
-            net.mapper.map_restricted(&rel_old, flip(att_old), flip(changed), |f| so.push(f), |_| {});
-            net.mapper.map_restricted(&rel_new, flip(att_new), flip(changed), |f| sn.push(f), |_| {});
-            so.sort_unstable();
-            sn.sort_unstable();
-            // Merge-diff.
-            let (mut a, mut b) = (0, 0);
-            while a < so.len() || b < sn.len() {
-                if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
-                    sub_i8_row(&mut acc.0, &net.pp_w[so[a]].0);
-                    a += 1;
-                } else if a >= so.len() || sn[b] < so[a] {
-                    add_i8_row(&mut acc.0, &net.pp_w[sn[b]].0);
-                    b += 1;
-                } else {
-                    a += 1;
-                    b += 1;
+            let rel_old = RelBoard::from_position(&old_pos, Color::White);
+            let rel_new = RelBoard::from_position(&new_pos, Color::White);
+            let (ow, ob, nw, nb) = (&mut self.scratch_old, &mut self.scratch_old_b, &mut self.scratch_new, &mut self.scratch_new_b);
+            ow.clear();
+            ob.clear();
+            nw.clear();
+            nb.clear();
+            net.mapper.map_restricted(&rel_old, att_old, changed, |f| ow.push(f), |f| ob.push(f));
+            net.mapper.map_restricted(&rel_new, att_new, changed, |f| nw.push(f), |f| nb.push(f));
+            // Prefetch every candidate row (a few extra for unchanged features is cheap) so the
+            // memory latency of the 66 MB table overlaps instead of serialising.
+            for (p, lists) in [(0usize, [&*ow, &*nw]), (1, [&*ob, &*nb])] {
+                if need[p] {
+                    for l in lists {
+                        for &f in l.iter() {
+                            prefetch_row(&net.pp_w[f]);
+                        }
+                    }
+                }
+            }
+            for p in 0..2 {
+                if !need[p] {
+                    continue;
+                }
+                let na = dirty.n_add as usize;
+                let acc = &mut accs[p].0;
+                for k in 0..na {
+                    add_i16_row(acc, &net.psq_w[psq_idx[p][k]].0);
+                }
+                for k in na..na + dirty.n_sub as usize {
+                    sub_i16_row(acc, &net.psq_w[psq_idx[p][k]].0);
+                }
+            }
+            for (p, so, sn) in [(0usize, &mut *ow, &mut *nw), (1, &mut *ob, &mut *nb)] {
+                if !need[p] {
+                    continue;
+                }
+                so.sort_unstable();
+                sn.sort_unstable();
+                let acc = &mut accs[p].0;
+                let (mut a, mut b) = (0, 0);
+                while a < so.len() || b < sn.len() {
+                    if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
+                        sub_i8_row(acc, &net.pp_w[so[a]].0);
+                        a += 1;
+                    } else if a >= so.len() || sn[b] < so[a] {
+                        add_i8_row(acc, &net.pp_w[sn[b]].0);
+                        b += 1;
+                    } else {
+                        a += 1;
+                        b += 1;
+                    }
                 }
             }
         }
         let e = &mut self.stack[j];
-        e.acc[pi] = acc;
-        e.computed[pi] = true;
+        for p in 0..2 {
+            if need[p] {
+                e.acc[p] = accs[p];
+                e.computed[p] = true;
+            }
+        }
     }
 
-    fn ensure(&mut self, p: Color, net: &NetworkV3) {
+    /// Make both top-of-stack accumulators computed, sharing work between perspectives.
+    fn ensure_both(&mut self, net: &NetworkV3) {
         let top = self.stack.len() - 1;
-        let pi = p.idx();
-        if self.stack[top].computed[pi] {
+        let mut start = [usize::MAX; 2]; // index of the last computed entry to start from
+        for p in [Color::White, Color::Black] {
+            let pi = p.idx();
+            if self.stack[top].computed[pi] {
+                continue;
+            }
+            let mut i = top;
+            loop {
+                if self.stack[i].computed[pi] || i == 0 {
+                    break;
+                }
+                let ka = self.stack[i - 1].pos.king_sq(p);
+                let kb = self.stack[i].pos.king_sq(p);
+                if ka != kb && Self::needs_refresh(p, ka, kb) {
+                    break;
+                }
+                i -= 1;
+            }
+            if !self.stack[i].computed[pi] {
+                let pos = self.stack[top].pos;
+                let mut acc = Align64([0i16; L1]);
+                net.refresh_accumulator(&pos, p, &mut acc.0);
+                self.stack[top].acc[pi] = acc;
+                self.stack[top].computed[pi] = true;
+            } else {
+                start[pi] = i;
+            }
+        }
+        let lo = start[0].min(start[1]);
+        if lo == usize::MAX {
             return;
         }
-        let mut i = top;
-        loop {
-            if self.stack[i].computed[pi] || i == 0 {
-                break;
-            }
-            let ka = self.stack[i - 1].pos.king_sq(p);
-            let kb = self.stack[i].pos.king_sq(p);
-            if ka != kb && Self::needs_refresh(p, ka, kb) {
-                break;
-            }
-            i -= 1;
-        }
-        if !self.stack[i].computed[pi] {
-            let pos = self.stack[top].pos;
-            let mut acc = Align64([0i16; L1]);
-            net.refresh_accumulator(&pos, p, &mut acc.0);
-            self.stack[top].acc[pi] = acc;
-            self.stack[top].computed[pi] = true;
-            return;
-        }
-        for j in i + 1..=top {
-            self.apply_incremental(j, p, net);
+        for j in lo + 1..=top {
+            let need = [start[0] != usize::MAX && start[0] < j, start[1] != usize::MAX && start[1] < j];
+            self.apply_incremental(j, need, net);
         }
     }
 
     pub fn evaluate(&mut self, net: &NetworkV3) -> Value {
-        self.ensure(Color::White, net);
-        self.ensure(Color::Black, net);
+        self.ensure_both(net);
         let top = &self.stack[self.stack.len() - 1];
         let us = top.pos.side_to_move();
         let bucket = output_bucket(&top.pos);
-        net.forward_scalar(&top.acc[us.idx()].0, &top.acc[(!us).idx()].0, bucket)
+        net.forward(&top.acc[us.idx()].0, &top.acc[(!us).idx()].0, bucket)
     }
 }
+
+const _: () = assert!(std::mem::size_of::<Align64<[i8; L1]>>() == L1);
 
 impl Default for StateV3 {
     fn default() -> Self {

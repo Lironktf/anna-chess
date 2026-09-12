@@ -3,7 +3,7 @@
 use crate::eval;
 use crate::history::History;
 use crate::movegen::*;
-use crate::nnue::Network;
+use crate::nnue::AnyNet;
 use crate::position::*;
 use crate::search::{self, Limits, Options, Shared};
 use crate::timeman::{GoParams, TimeManager};
@@ -22,7 +22,7 @@ pub struct Engine {
     pub pos: Position,
     pub game_keys: Vec<u64>,
     pub shared: Arc<Shared>,
-    pub net: Option<Arc<Network>>,
+    pub net: Option<Arc<AnyNet>>,
     pub hists: Vec<History>,
     pub hash_mb: usize,
     pub threads: usize,
@@ -55,13 +55,13 @@ impl Engine {
     }
 
     fn load_net_quiet(&mut self) {
-        if let Some(n) = Network::embedded() {
+        if let Some(n) = AnyNet::embedded() {
             self.net = Some(Arc::new(n));
             return;
         }
         let candidates = [self.eval_file.clone(), exe_relative(&self.eval_file)];
         for c in candidates.iter() {
-            if let Ok(n) = Network::load(c) {
+            if let Ok(n) = AnyNet::load(c) {
                 self.net = Some(Arc::new(n));
                 return;
             }
@@ -73,7 +73,7 @@ impl Engine {
         let candidates = [self.eval_file.clone(), exe_relative(&self.eval_file)];
         let mut last = String::new();
         for c in candidates.iter() {
-            match Network::load(c) {
+            match AnyNet::load(c) {
                 Ok(n) => {
                     self.net = Some(Arc::new(n));
                     return Ok(());
@@ -305,7 +305,7 @@ pub fn uci_loop() {
                     "evalfile" => {
                         e.eval_file = value.clone();
                         match e.load_net() {
-                            Ok(()) => println!("info string loaded network {}", value),
+                            Ok(()) => println!("info string loaded network {} [{}]", value, e.net.as_deref().map(|n| n.arch_name()).unwrap_or("?")),
                             Err(err) => println!("info string failed to load network: {}", err),
                         }
                     }
@@ -366,12 +366,12 @@ pub fn uci_loop() {
             }
             "eval" => {
                 let e = engine.lock().unwrap();
-                let mut st = crate::nnue::NnueState::new();
+                let mut st = crate::nnue::AnyState::for_net(e.net.as_deref());
                 if let Some(n) = e.net.as_deref() {
                     st.reset(&e.pos, n);
                 }
                 let v = eval::evaluate(&e.pos, e.net.as_deref(), &mut st);
-                println!("eval {} cp (stm) net={}", v, e.net.is_some());
+                println!("eval {} cp (stm) net={}", v, e.net.as_deref().map(|n| n.arch_name()).unwrap_or("none"));
             }
             "bench" => {
                 wait_search(&mut search_handle);

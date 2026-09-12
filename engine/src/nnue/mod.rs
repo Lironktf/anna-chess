@@ -66,6 +66,102 @@ pub fn feature_index(p: Color, rel_ksq: Square, piece: Piece, s: Square) -> usiz
 #[derive(Clone, Copy)]
 pub struct Align64<T>(pub T);
 
+/// Any supported network architecture, detected from the file size.
+pub enum AnyNet {
+    V1(Network),
+    V3(v3::NetworkV3),
+}
+
+impl AnyNet {
+    pub fn from_bytes(bytes: &[u8]) -> Result<AnyNet, String> {
+        if bytes.len() >= v3::NET_BYTES_UNPADDED && bytes.len() <= v3::NET_BYTES_UNPADDED + 64 {
+            v3::NetworkV3::from_bytes(bytes).map(AnyNet::V3)
+        } else {
+            Network::from_bytes(bytes).map(AnyNet::V1)
+        }
+    }
+    pub fn load(path: &str) -> Result<AnyNet, String> {
+        let bytes = std::fs::read(path).map_err(|e| format!("cannot read {}: {}", path, e))?;
+        AnyNet::from_bytes(&bytes)
+    }
+    pub fn embedded() -> Option<AnyNet> {
+        #[cfg(embedded_net)]
+        {
+            static BYTES: &[u8] = include_bytes!(env!("EMBEDDED_NET_PATH"));
+            return AnyNet::from_bytes(BYTES).ok();
+        }
+        #[cfg(not(embedded_net))]
+        {
+            None
+        }
+    }
+    pub fn arch_name(&self) -> &'static str {
+        match self {
+            AnyNet::V1(_) => "v1 (768x16hm->1024)x2->1x8",
+            AnyNet::V3(_) => "v3 threats+pawnpairs (768x16hm+64368->1024)x2 pairwise ->16->32->1 x8",
+        }
+    }
+}
+
+/// Per-thread evaluation state for whichever architecture is loaded.
+pub enum AnyState {
+    V1(NnueState),
+    V3(v3::StateV3),
+}
+
+impl AnyState {
+    pub fn for_net(net: Option<&AnyNet>) -> AnyState {
+        match net {
+            Some(AnyNet::V3(_)) => AnyState::V3(v3::StateV3::new()),
+            _ => AnyState::V1(NnueState::new()),
+        }
+    }
+    #[inline]
+    pub fn reset(&mut self, pos: &Position, net: &AnyNet) {
+        match (self, net) {
+            (AnyState::V1(s), AnyNet::V1(n)) => s.reset(pos, n),
+            (AnyState::V3(s), AnyNet::V3(n)) => s.reset(pos, n),
+            _ => panic!("nnue state / network architecture mismatch"),
+        }
+    }
+    #[inline]
+    pub fn push(&mut self, before: &Position, m: Move, after: &Position) {
+        match self {
+            AnyState::V1(s) => s.push(before, m, after),
+            AnyState::V3(s) => s.push(before, m, after),
+        }
+    }
+    #[inline]
+    pub fn push_null(&mut self, after: &Position) {
+        match self {
+            AnyState::V1(s) => s.push_null(),
+            AnyState::V3(s) => s.push_null(after),
+        }
+    }
+    #[inline]
+    pub fn pop(&mut self) {
+        match self {
+            AnyState::V1(s) => s.pop(),
+            AnyState::V3(s) => s.pop(),
+        }
+    }
+    #[inline]
+    pub fn evaluate(&mut self, pos: &Position, net: &AnyNet) -> Value {
+        match (self, net) {
+            (AnyState::V1(s), AnyNet::V1(n)) => s.evaluate(pos, n),
+            (AnyState::V3(s), AnyNet::V3(n)) => s.evaluate(n),
+            _ => panic!("nnue state / network architecture mismatch"),
+        }
+    }
+    /// From-scratch evaluation (tests / netcheck).
+    pub fn evaluate_reference(pos: &Position, net: &AnyNet) -> Value {
+        match net {
+            AnyNet::V1(n) => NnueState::evaluate_reference(pos, n),
+            AnyNet::V3(n) => n.evaluate_reference(pos),
+        }
+    }
+}
+
 pub struct Network {
     pub ft_weights: Vec<Align64<[i16; L1]>>, // FEATURES entries
     pub ft_bias: Align64<[i16; L1]>,
