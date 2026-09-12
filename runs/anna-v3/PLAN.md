@@ -1,6 +1,12 @@
 # Run plan: anna-v3 (threat-input multilayer NNUE)
 
-Status: **engine + trainer BUILT and validated locally. NOT launched. Needs the owner's decision on width and a go.**
+Status: **RUNNING since 2026-09-12 ~13:50 local** on instance 50770185 (offer 34221023, Korea RTX 4090 + 14-core Xeon, ~$0.45/hr).
+Owner chose option A. Smoke checks passed: engine reads quantised.bin to the trainer's own values (layout proven); 5-SB warmup
+shows material learned (missing rook -476/+482). Throughput ~1.6M pos/s (GPU 65%, CPU-bound mapping) = ~65 s/SB.
+Schedule: SB0=30 / SB1=310 / SB2=30 (37B samples), ~7 h, ~$3.2 training; cost guard $4.50; self-destruct MAX_HOURS=9.
+First attempt on offer 49080480 (instance 50767449) destroyed: dead network (~$0.35 lost).
+
+Previously: engine + trainer BUILT and validated locally.
 
 ## What is done (2026-09-12)
 

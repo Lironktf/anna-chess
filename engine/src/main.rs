@@ -171,6 +171,9 @@ fn main() {
                         (START_FEN, -150, 150),
                         ("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1", -2000, -100),
                         ("rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1", 100, 2000),
+                        ("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1", -3000, 3000),
+                        ("r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9", -3000, 3000),
+                        ("8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1", -3000, 3000),
                     ] {
                         let pos = Position::from_fen(fen).unwrap();
                         let mut st = engine::nnue::AnyState::for_net(Some(&net));

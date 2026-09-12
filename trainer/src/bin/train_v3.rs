@@ -15,7 +15,7 @@ use bullet::{
     value::{loader::sfbinpack::SfBinpackLoader, save::save_to_checkpoint},
 };
 use bullet_trainer::{
-    model::{InitSettings, ModelDefinition, ModelInputs, ModelWeights, SavedFormat},
+    model::{InitSettings, ModelDefinition, ModelEvaluator, ModelInputs, ModelWeights, SavedFormat},
     optimiser::{
         adam::{AdamW, AdamWParams},
         Optimiser,
@@ -101,6 +101,7 @@ fn main() {
     let weights = ModelWeights::new(&defn, 20260912);
     let device = DefaultDevice::new(0).unwrap();
     let params = AdamWParams::default();
+    let mut evaluator = ModelEvaluator::new(&defn, device.clone()).unwrap();
     let mut optimiser = Optimiser::<_, AdamW<_>>::new(defn, weights, device.clone(), params).unwrap();
 
     // Clipping so every quantised tensor fits its integer type.
@@ -186,5 +187,23 @@ fn main() {
         lr::LinearDecayLR { initial_lr: 1e-5, final_lr: 1e-7, final_superbatch: sb2 }.boxed(),
         make_inputs_mapper(params_tuple, wdl::ConstantWDL { value: 1.0 }),
     );
+    // Print the (unquantised) model's evaluation of the netcheck positions so the engine's reading of
+    // quantised.bin can be compared against the trainer (layout proof).
+    evaluator.load_device_weights(optimiser.weights()).unwrap();
+    let evaluator_mapper = make_inputs_mapper(params_tuple, wdl::ConstantWDL { value: 0.0 });
+    for fen in [
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
+        "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1",
+        "rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1",
+        "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",
+        "r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9",
+        "8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1",
+    ] {
+        let pos = format!("{fen} | 0 | 0.0").parse().unwrap();
+        let inputs = evaluator_mapper.map(&[pos], Default::default(), 1).to_device(&device).unwrap();
+        let output = evaluator.evaluate(&inputs).unwrap().get("output").unwrap();
+        let [value] = output.to_host().unwrap().f32()[..] else { panic!() };
+        println!("TRAINER EVAL {} : {:.1}", fen, 400.0 * value);
+    }
     println!("done");
 }
