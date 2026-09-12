@@ -7,8 +7,65 @@ use bullet::game::formats::{
     bulletformat::ChessBoard,
     montyformat::chess::{Attacks, Piece, Side},
 };
+use bullet::game::inputs::{ChessBucketsMirrored, SparseInputType};
+use bullet::game::outputs::OutputBuckets;
+use bullet::wdl::WdlScheduler;
+use bullet_trainer::model::{DenseInput, ModelInputs, ModelInputsMapper, SparseInput};
 
-// (make_inputs_mapper removed: needs bullet_trainer; feature code below is verbatim)
+pub type InputTy = (((((SparseInput, SparseInput), SparseInput), SparseInput), SparseInput), DenseInput<f32>);
+
+pub fn make_inputs_mapper(
+    params: (&ModelInputs<InputTy>, &PawnPawnInputs, ChessBucketsMirrored, impl OutputBuckets<ChessBoard>),
+    wdl: impl WdlScheduler,
+) -> ModelInputsMapper<ChessBoard> {
+    let pp = params.1.clone();
+
+    ModelInputsMapper::build(
+        params.0,
+        move |pos, step, (((((stm_pp, ntm_pp), stm_psqt), ntm_psqt), bucket), target)| {
+            let mut cnt = 0;
+            params.2.map_features(pos, |stm, ntm| {
+                stm_psqt[cnt] = stm.try_into().unwrap();
+                ntm_psqt[cnt] = ntm.try_into().unwrap();
+                cnt += 1;
+            });
+
+            if cnt < params.2.max_active() {
+                stm_psqt[cnt] = -1;
+                ntm_psqt[cnt] = -1;
+            }
+
+            let mut stm_cnt = 0;
+            let mut ntm_cnt = 0;
+            pp.map_features(
+                pos,
+                |stm| {
+                    stm_pp[stm_cnt] = stm.try_into().unwrap();
+                    stm_cnt += 1;
+                },
+                |ntm| {
+                    ntm_pp[ntm_cnt] = ntm.try_into().unwrap();
+                    ntm_cnt += 1;
+                },
+            );
+
+            assert_eq!(stm_cnt, ntm_cnt);
+
+            if stm_cnt < pp.max_active() {
+                stm_pp[stm_cnt] = -1;
+                ntm_pp[stm_cnt] = -1;
+            }
+
+            bucket[0] = i32::from(params.3.bucket(pos));
+
+            let result = f32::from(pos.result) / 2.0;
+            let score = 1.0 / (1.0 + (f32::from(-pos.score) / 400.0).exp());
+            let lambda = wdl.blend(step.batch(), step.superbatch(), step.final_superbatch());
+            assert!((0.0..=1.0).contains(&lambda), "WDL lambda must be in [0, 1]");
+            target[0] = lambda * result + (1. - lambda) * score;
+        },
+    )
+}
 
 pub fn three_file_band_mask() -> [u64; 64] {
     const A: u64 = 0x0101_0101_0101_0101;

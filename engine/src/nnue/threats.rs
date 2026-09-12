@@ -143,9 +143,13 @@ impl Default for Threats {
     }
 }
 
-/// Side-to-move-relative bitboards: [white(=perspective), black, P, N, B, R, Q, K].
+/// Side-to-move-relative bitboards: [white(=perspective), black, P, N, B, R, Q, K], plus a
+/// per-square piece table (0..11 = 6*colour + type, 13 = empty) in the same relative frame.
 #[derive(Clone, Copy)]
-pub struct RelBoard(pub [u64; 8]);
+pub struct RelBoard {
+    pub bb: [u64; 8],
+    pub pieces: [u8; 64],
+}
 
 impl RelBoard {
     /// Build the board as seen from `p`: `p`'s pieces are white; flipped vertically if `p` is black.
@@ -156,29 +160,45 @@ impl RelBoard {
         for (i, pt) in PieceType::ALL.iter().enumerate() {
             bbs[2 + i] = pos.pieces(*pt);
         }
+        let mut pieces = [13u8; 64];
         if p == Color::Black {
             for b in bbs.iter_mut() {
                 *b = b.swap_bytes();
             }
             bbs.swap(0, 1);
+            for s in bits(pos.occupied()) {
+                let pc = pos.piece_on(s).idx() as u8;
+                // swap colour: 0..5 <-> 6..11
+                pieces[(s ^ 56) as usize] = if pc < 6 { pc + 6 } else { pc - 6 };
+            }
+        } else {
+            for s in bits(pos.occupied()) {
+                pieces[s as usize] = pos.piece_on(s).idx() as u8;
+            }
         }
-        RelBoard(bbs)
+        RelBoard { bb: bbs, pieces }
     }
-    fn flip_view(mut self) -> RelBoard {
-        self.0.swap(0, 1);
-        for b in self.0.iter_mut() {
+    /// Bitboards only (pieces table left empty); for pawn-pair helpers that only need bitboards.
+    fn bb_only(bb: [u64; 8]) -> RelBoard {
+        RelBoard { bb, pieces: [13; 64] }
+    }
+    fn flip_view(&self) -> RelBoard {
+        let mut bb = self.bb;
+        bb.swap(0, 1);
+        for b in bb.iter_mut() {
             *b = b.swap_bytes();
         }
-        self
+        RelBoard::bb_only(bb)
     }
-    fn normalize_hm(mut self) -> RelBoard {
-        let ksq = (self.0[0] & self.0[7]).trailing_zeros();
+    fn normalize_hm(&self) -> RelBoard {
+        let ksq = (self.bb[0] & self.bb[7]).trailing_zeros();
+        let mut bb = self.bb;
         if ksq % 8 > 3 {
-            for b in self.0.iter_mut() {
+            for b in bb.iter_mut() {
                 *b = b.swap_bytes().reverse_bits();
             }
         }
-        self
+        RelBoard::bb_only(bb)
     }
 }
 
@@ -197,19 +217,12 @@ fn attacks_rel(piece: usize, sq: usize, side: usize, occ: u64) -> u64 {
 
 /// Threat features of a relative board for both perspectives: (stm = "white" of the board, ntm).
 pub fn map_threats(t: &Threats, bbs: &RelBoard, mut on_stm: impl FnMut(usize), mut on_ntm: impl FnMut(usize)) {
-    let b = &bbs.0;
+    let b = &bbs.bb;
     let stm_king = (b[0] & b[7]).trailing_zeros() as usize;
     let ntm_king = (b[1] & b[7]).trailing_zeros() as usize;
     let stm_mask = if stm_king % 8 > 3 { 7 } else { 0 };
     let ntm_mask = 56 ^ if ntm_king % 8 > 3 { 7 } else { 0 };
-    let mut pieces = [13usize; 64];
-    for side in 0..2 {
-        for piece in PAWN..=KING {
-            for sq in bits(b[side] & b[piece]) {
-                pieces[sq as usize] = 6 * side + piece - 2;
-            }
-        }
-    }
+    let pieces = &bbs.pieces;
     let occ = b[0] | b[1];
     for side in 0..2 {
         let stm_offset = t.side_offset(side);
@@ -220,7 +233,7 @@ pub fn map_threats(t: &Threats, bbs: &RelBoard, mut on_stm: impl FnMut(usize), m
                 let threats = attacks_rel(piece, sq, side, occ) & occ;
                 for dest in bits(threats) {
                     let dest = dest as usize;
-                    let target = pieces[dest];
+                    let target = pieces[dest] as usize;
                     if let Some(idx) = t.map_single(piece, sq ^ stm_mask, dest ^ stm_mask, target) {
                         on_stm(stm_offset + idx);
                     }
@@ -275,8 +288,8 @@ fn emit_same_colour(masks: &[u64; 64], bb: u64, colour: usize, f: &mut impl FnMu
 }
 
 fn collect_pairs(masks: &[u64; 64], bbs: &RelBoard, f: &mut impl FnMut(usize)) {
-    let friendly = bbs.0[0] & bbs.0[2];
-    let enemy = bbs.0[1] & bbs.0[2];
+    let friendly = bbs.bb[0] & bbs.bb[2];
+    let enemy = bbs.bb[1] & bbs.bb[2];
     emit_same_colour(masks, friendly, 0, f);
     for sq_a in bits(friendly) {
         let sq_a = sq_a as usize;
@@ -373,19 +386,12 @@ impl FeatureMapper {
         mut on_ntm: impl FnMut(usize),
     ) {
         let t = &self.threats;
-        let b = &bbs.0;
+        let b = &bbs.bb;
         let stm_king = (b[0] & b[7]).trailing_zeros() as usize;
         let ntm_king = (b[1] & b[7]).trailing_zeros() as usize;
         let stm_mask = if stm_king % 8 > 3 { 7 } else { 0 };
         let ntm_mask = 56 ^ if ntm_king % 8 > 3 { 7 } else { 0 };
-        let mut pieces = [13usize; 64];
-        for side in 0..2 {
-            for piece in PAWN..=KING {
-                for sq in bits(b[side] & b[piece]) {
-                    pieces[sq as usize] = 6 * side + piece - 2;
-                }
-            }
-        }
+        let pieces = &bbs.pieces;
         let occ = b[0] | b[1];
         for side in 0..2 {
             let stm_offset = t.side_offset(side);
@@ -396,7 +402,7 @@ impl FeatureMapper {
                     let threats = attacks_rel(piece, sq, side, occ) & occ;
                     for dest in bits(threats) {
                         let dest = dest as usize;
-                        let target = pieces[dest];
+                        let target = pieces[dest] as usize;
                         if let Some(idx) = t.map_single(piece, sq ^ stm_mask, dest ^ stm_mask, target) {
                             on_stm(TOTAL_PAIRS + stm_offset + idx);
                         }
@@ -428,8 +434,8 @@ fn mirror_h(b: u64) -> u64 {
 
 /// Pairs where at least one pawn is on `pmask` (each pair emitted once).
 fn collect_pairs_restricted(masks: &[u64; 64], bbs: &RelBoard, pmask: u64, f: &mut impl FnMut(usize)) {
-    let friendly = bbs.0[0] & bbs.0[2];
-    let enemy = bbs.0[1] & bbs.0[2];
+    let friendly = bbs.bb[0] & bbs.bb[2];
+    let enemy = bbs.bb[1] & bbs.bb[2];
     for (colour_a, bb_a) in [(0usize, friendly), (1, enemy)] {
         for sq_a in bits(bb_a & pmask) {
             let sq_a = sq_a as usize;

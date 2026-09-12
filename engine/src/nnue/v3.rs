@@ -373,9 +373,30 @@ pub struct StateV3 {
     scratch_new_b: Vec<usize>,
 }
 
-use super::simd::v3k::{add_i8_row, sub_i8_row};
+use super::simd::v3k::{add_i16_row, add_i8_row, sub_i16_row, sub_i8_row};
 
-/// Prefetch every cache line of a weight row (rows are 1 KB = 16 lines).
+/// Number of 64-byte lines to prefetch per weight row (0 disables; the hardware prefetcher
+/// follows the sequential stream once the first lines are requested).
+pub const PREFETCH_LINES: usize = 16;
+/// Applied-row counter for benchmarking (relaxed, only read by nnuebench).
+pub static ROWS_APPLIED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+/// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, sort+psq, threat rows].
+pub static PHASE_NS: [std::sync::atomic::AtomicU64; 4] = [
+    std::sync::atomic::AtomicU64::new(0),
+    std::sync::atomic::AtomicU64::new(0),
+    std::sync::atomic::AtomicU64::new(0),
+    std::sync::atomic::AtomicU64::new(0),
+];
+pub const PROFILE: bool = true;
+#[inline(always)]
+fn phase(i: usize, t: &mut std::time::Instant) {
+    if PROFILE {
+        let now = std::time::Instant::now();
+        PHASE_NS[i].fetch_add((now - *t).as_nanos() as u64, std::sync::atomic::Ordering::Relaxed);
+        *t = now;
+    }
+}
+
 #[inline(always)]
 fn prefetch_row<T>(row: &T) {
     #[cfg(target_arch = "x86_64")]
@@ -383,13 +404,14 @@ fn prefetch_row<T>(row: &T) {
         let p = row as *const T as *const i8;
         let bytes = std::mem::size_of::<T>();
         let mut off = 0;
-        while off < bytes {
+        let mut n = 0;
+        while off < bytes && n < PREFETCH_LINES {
             std::arch::x86_64::_mm_prefetch(p.add(off), std::arch::x86_64::_MM_HINT_T0);
             off += 64;
+            n += 1;
         }
     }
 }
-use super::simd::{add_feature as add_i16_row, sub_feature as sub_i16_row};
 
 impl StateV3 {
     pub fn new() -> Self {
@@ -457,7 +479,17 @@ impl StateV3 {
             let e = &self.stack[j];
             (self.stack[j - 1].pos, e.pos, e.dirty, e.changed, e.is_null)
         };
-        let mut accs = self.stack[j - 1].acc;
+        // Work in place: copy only the needed perspectives' accumulators (2 KB each) from j-1.
+        let (before, after) = self.stack.split_at_mut(j);
+        let prev = &before[j - 1].acc;
+        let cur = &mut after[0];
+        for p in 0..2 {
+            if need[p] {
+                cur.acc[p] = prev[p];
+            }
+        }
+        let accs = &mut cur.acc;
+        let mut tm = std::time::Instant::now();
         if !is_null {
             // Piece-square part, per perspective (rows prefetched first).
             let mut psq_idx = [[0usize; 4]; 2];
@@ -492,6 +524,7 @@ impl StateV3 {
             }
             let rel_old = RelBoard::from_position(&old_pos, Color::White);
             let rel_new = RelBoard::from_position(&new_pos, Color::White);
+            phase(0, &mut tm);
             let (ow, ob, nw, nb) = (&mut self.scratch_old, &mut self.scratch_old_b, &mut self.scratch_new, &mut self.scratch_new_b);
             ow.clear();
             ob.clear();
@@ -499,6 +532,7 @@ impl StateV3 {
             nb.clear();
             net.mapper.map_restricted(&rel_old, att_old, changed, |f| ow.push(f), |f| ob.push(f));
             net.mapper.map_restricted(&rel_new, att_new, changed, |f| nw.push(f), |f| nb.push(f));
+            phase(1, &mut tm);
             // Prefetch every candidate row (a few extra for unchanged features is cheap) so the
             // memory latency of the 66 MB table overlaps instead of serialising.
             for (p, lists) in [(0usize, [&*ow, &*nw]), (1, [&*ob, &*nb])] {
@@ -523,6 +557,7 @@ impl StateV3 {
                     sub_i16_row(acc, &net.psq_w[psq_idx[p][k]].0);
                 }
             }
+            phase(2, &mut tm);
             for (p, so, sn) in [(0usize, &mut *ow, &mut *nw), (1, &mut *ob, &mut *nb)] {
                 if !need[p] {
                     continue;
@@ -531,25 +566,28 @@ impl StateV3 {
                 sn.sort_unstable();
                 let acc = &mut accs[p].0;
                 let (mut a, mut b) = (0, 0);
+                let mut applied = 0u64;
                 while a < so.len() || b < sn.len() {
                     if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
                         sub_i8_row(acc, &net.pp_w[so[a]].0);
                         a += 1;
+                        applied += 1;
                     } else if a >= so.len() || sn[b] < so[a] {
                         add_i8_row(acc, &net.pp_w[sn[b]].0);
                         b += 1;
+                        applied += 1;
                     } else {
                         a += 1;
                         b += 1;
                     }
                 }
+                ROWS_APPLIED.fetch_add(applied, std::sync::atomic::Ordering::Relaxed);
             }
+            phase(3, &mut tm);
         }
-        let e = &mut self.stack[j];
         for p in 0..2 {
             if need[p] {
-                e.acc[p] = accs[p];
-                e.computed[p] = true;
+                cur.computed[p] = true;
             }
         }
     }

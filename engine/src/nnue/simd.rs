@@ -256,6 +256,18 @@ pub mod v3k {
     pub mod scalar {
         use super::*;
         #[inline]
+        pub fn add_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
+            for i in 0..N {
+                acc[i] = acc[i].wrapping_add(w[i]);
+            }
+        }
+        #[inline]
+        pub fn sub_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
+            for i in 0..N {
+                acc[i] = acc[i].wrapping_sub(w[i]);
+            }
+        }
+        #[inline]
         pub fn add_i8_row(acc: &mut [i16; N], w: &[i8; N]) {
             for i in 0..N {
                 acc[i] = acc[i].wrapping_add(w[i] as i16);
@@ -306,6 +318,26 @@ pub mod v3k {
         use std::arch::x86_64::*;
         // SAFETY (all): arrays are 64-byte aligned (Align64) or plain arrays read with unaligned
         // loads; every index stays inside N/HALF which are multiples of 32; avx2 is a compile-time feature.
+        #[inline]
+        pub fn add_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
+            unsafe {
+                let a = acc.as_mut_ptr() as *mut __m256i;
+                let b = w.as_ptr() as *const __m256i;
+                for i in 0..N / 16 {
+                    _mm256_storeu_si256(a.add(i), _mm256_add_epi16(_mm256_loadu_si256(a.add(i)), _mm256_loadu_si256(b.add(i))));
+                }
+            }
+        }
+        #[inline]
+        pub fn sub_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
+            unsafe {
+                let a = acc.as_mut_ptr() as *mut __m256i;
+                let b = w.as_ptr() as *const __m256i;
+                for i in 0..N / 16 {
+                    _mm256_storeu_si256(a.add(i), _mm256_sub_epi16(_mm256_loadu_si256(a.add(i)), _mm256_loadu_si256(b.add(i))));
+                }
+            }
+        }
         #[inline]
         pub fn add_i8_row(acc: &mut [i16; N], w: &[i8; N]) {
             unsafe {

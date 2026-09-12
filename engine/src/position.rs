@@ -84,6 +84,10 @@ impl Position {
         self.board[s as usize]
     }
     #[inline(always)]
+    pub fn board(&self) -> &[Piece; 64] {
+        &self.board
+    }
+    #[inline(always)]
     pub fn pieces(&self, pt: PieceType) -> Bitboard {
         self.by_type[pt.idx()]
     }

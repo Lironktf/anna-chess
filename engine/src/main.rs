@@ -96,6 +96,10 @@ fn main() {
                 if n % 120 == 0 { st.reset(next, &net); }
             }
             let incr_us = t.elapsed().as_secs_f64() * 1e6 / positions.len() as f64;
+            let rows_per_move = engine::nnue::v3::ROWS_APPLIED.load(std::sync::atomic::Ordering::Relaxed) as f64 / positions.len() as f64;
+            println!("threat rows applied per move (both perspectives): {:.1}; prefetch lines {}", rows_per_move, engine::nnue::v3::PREFETCH_LINES);
+            let ph: Vec<f64> = engine::nnue::v3::PHASE_NS.iter().map(|a| a.load(std::sync::atomic::Ordering::Relaxed) as f64 / 1000.0 / positions.len() as f64).collect();
+            println!("phases us/move: attackers+relboards {:.2} | map_restricted x2 {:.2} | prefetch+psq rows {:.2} | sort+threat rows {:.2}", ph[0], ph[1], ph[2], ph[3]);
             // Component timings.
             use engine::nnue::threats::RelBoard;
             let t = Instant::now();
@@ -131,6 +135,20 @@ fn main() {
             }
             let row_hot_us = t.elapsed().as_secs_f64() * 1e6 / (positions.len() * 20) as f64;
             println!("i8 row add cache-hot {:.3} us vs random {:.3} us", row_hot_us, row_us);
+            // Batched: 14 random rows per "move", with and without prefetching all lines first.
+            for pf in [false, true] {
+                let t = Instant::now();
+                let mut idxs = [0usize; 14];
+                let mut seed = 99u64;
+                for _ in 0..positions.len() {
+                    for k in 0..14 { seed ^= seed << 13; seed ^= seed >> 7; seed ^= seed << 17; idxs[k] = (seed % engine::nnue::v3::PP_FEATURES as u64) as usize; }
+                    if pf {
+                        for &f in &idxs { let p = net.pp_w[f].0.as_ptr() as *const i8; for l in 0..16 { unsafe { std::arch::x86_64::_mm_prefetch(p.add(l * 64), std::arch::x86_64::_MM_HINT_T0); } } }
+                    }
+                    for &f in &idxs { engine::nnue::simd::v3k::add_i8_row(&mut v.0, &net.pp_w[f].0); }
+                }
+                println!("14 random rows per move, prefetch={}: {:.2} us/move (sink {})", pf, t.elapsed().as_secs_f64() * 1e6 / positions.len() as f64, v.0[5]);
+            }
             println!("refresh {:.2} us/pos | forward {:.2} us | incremental push+eval {:.2} us/move | map_features {:.2} us ({} feats/pos) | map_restricted(one board) {:.2} us ({} feats) | i8 row add {:.3} us (sink {} {})",
                 refresh_us, forward_us, incr_us, mapfull_us, (cnt + cntb) / positions.len(), maprestr_us, (cnt2 + cnt2b) / positions.len(), row_us, sink % 7, v.0[3]);
         }
