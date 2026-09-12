@@ -78,3 +78,7 @@ GO=1 scripts/vast_launch.sh destroy fable-v1         # pulls final checkpoint, d
 | 2026-09-10 | TmFallingFix (time management falling-eval term fixed) on vs off, final net | 8+0.08 | +86 +/- 17 after 620 games, LLR 2.95 | PASSED; default on |
 | 2026-09-11 | Ranking with TM fix (fable_v1b), 8+0.08, 1 thread: vs Stash 37 (3420) +238 +/- 44 (200 g); vs Weiss 2.1-dev (~3355) +137 +/- 35 (200 g); vs Stormphrax 8.0.0 (3744) -139 +/- 45 (100 g: 11-49-40); vs Stockfish 19 full -301 +/- 47 (100 g: 0-70-30). LmrScalePct 115 vs 100: 0 after 276 games (stopped, neutral). | | | |
 | 2026-09-11 | RfpMult 60 vs 45 | 8+0.08 | -8.5 +/- 6.2 after 4190 games, LLR -2.96 | FAILED; default stays 45 |
+| 2026-09-11 | LmpBase 4 vs 3 | 4+0.04 | +7.1 +/- 7.7 after 3002 games, LLR 1.11 | capped, promising but unconfirmed; retest later at [0,5] with more games |
+| 2026-09-11 | Syzygy 3-4-5 on vs off | 4+0.04 | +8.7 +/- 7.8 after 3000 games, LLR 1.40 | capped, positive (expected small at blitz; larger at longer TC); keep enabled when tables are available |
+| 2026-09-11 | TmOptPct 85 vs 100 | 4+0.04 | +3.9 +/- 7.7 after 3002 games, LLR 0.48 | capped, neutral |
+| 2026-09-11 | TmOptPct 120 vs 100 | 4+0.04 | -15.9 +/- 8.5 after 2626 games, LLR -2.95 | FAILED (using more time per move hurts at this TC) |
