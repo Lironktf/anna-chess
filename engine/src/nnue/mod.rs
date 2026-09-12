@@ -13,6 +13,7 @@
 //! This matches bullet's `ChessBucketsMirrored` + `Chess768` exactly (checked at rev 629ee50).
 
 pub mod simd;
+pub mod threats;
 
 use crate::bitboard::*;
 use crate::position::Position;

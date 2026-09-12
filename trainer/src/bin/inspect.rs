@@ -156,6 +156,39 @@ fn main() {
             }
             println!("features ok: {} positions cross-checked (engine feature_index == bullet ChessBucketsMirrored, output buckets equal)", checked);
         }
+        Some("features2") => {
+            // Threat + pawn-pair features: engine (nnue::threats) vs bullet's example implementation.
+            use engine::nnue::threats::FeatureMapper;
+            use trainer::bullet_inputs::{three_file_band_mask, PawnPawnInputs};
+            let path = &args[2];
+            let n: u64 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(200_000);
+            let mine = FeatureMapper::new();
+            let theirs = PawnPawnInputs::new(three_file_band_mask());
+            assert_eq!(mine.num_inputs(), theirs.num_inputs());
+            let mut reader = CompressedTrainingDataEntryReader::new(File::open(path).unwrap()).unwrap();
+            let mut checked = 0u64;
+            let mut max_active = 0usize;
+            while reader.has_next() && checked < n {
+                let e = reader.next();
+                let fen = e.pos.fen().unwrap();
+                let pos = Position::from_fen(&fen).unwrap();
+                let board = to_bullet(&e);
+                let mut bs = Vec::new();
+                let mut bn = Vec::new();
+                theirs.map_features(&board, |s| bs.push(s), |t| bn.push(t));
+                bs.sort_unstable();
+                bn.sort_unstable();
+                let (ew, eb) = mine.features_for(&pos);
+                let (es, en) = if pos.side_to_move() == Color::White { (ew, eb) } else { (eb, ew) };
+                if es != bs || en != bn {
+                    eprintln!("threat/pair feature mismatch for {}\n engine stm {:?}\n bullet stm {:?}\n engine ntm {:?}\n bullet ntm {:?}", fen, es, bs, en, bn);
+                    std::process::exit(2);
+                }
+                max_active = max_active.max(es.len()).max(en.len());
+                checked += 1;
+            }
+            println!("features2 ok: {} positions, engine threat+pawn-pair features == bullet's (max active {})", checked, max_active);
+        }
         Some("roundtrip") => {
             // Engine's bulletformat writer must produce byte-identical records to the bulletformat crate.
             let fens = [

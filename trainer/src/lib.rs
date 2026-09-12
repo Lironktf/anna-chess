@@ -1,4 +1,5 @@
 //! Shared pieces between the trainer binary and the inspection tools.
+pub mod bullet_inputs;
 use sfbinpack::chess::{piecetype::PieceType, r#move::MoveType};
 use sfbinpack::TrainingDataEntry;
 
