@@ -1,0 +1,328 @@
+2026-09-13 00:43:11 sync loop start run=anna-v3b host=142.112.39.215 port=42708 interval=120
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s0-1/quantised.bin (45641280 bytes)
+2026-09-13 00:43:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s0-1/quantised.bin
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s1-1/quantised.bin (45641280 bytes)
+2026-09-13 00:43:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s1-1/quantised.bin
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s2-1/quantised.bin (45641280 bytes)
+2026-09-13 00:43:12 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s2-1/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 32 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1011 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1206 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -194 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1352 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 114 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-20/quantised.bin (45641280 bytes)
+2026-09-13 00:54:30 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-20/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 39 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1574 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1478 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -136 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1447 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 154 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-30/quantised.bin (45641280 bytes)
+2026-09-13 00:56:49 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-30/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 36 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1666 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1461 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -150 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1403 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 133 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-20/quantised.bin (45641280 bytes)
+2026-09-13 01:02:22 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-20/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 47 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -2010 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1893 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -313 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1538 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 114 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-40/quantised.bin (45641280 bytes)
+2026-09-13 01:04:41 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-40/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 36 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -2081 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1632 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -233 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1596 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 23 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-60/quantised.bin (45641280 bytes)
+2026-09-13 01:10:54 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-60/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 41 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1705 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1729 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -300 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1614 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 39 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-80/quantised.bin (45641280 bytes)
+2026-09-13 01:15:03 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-80/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 33 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1869 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1984 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -229 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1643 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 25 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-100/quantised.bin (45641280 bytes)
+2026-09-13 01:19:13 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-100/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 32 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1951 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1943 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -354 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1699 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 10 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-120/quantised.bin (45641280 bytes)
+2026-09-13 01:25:24 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-120/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 35 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1956 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1880 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -407 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1657 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -1 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-140/quantised.bin (45641280 bytes)
+2026-09-13 01:29:33 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-140/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 39 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1581 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1588 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -416 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1627 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 28 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-160/quantised.bin (45641280 bytes)
+2026-09-13 01:35:44 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-160/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 31 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1870 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 2042 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -348 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1651 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 18 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-180/quantised.bin (45641280 bytes)
+2026-09-13 01:39:54 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-180/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 26 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1775 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1815 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -321 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1650 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 23 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-200/quantised.bin (45641280 bytes)
+2026-09-13 01:46:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-200/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 33 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1737 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1787 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -399 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1671 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 11 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-220/quantised.bin (45641280 bytes)
+2026-09-13 01:50:28 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-220/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 37 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1741 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1781 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -306 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1686 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 18 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-240/quantised.bin (45641280 bytes)
+2026-09-13 01:56:38 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-240/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 33 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1693 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1813 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -448 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1657 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 30 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-260/quantised.bin (45641280 bytes)
+2026-09-13 02:02:48 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-260/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 37 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1689 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1744 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -382 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1687 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 26 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-280/quantised.bin (45641280 bytes)
+2026-09-13 02:07:00 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-280/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 33 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1609 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1635 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -358 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1679 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 18 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-300/quantised.bin (45641280 bytes)
+2026-09-13 02:13:10 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-300/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 35 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1606 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1655 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -369 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1702 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 19 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-310/quantised.bin (45641280 bytes)
+2026-09-13 02:15:18 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-310/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 31 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1590 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1708 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -385 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1774 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 12 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-20/quantised.bin (45641280 bytes)
+2026-09-13 02:21:25 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-20/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 29 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval -1592 expected [-2000, -100] ok
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 1706 expected [100, 2000] ok
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval -396 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval -1764 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval 11 expected [-3000, 3000] ok
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-30/quantised.bin (45641280 bytes)
+2026-09-13 02:23:39 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-30/quantised.bin
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+ssh: connect to host 142.112.39.215 port 42708: Connection refused
+rsync: connection unexpectedly closed (0 bytes received so far) [Receiver]
+rsync error: unexplained error (code 255) at io.c(232) [Receiver=3.4.4]
+2026-09-13 02:39:43 rsync failed (instance down or unreachable), retrying in 120 s

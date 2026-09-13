@@ -1,0 +1,184 @@
+{
+ "instance_api_key": "15c2229d4c5df8d5d6058df8a4088e2d41ae929ebe4ebc300224969f5f5efc44",
+ "new_contract": 50845524,
+ "success": true
+}
+instance 50845524 created; waiting for ssh...
+ssh -p 42708 root@142.112.39.215
+=== prepare box (rsync is not in the CUDA image)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload repo
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== remote setup + smoke (this takes ~10-15 min)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== setup start 2026-09-13T04:20:24Z run=anna-v3b host=490968606acf
+Sun Sep 13 04:20:24 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.195.03             Driver Version: 570.195.03     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:E1:00.0 Off |                  Off |
+| 35%   58C    P8             29W /  450W |       1MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+network preflight: HuggingFace download 31155884 B/s
+debconf: delaying package configuration, since apt-utils is not installed
+info: downloading installer
+info: profile set to minimal
+info: default host tuple is x86_64-unknown-linux-gnu
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 3 components
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+Build cuda_12.4.r12.4/compiler.34097967_0
+=== build trainer (cuda)
+   Compiling bullet_lib v1.0.0 (https://github.com/jw1912/bullet?rev=629ee50000b2afb7b3337595401c830d3b1e0f42#629ee500)
+   Compiling trainer v0.1.0 (/workspace/chess/trainer)
+    Finished `release` profile [optimized] target(s) in 13.28s
+-rwxr-xr-x 2 root root  926096 Sep 13 04:20 target/release/inspect
+-rwxr-xr-x 2 root root 2961792 Sep 13 04:20 target/release/trainer
+=== data
+2026-09-13 04:20:50 === downloader run start, groups: train train2, pid 2604
+2026-09-13 04:20:50 START test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst group=train size=6908056676 resume_from=0
+2026-09-13 04:24:17 VERIFIED test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst (6908056676 bytes, sha256 ok)
+2026-09-13 04:24:17 START test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst group=train size=7687798524 resume_from=0
+2026-09-13 04:27:57 VERIFIED test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst (7687798524 bytes, sha256 ok)
+2026-09-13 04:27:57 START test80-2024-03-mar-2tb7p.min-v2.v6.binpack.zst group=train2 size=8760594062 resume_from=0
+2026-09-13 04:32:43 VERIFIED test80-2024-03-mar-2tb7p.min-v2.v6.binpack.zst (8760594062 bytes, sha256 ok)
+2026-09-13 04:32:43 START test80-2024-05-may-2tb7p.min-v2.v6.binpack.zst group=train2 size=8846416555 resume_from=0
+2026-09-13 04:36:34 VERIFIED test80-2024-05-may-2tb7p.min-v2.v6.binpack.zst (8846416555 bytes, sha256 ok)
+2026-09-13 04:36:34 === downloader run finished, failures=0
+decompressing data/downloads/test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst
+decompressing data/downloads/test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst
+decompressing data/downloads/test80-2024-03-mar-2tb7p.min-v2.v6.binpack.zst
+decompressing data/downloads/test80-2024-05-may-2tb7p.min-v2.v6.binpack.zst
+-rw-r--r-- 1 root root  9184785274 Sep 13 04:27 data/test80-2024-01-jan-2tb7p.min-v2.v6.binpack
+-rw-r--r-- 1 root root  8262651516 Sep 13 04:23 data/test80-2024-02-feb-2tb7p.min-v2.v6.binpack
+-rw-r--r-- 1 root root 10476003160 Sep 13 04:32 data/test80-2024-03-mar-2tb7p.min-v2.v6.binpack
+-rw-r--r-- 1 root root 10568162073 Sep 13 04:36 data/test80-2024-05-may-2tb7p.min-v2.v6.binpack
+=== inspect real data (format + feature cross-check)
+file: /workspace/chess/data/test80-2024-01-jan-2tb7p.min-v2.v6.binpack (9184785274 bytes)
+entries read: 3000000  kept by filter: 1468997 (49.0%)
+bytes consumed: 8389793  -> estimated entries in file: 3284M, kept after filter: 1608M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [39395, 124587, 158069, 279713, 156585, 368952, 180066, 123209, 38421]
+results (stm loss/draw/win): [281207, 926687, 261103]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 366312, 514346, 302996, 188955, 96388]
+feature cross-checks passed: 1468
+sample: rn1qkb1r/pp3pp1/2p1bn1p/3p4/3P3N/2N1P1P1/PP3P1P/R1BQKB1R w KQkq - 2 9 | score -40 | result 0 | ply 16
+sample: 6k1/p4pp1/1p5p/2prP3/P7/1P5P/4RPP1/6K1 w - - 0 31 | score -135 | result 0 | ply 60
+sample: 1r4k1/1p1brppp/np6/p5N1/3pP3/P2P3P/1P2BPP1/2R1K2R w K - 0 21 | score 272 | result 0 | ply 40
+sample: 2bq1rk1/1pbn1pp1/r3p2p/p1pp4/P3P3/2PP1NB1/1P1NQPPP/1R2R1K1 b - - 8 21 | score -44 | result -1 | ply 41
+sample: 8/8/6r1/8/3k4/8/7R/4K3 w - - 21 91 | score 0 | result 0 | ply 180
+file: /workspace/chess/data/test80-2024-02-feb-2tb7p.min-v2.v6.binpack (8262651516 bytes)
+entries read: 3000000  kept by filter: 1467981 (48.9%)
+bytes consumed: 8390302  -> estimated entries in file: 2954M, kept after filter: 1446M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [39675, 123392, 155572, 281448, 157652, 370292, 178832, 122128, 38990]
+results (stm loss/draw/win): [280503, 926426, 261052]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 366078, 515554, 304764, 184175, 97410]
+feature cross-checks passed: 1467
+sample: 2r1k1r1/p2p4/2b1pB2/1p3p1p/8/PP4P1/2PR1P1P/2K1R3 b - - 0 28 | score -6 | result 0 | ply 55
+sample: r1k4r/4ppb1/1pP3p1/p2p4/PP1Nn2p/2P1P3/R4PPP/1N3RK1 w - - 1 19 | score 400 | result 0 | ply 36
+sample: r1bqr1k1/1p1n1pb1/2p3p1/p2p2n1/3P1B1N/2N1P2P/PP3PB1/R2QK2R w KQ - 0 16 | score -258 | result 0 | ply 30
+sample: 5b2/6pk/4Qp1p/1p2p3/1P2p3/2B1P1PP/2q2P2/6K1 w - - 5 45 | score -10 | result 0 | ply 88
+sample: 1R6/5pk1/2N3pp/3B4/p7/rp4P1/7P/6K1 b - - 1 39 | score -584 | result -1 | ply 77
+file: /workspace/chess/data/test80-2024-03-mar-2tb7p.min-v2.v6.binpack (10476003160 bytes)
+entries read: 3000000  kept by filter: 1470324 (49.0%)
+bytes consumed: 8390139  -> estimated entries in file: 3746M, kept after filter: 1836M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [39158, 122875, 155700, 280954, 160886, 373548, 177142, 121516, 38545]
+results (stm loss/draw/win): [274822, 940347, 255155]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 367270, 512653, 302911, 185254, 102236]
+feature cross-checks passed: 1470
+sample: 5k2/2bb1p2/2p4q/p1Pp4/B2Nr3/1P1QP1P1/P2K2P1/3R4 w - - 1 29 | score -485 | result -1 | ply 56
+sample: 8/7k/8/8/7K/3r2P1/5R2/8 w - - 86 153 | score 0 | result 0 | ply 304
+sample: 8/2B5/8/2Pp4/3P1Pk1/7p/r7/7K b - - 4 63 | score 3963 | result 1 | ply 125
+sample: r6k/1p2r2p/p3n2q/1QP1P2N/3P1pP1/8/6BK/R4R2 b - - 2 34 | score -914 | result -1 | ply 67
+sample: 7B/8/k7/8/2b5/7K/8/8 b - - 5 169 | score 0 | result 0 | ply 337
+file: /workspace/chess/data/test80-2024-05-may-2tb7p.min-v2.v6.binpack (10568162073 bytes)
+entries read: 3000000  kept by filter: 1472623 (49.1%)
+bytes consumed: 8389821  -> estimated entries in file: 3779M, kept after filter: 1855M
+score bins [<-1000, -1000..-300, -300..-100, -100..0, 0, 0..100, 100..300, 300..1000, >1000]: [41288, 124821, 154466, 277860, 163172, 371461, 176102, 123024, 40429]
+results (stm loss/draw/win): [284825, 923673, 264125]
+ply bins [<16, 16-40, 40-80, 80-120, 120-200, >200]: [0, 365510, 511641, 303102, 190195, 102175]
+feature cross-checks passed: 1472
+sample: 5r2/4q1k1/4ppp1/pb6/6NP/1P2P1P1/PQ6/3R2K1 w - - 0 28 | score 232 | result 0 | ply 54
+sample: r1n1k2r/1p1bbp2/6np/q1p1p1p1/2PpP1P1/P2P1N1P/5PBN/R1BQ1RK1 w kq - 0 21 | score -452 | result 0 | ply 40
+sample: 3rrk2/p4ppQ/B2q3p/2p5/3b4/1P4P1/P3PP1P/2B2RK1 w - - 0 25 | score 142 | result 1 | ply 48
+sample: 3k4/1p3Rp1/p4b1p/P1n1N3/3r2P1/1P2R3/5P1P/5K2 b - - 3 42 | score -3855 | result -1 | ply 83
+sample: 5rk1/2p1b1p1/2P1pn1p/8/4p3/4P3/3N1PPP/R3B1K1 b - - 0 29 | score 9 | result 0 | ply 57
+=== smoke run
+[34;1mTraining on NVIDIA GeForce RTX 4090 (sm_89)[0m
+superbatch [36m1[0m [[35m0.0[0m% ([36m0[0m/[36m50[0m batches, [36m1315723[0m pos/sec)]
+Estimated time to end of superbatch: [36minf[0ms     [Fsuperbatch [36m1[0m | time [36m1.9[0ms | running loss [36m0.032039[0m | [36m3364508[0m pos/sec | total time [36m10.4[0ms
+Estimated time remaining in training: [36m0[0mh [36m0[0mm [36m0[0ms
+Saved [smoke3-s0-1]
+Total Training Time: [36m0[0mh [36m0[0mm [36m13[0ms
+[34;1mTraining on NVIDIA GeForce RTX 4090 (sm_89)[0m
+superbatch [36m1[0m [[35m0.0[0m% ([36m0[0m/[36m50[0m batches, [36m9372335[0m pos/sec)]
+Estimated time to end of superbatch: [36minf[0ms     [Fsuperbatch [36m1[0m | time [36m1.9[0ms | running loss [36m0.028430[0m | [36m3531412[0m pos/sec | total time [36m10.3[0ms
+Estimated time remaining in training: [36m0[0mh [36m0[0mm [36m0[0ms
+Saved [smoke3-s1-1]
+Total Training Time: [36m0[0mh [36m0[0mm [36m13[0ms
+[34;1mTraining on NVIDIA GeForce RTX 4090 (sm_89)[0m
+superbatch [36m1[0m [[35m0.0[0m% ([36m0[0m/[36m50[0m batches, [36m9377135[0m pos/sec)]
+Estimated time to end of superbatch: [36minf[0ms     [Fsuperbatch [36m1[0m | time [36m1.7[0ms | running loss [36m0.085917[0m | [36m3780704[0m pos/sec | total time [36m10.1[0ms
+Estimated time remaining in training: [36m0[0mh [36m0[0mm [36m0[0ms
+Saved [smoke3-s2-1]
+Total Training Time: [36m0[0mh [36m0[0mm [36m12[0ms
+TRAINER EVAL rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 : 10.5
+TRAINER EVAL rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 : 10.5
+TRAINER EVAL rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 : 10.5
+TRAINER EVAL r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 : 10.5
+TRAINER EVAL r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 : 10.5
+TRAINER EVAL 8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 : -49.0
+done
+-rw-r--r-- 1 root root 45641280 Sep 13 04:39 /workspace/checkpoints/smoke3-s0-1/quantised.bin
+-rw-r--r-- 1 root root 45641280 Sep 13 04:39 /workspace/checkpoints/smoke3-s1-1/quantised.bin
+-rw-r--r-- 1 root root 45641280 Sep 13 04:39 /workspace/checkpoints/smoke3-s2-1/quantised.bin
+=== setup done 2026-09-13T04:39:34Z
+=== pull smoke checkpoint and netcheck
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s0-1/quantised.bin (45641280 bytes)
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s1-1/quantised.bin (45641280 bytes)
+architecture: v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 eval 10 expected [-150, 150] ok
+rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBN1 w Qkq - 0 1 eval 10 expected [-2000, -100] FAIL
+rnbqkbn1/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQq - 0 1 eval 10 expected [100, 2000] FAIL
+r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 eval 10 expected [-3000, 3000] ok
+r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ - 0 9 eval 10 expected [-3000, 3000] ok
+8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1 eval -49 expected [-3000, 3000] ok
+netcheck: loaded, evaluation ranges NOT met (expected for a barely trained net; use --strict to enforce)
+netcheck ok: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s2-1/quantised.bin (45641280 bytes)
+SMOKE OK. Next: scripts/vast_launch.sh sync anna-v3b (in another terminal), then GO=1 scripts/vast_launch.sh train anna-v3b

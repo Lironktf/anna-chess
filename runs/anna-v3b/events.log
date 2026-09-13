@@ -5,3 +5,4 @@
  "success": true
 }
 2026-09-13T04:47:46Z train start superbatches=310 (SB0=30 SB2=30, L1=512) self-destruct armed max_hours=9 (log verified)
+2026-09-13T06:39:04Z destroyed instance 50845524 (train complete, final checkpoint + raw/optimiser pulled)

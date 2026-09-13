@@ -1,0 +1,25 @@
+2026-09-13 00:43:11 sync loop start run=anna-v3b host=142.112.39.215 port=42708 interval=120
+2026-09-13 00:43:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s0-1/quantised.bin
+2026-09-13 00:43:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s1-1/quantised.bin
+2026-09-13 00:43:12 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/smoke3-s2-1/quantised.bin
+2026-09-13 00:54:30 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-20/quantised.bin
+2026-09-13 00:56:49 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s0-30/quantised.bin
+2026-09-13 01:02:22 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-20/quantised.bin
+2026-09-13 01:04:41 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-40/quantised.bin
+2026-09-13 01:10:54 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-60/quantised.bin
+2026-09-13 01:15:03 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-80/quantised.bin
+2026-09-13 01:19:13 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-100/quantised.bin
+2026-09-13 01:25:24 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-120/quantised.bin
+2026-09-13 01:29:33 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-140/quantised.bin
+2026-09-13 01:35:44 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-160/quantised.bin
+2026-09-13 01:39:54 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-180/quantised.bin
+2026-09-13 01:46:11 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-200/quantised.bin
+2026-09-13 01:50:28 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-220/quantised.bin
+2026-09-13 01:56:38 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-240/quantised.bin
+2026-09-13 02:02:48 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-260/quantised.bin
+2026-09-13 02:07:00 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-280/quantised.bin
+2026-09-13 02:13:10 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-300/quantised.bin
+2026-09-13 02:15:18 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s1-310/quantised.bin
+2026-09-13 02:21:25 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-20/quantised.bin
+2026-09-13 02:23:39 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v3b/checkpoints/anna-v3b-s2-30/quantised.bin
+2026-09-13 02:39:43 rsync failed (instance down or unreachable), retrying in 120 s
