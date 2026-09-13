@@ -40,8 +40,8 @@ fi
 [[ -x $SRC/target/release/engine ]] || { log "ENGINE BUILD FAILED"; log "=== train end exit=1"; exit 1; }
 ENGINE=$SRC/target/release/engine
 log "bench: $($ENGINE bench 2>&1 | tail -n 1)"
-for n in "$NET_V1" "$NET_V3"; do
-    log "netcheck $n: $($ENGINE netcheck "$n" 2>&1 | tail -n 1)"
+for n in "$NET_V1" "$NET_V3" "$NET_OLD"; do
+    [[ -f $n ]] && log "netcheck $n: $($ENGINE netcheck "$n" 2>&1 | tail -n 1)"
 done
 # Single-thread search speed with each net (the number that decides the equal-time result).
 for n in "$NET_V1" "$NET_V3"; do
@@ -96,13 +96,23 @@ if [[ "$MATCHES" == "slow4" ]]; then
     # 40/15-list style anchor: 4 threads per engine, 60+0.6, 8 games in parallel on a 32-thread box.
     # Each game uses 8 threads (4 per side): never more than nproc/8 games at once.
     T4="option.Threads=4"
-    CONC=$(( $(nproc) / 8 ))
+    # CONC_SLOW4 overrides (vast boxes may show more threads in nproc than the container is allowed to use).
+    CONC_FAST=$CONC
+    CONC=${CONC_SLOW4:-$(( $(nproc) / 8 ))}
     [[ $CONC -lt 1 ]] && CONC=1
     N4="-engine cmd=$ENGINE name=anna_new4 option.EvalFile=$NET_V3 $T4"
-    # Game counts: SLOW4_GAMES="smp v1 storm stash" (0 skips a match). ~2 min per game, CONC games at once.
-    read -r G_SMP G_V1 G_STORM G_STASH <<< "${SLOW4_GAMES:-40 100 100 0}"
+    O4="-engine cmd=$ENGINE name=anna_old4 option.EvalFile=$NET_OLD $T4"
+    # Game counts: SLOW4_GAMES="smp v1 old_fast old_slow storm stash" (0 skips a match). Slow games ~2 min each,
+    # CONC at once; old_fast is 1-thread blitz of NET_OLD vs v1 at CONC_FAST.
+    read -r G_SMP G_V1 G_OLDF G_OLDS G_STORM G_STASH <<< "${SLOW4_GAMES:-40 100 300 100 100 0}"
     [[ $G_SMP -gt 0 ]] && match slow4_smp4_vs_1 "$G_SMP" "60+0.6" $N4 -engine cmd=$ENGINE name=anna_new1 option.EvalFile=$NET_V3 option.Threads=1
+    if [[ $G_OLDF -gt 0 && -f $NET_OLD ]]; then
+        CONC_SAVE=$CONC; CONC=$CONC_FAST
+        match slow4_old_vs_v1_fast "$G_OLDF" "$TC_FAST" $A_OLD $A_V1
+        CONC=$CONC_SAVE
+    fi
     [[ $G_V1 -gt 0 ]] && match slow4_new_vs_v1 "$G_V1" "60+0.6" $N4 $A_V1 $T4
+    [[ $G_OLDS -gt 0 && -f $NET_OLD ]] && match slow4_old_vs_new "$G_OLDS" "60+0.6" $O4 $N4
     [[ $G_STORM -gt 0 && -x $STORM ]] && match slow4_new_vs_stormphrax8 "$G_STORM" "60+0.6" $N4 -engine cmd=$STORM name=stormphrax8 $T4
     [[ $G_STASH -gt 0 && -x $STASH ]] && match slow4_new_vs_stash "$G_STASH" "60+0.6" $N4 -engine cmd=$STASH name=stash $T4
     log "=== train end exit=0"
