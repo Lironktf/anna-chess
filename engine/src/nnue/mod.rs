@@ -373,6 +373,9 @@ struct StackEntry {
     dirty: DirtyPiece,
     /// King squares (white, black) after this entry's move.
     kings: [Square; 2],
+    /// Null-move entry: the board is unchanged, so this entry never holds accumulators of its own;
+    /// readers use the nearest non-null ancestor (`src_index`). Saves a 4 KB copy per null move.
+    is_null: bool,
 }
 
 #[derive(Clone, Copy)]
@@ -395,7 +398,7 @@ pub struct NnueState {
 impl NnueState {
     pub fn new() -> Self {
         let empty = FinnyEntry { acc: Align64([0; L1]), by_color: [0; 2], by_type: [0; 6] };
-        let blank = StackEntry { acc: Accumulator::new(), dirty: DirtyPiece::default(), kings: [0; 2] };
+        let blank = StackEntry { acc: Accumulator::new(), dirty: DirtyPiece::default(), kings: [0; 2], is_null: false };
         NnueState {
             stack: vec![blank; MAX_PLY + 8],
             len: 0,
@@ -417,6 +420,7 @@ impl NnueState {
         let entry = &mut self.stack[0];
         entry.dirty = DirtyPiece::default();
         entry.kings = [pos.king_sq(Color::White), pos.king_sq(Color::Black)];
+        entry.is_null = false;
         entry.acc.computed = [false; 2];
         for p in [Color::White, Color::Black] {
             Self::refresh_perspective(&mut self.finny[p.idx()], &mut entry.acc, p, pos, net);
@@ -432,6 +436,7 @@ impl NnueState {
         let e = &mut self.stack[self.len];
         e.dirty = dirty;
         e.kings = [pos_after.king_sq(Color::White), pos_after.king_sq(Color::Black)];
+        e.is_null = false;
         e.acc.computed = [false; 2];
         self.len += 1;
     }
@@ -445,8 +450,18 @@ impl NnueState {
         let e = &mut self.stack[self.len];
         e.dirty = DirtyPiece::default();
         e.kings = kings;
+        e.is_null = true;
         e.acc.computed = [false; 2];
         self.len += 1;
+    }
+
+    /// Index of the nearest non-null entry at or before `i` (entry 0 is never null).
+    #[inline(always)]
+    fn src_index(&self, mut i: usize) -> usize {
+        while self.stack[i].is_null {
+            i -= 1;
+        }
+        i
     }
 
     #[inline]
@@ -510,8 +525,9 @@ impl NnueState {
     #[inline]
     fn apply_incremental(&mut self, i: usize, p: Color, rel_ksq: Square, net: &Network) {
         let d = self.stack[i].dirty;
+        let src = self.src_index(i - 1);
         let (prev, cur) = self.stack.split_at_mut(i);
-        let prev = &prev[i - 1].acc.vals[p.idx()].0;
+        let prev = &prev[src].acc.vals[p.idx()].0;
         let cur = &mut cur[0].acc;
         let out = &mut cur.vals[p.idx()].0;
         let fi = |pc: Piece, s: Square| feature_index(p, rel_ksq, pc, s);
@@ -540,7 +556,8 @@ impl NnueState {
 
     /// Make sure the top-of-stack accumulator for perspective `p` is computed.
     fn ensure(&mut self, p: Color, pos: &Position, net: &Network) {
-        let top = self.len - 1;
+        // Null entries hold no data: work on the nearest non-null entry (same board).
+        let top = self.src_index(self.len - 1);
         if self.stack[top].acc.computed[p.idx()] {
             return;
         }
@@ -552,6 +569,10 @@ impl NnueState {
             }
             if i == 0 {
                 break;
+            }
+            if self.stack[i].is_null {
+                i -= 1;
+                continue;
             }
             let ka = self.stack[i - 1].kings[p.idx()];
             let kb = self.stack[i].kings[p.idx()];
@@ -571,7 +592,9 @@ impl NnueState {
         }
         let rel_ksq = Self::rel_king(p, self.stack[top].kings[p.idx()]);
         for j in i + 1..=top {
-            self.apply_incremental(j, p, rel_ksq, net);
+            if !self.stack[j].is_null {
+                self.apply_incremental(j, p, rel_ksq, net);
+            }
         }
     }
 
@@ -579,7 +602,7 @@ impl NnueState {
     pub fn evaluate(&mut self, pos: &Position, net: &Network) -> Value {
         self.ensure(Color::White, pos, net);
         self.ensure(Color::Black, pos, net);
-        let top = self.len - 1;
+        let top = self.src_index(self.len - 1);
         let acc = &self.stack[top].acc;
         let us = pos.side_to_move();
         let bucket = output_bucket(pos);

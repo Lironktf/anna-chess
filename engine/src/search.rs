@@ -714,8 +714,10 @@ impl<'a> Thread<'a> {
         let mut best_value = best_value_floor;
         let mut best_move = Move::NONE;
         let mut move_count = 0;
-        let mut quiets_searched: Vec<Move> = Vec::with_capacity(32);
-        let mut captures_searched: Vec<Move> = Vec::with_capacity(16);
+        // Fixed-size (moves are only recorded while move_count <= 32): no heap allocation per node.
+        let mut quiets_searched = [Move::NONE; 32];
+        let mut captures_searched = [Move::NONE; 32];
+        let (mut n_quiets, mut n_caps) = (0usize, 0usize);
         let mut skip_quiets = false;
 
         loop {
@@ -964,9 +966,11 @@ impl<'a> Thread<'a> {
             }
             if m != best_move && move_count <= 32 {
                 if capture {
-                    captures_searched.push(m);
+                    captures_searched[n_caps] = m;
+                    n_caps += 1;
                 } else {
-                    quiets_searched.push(m);
+                    quiets_searched[n_quiets] = m;
+                    n_quiets += 1;
                 }
             }
         }
@@ -981,7 +985,7 @@ impl<'a> Thread<'a> {
                 VALUE_DRAW
             };
         } else if !best_move.is_none() {
-            self.update_all_stats(pos, ply, best_move, &quiets_searched, &captures_searched, depth, tt_move);
+            self.update_all_stats(pos, ply, best_move, &quiets_searched[..n_quiets], &captures_searched[..n_caps], depth, tt_move);
             if !pv_node && crate::params::SE_TTM.get() != 0 {
                 self.hist.ttm_update(if best_move == tt_move { 918 } else { -747 });
             }
