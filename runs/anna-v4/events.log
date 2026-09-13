@@ -1,0 +1,14 @@
+2026-09-13T15:06:51Z create offer=48580533 run=anna-v4 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "b4c014002dfc4d8f641e78755fb7c87e4dfaae659f843decc170f75131dba355",
+ "new_contract": 50900782,
+ "success": false
+}
+2026-09-13T15:26:52Z destroyed instance 50900782 (never reached running in 10 min)
+2026-09-13T15:27:17Z create offer=46640477 run=anna-v4 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "3754bc2c81e9d60de4950ca939276098cfa629f33cfeeed32e038c9c32351422",
+ "new_contract": 50903665,
+ "success": true
+}
+2026-09-13T16:02:58Z train start superbatches=310 (SB0=30 SB2=30, v4) self-destruct armed max_hours=6 (log verified); tmux started manually (launcher's train step stops after arming)
