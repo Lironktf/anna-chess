@@ -94,13 +94,17 @@ A_V1="-engine cmd=$ENGINE name=anna_v1 option.EvalFile=$NET_V1"
 A_OLD="-engine cmd=$ENGINE name=anna_old option.EvalFile=$NET_OLD"
 if [[ "$MATCHES" == "slow4" ]]; then
     # 40/15-list style anchor: 4 threads per engine, 60+0.6, 8 games in parallel on a 32-thread box.
+    # Each game uses 8 threads (4 per side): never more than nproc/8 games at once.
     T4="option.Threads=4"
-    CONC=$(( $(nproc) / 4 ))
+    CONC=$(( $(nproc) / 8 ))
+    [[ $CONC -lt 1 ]] && CONC=1
     N4="-engine cmd=$ENGINE name=anna_new4 option.EvalFile=$NET_V3 $T4"
-    match slow4_smp4_vs_1          60  "60+0.6" $N4 -engine cmd=$ENGINE name=anna_new1 option.EvalFile=$NET_V3 option.Threads=1
-    match slow4_new_vs_v1          200 "60+0.6" $N4 $A_V1 $T4
-    [[ -x $STORM ]] && match slow4_new_vs_stormphrax8 200 "60+0.6" $N4 -engine cmd=$STORM name=stormphrax8 $T4
-    [[ -x $STASH ]] && match slow4_new_vs_stash 100 "60+0.6" $N4 -engine cmd=$STASH name=stash $T4
+    # Game counts: SLOW4_GAMES="smp v1 storm stash" (0 skips a match). ~2 min per game, CONC games at once.
+    read -r G_SMP G_V1 G_STORM G_STASH <<< "${SLOW4_GAMES:-40 100 100 0}"
+    [[ $G_SMP -gt 0 ]] && match slow4_smp4_vs_1 "$G_SMP" "60+0.6" $N4 -engine cmd=$ENGINE name=anna_new1 option.EvalFile=$NET_V3 option.Threads=1
+    [[ $G_V1 -gt 0 ]] && match slow4_new_vs_v1 "$G_V1" "60+0.6" $N4 $A_V1 $T4
+    [[ $G_STORM -gt 0 && -x $STORM ]] && match slow4_new_vs_stormphrax8 "$G_STORM" "60+0.6" $N4 -engine cmd=$STORM name=stormphrax8 $T4
+    [[ $G_STASH -gt 0 && -x $STASH ]] && match slow4_new_vs_stash "$G_STASH" "60+0.6" $N4 -engine cmd=$STASH name=stash $T4
     log "=== train end exit=0"
     exit 0
 fi
