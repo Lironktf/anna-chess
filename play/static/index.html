@@ -5,54 +5,102 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Play Anna</title>
 <style>
-  :root { --light: #f0d9b5; --dark: #b58863; --sel: rgba(20,85,30,.5); --last: rgba(255,255,0,.35); --bg: #1e1e22; --fg: #e8e8e8; --panel: #2a2a30; }
+  :root {
+    --light: #eeeed2; --dark: #769656; --hl: rgba(255, 255, 51, .5); --sel: rgba(255, 255, 51, .5);
+    --bg: #302e2b; --panel: #262421; --panel2: #21201d; --fg: #e6e6e6; --muted: #9e9e9e; --accent: #81b64c; --accent2: #6a9a3e;
+    --sz: min(92vw, 76vh, 680px);
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 system-ui, sans-serif; }
-  .wrap { display: flex; flex-wrap: wrap; gap: 20px; padding: 16px; justify-content: center; }
-  .boardcol { display: flex; gap: 8px; }
-  .evalbar { width: 18px; height: min(90vw, 560px); background: #333; border-radius: 3px; overflow: hidden; display: flex; flex-direction: column-reverse; }
-  .evalbar div { background: #eee; width: 100%; height: 50%; transition: height .3s; }
-  .board { display: grid; grid-template-columns: repeat(8, 1fr); width: min(90vw, 560px); height: min(90vw, 560px); border: 2px solid #111; user-select: none; }
-  .sq { position: relative; display: flex; align-items: center; justify-content: center; font-size: min(9vw, 56px); cursor: pointer; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 24px; padding: 20px 16px; justify-content: center; align-items: flex-start; }
+
+  /* ---- board column ---- */
+  .gamecol { display: flex; flex-direction: column; gap: 8px; width: calc(var(--sz) + 34px); }
+  .player { display: flex; align-items: center; gap: 10px; height: 36px; padding-left: 34px; }
+  .avatar { width: 30px; height: 30px; border-radius: 6px; background: linear-gradient(135deg, #81b64c, #4e7a2a); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+  .avatar.you { background: linear-gradient(135deg, #5d9cec, #3b6fc4); }
+  .pname { font-weight: 600; }
+  .ptag { color: var(--muted); font-size: 13px; }
+  .thinking { display: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1s infinite; margin-left: 4px; }
+  .thinking.on { display: inline-block; }
+  @keyframes pulse { 0%,100% { opacity: .3 } 50% { opacity: 1 } }
+
+  .boardrow { display: flex; gap: 10px; align-items: stretch; }
+  .evalwrap { width: 24px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .evalbar { flex: 1; width: 24px; border-radius: 4px; overflow: hidden; background: #403d39; position: relative; box-shadow: inset 0 0 0 1px #1b1a18; }
+  .evalbar .white { position: absolute; left: 0; right: 0; bottom: 0; height: 50%; background: #f2f2f2; transition: height .4s ease; }
+  .evalbar.flipped { background: #f2f2f2; } .evalbar.flipped .white { background: #403d39; }
+  .evalbar .lbl { position: absolute; left: 0; right: 0; text-align: center; font-size: 10px; font-weight: 700; }
+  .evalbar .lbl.top { top: 4px; color: #f2f2f2; } .evalbar .lbl.bot { bottom: 4px; color: #262421; }
+  .evalbar.flipped .lbl.top { color: #262421; } .evalbar.flipped .lbl.bot { color: #f2f2f2; }
+
+  .board { position: relative; width: var(--sz); height: var(--sz); border-radius: 4px; overflow: hidden; box-shadow: 0 6px 24px rgba(0,0,0,.45); user-select: none; touch-action: none; }
+  .squares { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); }
+  .sq { position: relative; }
   .sq.light { background: var(--light); } .sq.dark { background: var(--dark); }
-  .sq.last { box-shadow: inset 0 0 0 100px var(--last); }
-  .sq.sel { box-shadow: inset 0 0 0 100px var(--sel); }
-  .sq.target::after { content: ""; position: absolute; width: 28%; height: 28%; border-radius: 50%; background: rgba(0,0,0,.25); }
-  .sq.target.cap::after { width: 90%; height: 90%; background: none; border: 5px solid rgba(0,0,0,.25); }
-  .sq.check { background: radial-gradient(circle, #f33 0%, #f33 40%, transparent 75%); }
-  .pc { line-height: 1; }
-  .pc.w { color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000; }
-  .pc.b { color: #111; }
-  .coord { position: absolute; font-size: 11px; font-weight: 600; pointer-events: none; }
+  .sq.last, .sq.sel { box-shadow: inset 0 0 0 200px var(--hl); }
+  .sq.check { background: radial-gradient(ellipse at center, rgba(255,0,0,.9) 0%, rgba(231,0,0,.7) 25%, rgba(169,0,0,0) 89%); }
+  .sq.dot::after { content: ""; position: absolute; left: 50%; top: 50%; width: 30%; height: 30%; transform: translate(-50%,-50%); border-radius: 50%; background: rgba(0,0,0,.14); }
+  .sq.ring::after { content: ""; position: absolute; inset: 0; border: calc(var(--sz) / 96) solid rgba(0,0,0,.14); border-radius: 50%; }
+  .sq.hover { box-shadow: inset 0 0 0 4px rgba(255,255,255,.65); }
+  .coord { position: absolute; font-size: calc(var(--sz) / 52); font-weight: 700; pointer-events: none; }
   .sq.light .coord { color: var(--dark); } .sq.dark .coord { color: var(--light); }
-  .coord.f { right: 3px; bottom: 1px; } .coord.r { left: 3px; top: 1px; }
-  .panel { width: min(90vw, 360px); display: flex; flex-direction: column; gap: 12px; }
-  .card { background: var(--panel); border-radius: 8px; padding: 12px; }
-  h1 { font-size: 20px; margin: 0 0 4px; }
-  .muted { opacity: .7; font-size: 13px; }
-  button { background: #3a3a44; color: var(--fg); border: 1px solid #555; border-radius: 6px; padding: 8px 12px; cursor: pointer; font-size: 14px; }
-  button:hover { background: #4a4a56; } button:disabled { opacity: .4; cursor: default; }
+  .coord.f { right: 4%; bottom: 2%; } .coord.r { left: 4%; top: 2%; }
+  .pieces { position: absolute; inset: 0; pointer-events: none; }
+  .piece { position: absolute; left: 0; top: 0; width: 12.5%; height: 12.5%; background-size: 100%; background-repeat: no-repeat; background-position: center; will-change: transform; transition: transform .16s ease; z-index: 2; }
+  .piece.drag { transition: none; z-index: 5; filter: drop-shadow(0 6px 6px rgba(0,0,0,.4)); }
+  .piece.hidden { display: none; }
+
+  /* ---- side panel ---- */
+  .panel { width: min(92vw, 380px); display: flex; flex-direction: column; gap: 12px; }
+  .card { background: var(--panel); border-radius: 10px; padding: 14px; }
+  h1 { font-size: 20px; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
+  .muted { color: var(--muted); font-size: 13px; }
+  button { background: #3c3a37; color: var(--fg); border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer; font-size: 14px; font-weight: 600; box-shadow: 0 3px 0 #22211f; }
+  button:hover { background: #4a4744; } button:active { transform: translateY(2px); box-shadow: 0 1px 0 #22211f; }
+  button:disabled { opacity: .4; cursor: default; transform: none; }
+  button.primary { background: var(--accent); color: #fff; box-shadow: 0 3px 0 #45802c; } button.primary:hover { background: #8fc55b; }
   .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  input[type=range] { width: 100%; }
-  select { background: #3a3a44; color: var(--fg); border: 1px solid #555; border-radius: 6px; padding: 6px; }
-  .status { font-weight: 600; min-height: 1.4em; }
-  .moves { max-height: 200px; overflow-y: auto; font-family: ui-monospace, monospace; font-size: 14px; display: grid; grid-template-columns: 3em 1fr 1fr; gap: 2px 6px; }
-  .moves .n { opacity: .6; }
-  .moves .cur { background: #4a4a56; border-radius: 3px; padding: 0 3px; }
-  .pv { font-family: ui-monospace, monospace; font-size: 13px; word-break: break-word; opacity: .9; }
-  .promo { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; }
-  .promo div { background: var(--panel); padding: 16px; border-radius: 8px; display: flex; gap: 8px; }
-  .promo button { font-size: 40px; padding: 6px 14px; }
-  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #c33; margin-right: 6px; }
-  .dot.on { background: #3c3; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  select { background: #3c3a37; color: var(--fg); border: 0; border-radius: 6px; padding: 6px 8px; }
+  .status { font-weight: 700; font-size: 16px; min-height: 1.4em; }
+  .think { color: var(--muted); font-size: 13px; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .pv { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; word-break: break-word; margin-top: 6px; color: #cfcfcf; }
+  .moves { max-height: 240px; overflow-y: auto; font-size: 14px; }
+  .moves .mrow { display: grid; grid-template-columns: 2.6em 1fr 1fr; gap: 0 6px; padding: 3px 6px; }
+  .moves .mrow:nth-child(odd) { background: var(--panel2); }
+  .moves .n { color: var(--muted); }
+  .moves .m { font-weight: 600; padding: 0 4px; border-radius: 4px; }
+  .moves .m.cur { background: #4a4744; }
+  .result { text-align: center; padding: 8px; font-weight: 700; }
+  .fen { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); word-break: break-all; }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #c33; }
+  .dot.on { background: var(--accent); }
+
+  .promo { position: absolute; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 10; }
+  .promo.on { display: flex; }
+  .promo .box { background: #fff; border-radius: 8px; padding: 6px; display: flex; gap: 4px; box-shadow: 0 8px 30px rgba(0,0,0,.5); }
+  .promo .box div { width: calc(var(--sz) / 7); height: calc(var(--sz) / 7); background-size: 90%; background-repeat: no-repeat; background-position: center; border-radius: 6px; cursor: pointer; }
+  .promo .box div:hover { background-color: #d9d9c9; }
+  @media (max-width: 800px) { .wrap { gap: 12px; padding: 10px 8px; } }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="boardcol">
-    <div class="evalbar" title="evaluation (white's point of view)"><div id="evalfill"></div></div>
-    <div class="board" id="board"></div>
+  <div class="gamecol">
+    <div class="player" id="topPlayer"><div class="avatar" id="topAv">A</div><span class="pname" id="topName">Anna</span><span class="ptag" id="topTag"></span><span class="thinking" id="topThink"></span></div>
+    <div class="boardrow">
+      <div class="evalwrap"><div class="evalbar" id="evalbar"><div class="white" id="evalfill"></div><div class="lbl top" id="evalTop"></div><div class="lbl bot" id="evalBot"></div></div></div>
+      <div class="board" id="board">
+        <div class="squares" id="squares"></div>
+        <div class="pieces" id="pieces"></div>
+        <div class="promo" id="promo"><div class="box" id="promoBox"></div></div>
+      </div>
+    </div>
+    <div class="player" id="botPlayer"><div class="avatar you" id="botAv">Y</div><span class="pname" id="botName">You</span><span class="ptag" id="botTag"></span><span class="thinking" id="botThink"></span></div>
   </div>
+
   <div class="panel">
     <div class="card">
       <h1><span class="dot" id="dot"></span><span id="title">Anna</span></h1>
@@ -60,159 +108,249 @@
     </div>
     <div class="card">
       <div class="row">
-        <button id="newW">Play as White</button>
-        <button id="newB">Play as Black</button>
+        <button class="primary" id="newW">Play as White</button>
+        <button class="primary" id="newB">Play as Black</button>
         <button id="flip">Flip</button>
       </div>
-      <div style="margin-top:10px">
-        <label>Engine time per move: <b id="mtLabel">1.0 s</b></label>
+      <div style="margin-top:14px">
+        <label class="muted">Engine time per move: <b id="mtLabel" style="color:var(--fg)">1.0 s</b></label>
         <input type="range" id="mt" min="0" max="100" value="50">
       </div>
       <div class="row" style="margin-top:6px">
-        <label>or fixed depth: <select id="depth"><option value="">off</option></select></label>
+        <label class="muted">or fixed depth: <select id="depth"><option value="">off</option></select></label>
       </div>
-      <div class="row" style="margin-top:10px">
+      <div class="row" style="margin-top:12px">
         <button id="undo">Undo</button>
         <button id="resign">Resign</button>
       </div>
     </div>
     <div class="card">
       <div class="status" id="status"></div>
-      <div id="think" class="muted"></div>
+      <div class="think" id="think"></div>
       <div class="pv" id="pv"></div>
     </div>
-    <div class="card">
+    <div class="card" style="padding:8px">
       <div class="moves" id="moves"></div>
+      <div class="result" id="result"></div>
     </div>
-    <div class="card muted" id="fen" style="font-family: ui-monospace, monospace; font-size: 12px; word-break: break-all"></div>
+    <div class="card fen" id="fen"></div>
+    <div class="muted" style="font-size:11px;text-align:center">pieces: cburnett set, CC BY-SA 3.0</div>
   </div>
 </div>
-<div class="promo" id="promo"><div>
-  <button data-p="q">♛</button><button data-p="r">♜</button><button data-p="b">♝</button><button data-p="n">♞</button>
-</div></div>
 
 <script>
 (() => {
-  const GLYPH = { k:'♚', q:'♛', r:'♜', b:'♝', n:'♞', p:'♟' };
   const $ = id => document.getElementById(id);
-  const boardEl = $('board');
+  const boardEl = $('board'), squaresEl = $('squares'), piecesEl = $('pieces');
   let ws = null, state = null, hello = null, flipped = false, selected = null, pendingPromo = null;
-  let lastInfo = null;
+  const pieceEls = new Map();           // square name -> element
+  const FILES = 'abcdefgh';
 
-  // --- strength slider: 100 ms .. max_movetime, log scale
+  const pieceUrl = ch => `/pieces/${ch.toLowerCase()}${ch === ch.toUpperCase() ? 'l' : 'd'}.svg`;
+
+  // ---- strength slider (100 ms .. max_movetime, log scale)
   function sliderToMs(v) {
     const max = (hello && hello.max_movetime) || 10000;
     const lo = Math.log(100), hi = Math.log(max);
     return Math.round(Math.exp(lo + (hi - lo) * v / 100) / 50) * 50;
   }
-  function currentMs() { return sliderToMs(+$('mt').value); }
-  function fmtMs(ms) { return ms >= 1000 ? (ms / 1000).toFixed(1) + ' s' : ms + ' ms'; }
+  const currentMs = () => sliderToMs(+$('mt').value);
+  const fmtMs = ms => ms >= 1000 ? (ms / 1000).toFixed(1) + ' s' : ms + ' ms';
   $('mt').oninput = () => { $('mtLabel').textContent = fmtMs(currentMs()); };
+  $('mt').onchange = () => sendLevel();
+  $('depth').onchange = () => sendLevel();
+  function sendLevel() { send({ t: 'level', movetime: currentMs(), depth: $('depth').value ? +$('depth').value : null }); }
 
-  // --- board rendering
-  function sqName(f, r) { return 'abcdefgh'[f] + (r + 1); }
+  // ---- geometry
+  const sqName = (f, r) => FILES[f] + (r + 1);
+  const fileOf = n => FILES.indexOf(n[0]), rankOf = n => +n[1] - 1;
+  // screen column/row (0..7 from top-left) for a square
+  const col = n => flipped ? 7 - fileOf(n) : fileOf(n);
+  const row = n => flipped ? rankOf(n) : 7 - rankOf(n);
+  function squareAt(clientX, clientY) {
+    const b = boardEl.getBoundingClientRect();
+    const c = Math.floor((clientX - b.left) / b.width * 8), r = Math.floor((clientY - b.top) / b.height * 8);
+    if (c < 0 || c > 7 || r < 0 || r > 7) return null;
+    return sqName(flipped ? 7 - c : c, flipped ? r : 7 - r);
+  }
   function parseFen(fen) {
-    const rows = fen.split(' ')[0].split('/');
     const pieces = {};
-    rows.forEach((row, i) => {
+    fen.split(' ')[0].split('/').forEach((rowS, i) => {
       let f = 0;
-      for (const ch of row) {
-        if (/\d/.test(ch)) { f += +ch; continue; }
-        pieces[sqName(f, 7 - i)] = ch; f++;
-      }
+      for (const ch of rowS) { if (/\d/.test(ch)) { f += +ch; continue; } pieces[sqName(f, 7 - i)] = ch; f++; }
     });
     return pieces;
   }
-  function render() {
-    boardEl.innerHTML = '';
+
+  // ---- squares layer (backgrounds, highlights, coordinates)
+  function buildSquares() {
+    squaresEl.innerHTML = '';
+    for (let i = 0; i < 64; i++) {
+      const c = i & 7, r = i >> 3;                       // screen col/row
+      const f = flipped ? 7 - c : c, rk = flipped ? r : 7 - r;
+      const name = sqName(f, rk);
+      const d = document.createElement('div');
+      d.className = 'sq ' + (((f + rk) & 1) ? 'light' : 'dark');
+      d.dataset.sq = name;
+      if (c === 0) { const s = document.createElement('span'); s.className = 'coord r'; s.textContent = rk + 1; d.appendChild(s); }
+      if (r === 7) { const s = document.createElement('span'); s.className = 'coord f'; s.textContent = FILES[f]; d.appendChild(s); }
+      squaresEl.appendChild(d);
+    }
+  }
+  function sqEl(name) { return squaresEl.querySelector(`[data-sq="${name}"]`); }
+  function renderHighlights() {
+    for (const d of squaresEl.children) d.classList.remove('last', 'sel', 'dot', 'ring', 'check');
     if (!state) return;
     const pieces = parseFen(state.fen);
-    const last = state.last ? [state.last.slice(0, 2), state.last.slice(2, 4)] : [];
-    const targets = selected ? state.legal.filter(m => m.startsWith(selected)).map(m => m.slice(2, 4)) : [];
-    const inCheck = state.status === 'checkmate' || isCheckNow();
-    for (let i = 0; i < 64; i++) {
-      const r = flipped ? (i >> 3) : 7 - (i >> 3);
-      const f = flipped ? 7 - (i & 7) : (i & 7);
-      const name = sqName(f, r);
-      const d = document.createElement('div');
-      d.className = 'sq ' + (((f + r) & 1) ? 'light' : 'dark');
-      if (last.includes(name)) d.classList.add('last');
-      if (selected === name) d.classList.add('sel');
-      if (targets.includes(name)) { d.classList.add('target'); if (pieces[name]) d.classList.add('cap'); }
-      const p = pieces[name];
-      if (p) {
-        const isW = p === p.toUpperCase();
-        if (inCheck && p.toLowerCase() === 'k' && ((state.turn === 'w') === isW)) d.classList.add('check');
-        const s = document.createElement('span');
-        s.className = 'pc ' + (isW ? 'w' : 'b');
-        s.textContent = GLYPH[p.toLowerCase()];
-        d.appendChild(s);
+    if (state.last) { sqEl(state.last.slice(0, 2)).classList.add('last'); sqEl(state.last.slice(2, 4)).classList.add('last'); }
+    if (selected) {
+      sqEl(selected).classList.add('sel');
+      for (const m of state.legal) if (m.startsWith(selected)) sqEl(m.slice(2, 4)).classList.add(pieces[m.slice(2, 4)] ? 'ring' : 'dot');
+    }
+    const h = state.history;
+    const inCheck = state.status === 'checkmate' || (h.length && h[h.length - 1].san.endsWith('+'));
+    if (inCheck) for (const [sq, p] of Object.entries(pieces)) if (p.toLowerCase() === 'k' && (p === 'K') === (state.turn === 'w')) sqEl(sq).classList.add('check');
+  }
+
+  // ---- pieces layer (animated)
+  function place(el, name) { el.style.transform = `translate(${col(name) * 100}%, ${row(name) * 100}%)`; }
+  function renderPieces(animate) {
+    const want = parseFen(state.fen);
+    // Try to animate the last move: the element on `from` slides to `to`.
+    if (animate && state.last) {
+      const from = state.last.slice(0, 2), to = state.last.slice(2, 4);
+      const el = pieceEls.get(from);
+      if (el && want[to]) {
+        const cap = pieceEls.get(to); if (cap) cap.remove();
+        pieceEls.delete(from); pieceEls.set(to, el); el.dataset.p = want[to]; el.style.backgroundImage = `url(${pieceUrl(want[to])})`;
+        place(el, to);
       }
-      if (f === (flipped ? 7 : 0)) { const c = document.createElement('span'); c.className = 'coord r'; c.textContent = r + 1; d.appendChild(c); }
-      if (r === (flipped ? 7 : 0)) { const c = document.createElement('span'); c.className = 'coord f'; c.textContent = 'abcdefgh'[f]; d.appendChild(c); }
-      d.onclick = () => clickSquare(name, pieces[name]);
-      boardEl.appendChild(d);
+    }
+    // Reconcile everything else (castling rook, en passant, undo, new game, promotion).
+    for (const [sq, el] of [...pieceEls]) if (!want[sq] || want[sq] !== el.dataset.p) { el.remove(); pieceEls.delete(sq); }
+    for (const [sq, p] of Object.entries(want)) {
+      if (pieceEls.has(sq)) { place(pieceEls.get(sq), sq); continue; }
+      const el = document.createElement('div');
+      el.className = 'piece'; el.dataset.p = p; el.style.backgroundImage = `url(${pieceUrl(p)})`;
+      el.style.transition = 'none'; place(el, sq); piecesEl.appendChild(el);
+      requestAnimationFrame(() => { el.style.transition = ''; });
+      pieceEls.set(sq, el);
     }
   }
-  // The server does not send a check flag; infer it from the last SAN.
-  function isCheckNow() {
-    const h = state.history; if (!h.length) return false;
-    return h[h.length - 1].san.endsWith('+');
-  }
+  function render(animate) { renderPieces(animate); renderHighlights(); }
 
-  function myTurn() { return state && !state.thinking && state.status === 'playing' && state.turn === state.human; }
-  function clickSquare(name, piece) {
-    if (!myTurn()) return;
-    const mine = piece && ((piece === piece.toUpperCase()) === (state.human === 'w'));
-    if (selected && selected !== name) {
-      const cands = state.legal.filter(m => m.startsWith(selected + name));
-      if (cands.length === 1) { send({ t: 'move', uci: cands[0] }); selected = null; render(); return; }
-      if (cands.length > 1) { pendingPromo = selected + name; $('promo').style.display = 'flex'; return; }
-    }
-    selected = mine ? (selected === name ? null : name) : null;
-    render();
+  // ---- interaction: click-click and drag
+  const myTurn = () => state && !state.thinking && state.status === 'playing' && state.turn === state.human;
+  const isMine = p => p && ((p === p.toUpperCase()) === (state.human === 'w'));
+  let drag = null;
+  function tryMove(from, to) {
+    const cands = state.legal.filter(m => m.startsWith(from + to));
+    if (cands.length === 1) { send({ t: 'move', uci: cands[0] }); selected = null; renderHighlights(); return true; }
+    if (cands.length > 1) { pendingPromo = from + to; showPromo(); return true; }
+    return false;
   }
-  $('promo').querySelectorAll('button').forEach(b => b.onclick = () => {
-    $('promo').style.display = 'none';
-    if (pendingPromo) send({ t: 'move', uci: pendingPromo + b.dataset.p });
-    pendingPromo = null; selected = null; render();
+  boardEl.addEventListener('pointerdown', e => {
+    if (!myTurn() || pendingPromo) return;
+    const sq = squareAt(e.clientX, e.clientY); if (!sq) return;
+    const pieces = parseFen(state.fen), p = pieces[sq];
+    if (selected && selected !== sq && tryMove(selected, sq)) return;
+    if (!isMine(p)) { selected = null; renderHighlights(); return; }
+    selected = sq; renderHighlights();
+    const el = pieceEls.get(sq);
+    drag = { sq, el, moved: false, startX: e.clientX, startY: e.clientY };
+    el.classList.add('drag');
+    boardEl.setPointerCapture(e.pointerId);
   });
-  $('promo').onclick = e => { if (e.target === $('promo')) { $('promo').style.display = 'none'; pendingPromo = null; } };
+  boardEl.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const b = boardEl.getBoundingClientRect();
+    if (Math.hypot(e.clientX - drag.startX, e.clientY - drag.startY) > 3) drag.moved = true;
+    if (!drag.moved) return;
+    const x = (e.clientX - b.left) / b.width * 8 - 0.5, y = (e.clientY - b.top) / b.height * 8 - 0.5;
+    drag.el.style.transform = `translate(${x * 100}%, ${y * 100}%)`;
+    const over = squareAt(e.clientX, e.clientY);
+    for (const d of squaresEl.children) d.classList.toggle('hover', d.dataset.sq === over && over !== drag.sq);
+  });
+  function endDrag(e) {
+    if (!drag) return;
+    const d = drag; drag = null;
+    d.el.classList.remove('drag');
+    for (const s of squaresEl.children) s.classList.remove('hover');
+    const to = e ? squareAt(e.clientX, e.clientY) : null;
+    if (d.moved && to && to !== d.sq && tryMove(d.sq, to)) { place(d.el, to); return; }
+    place(d.el, d.sq);
+    if (d.moved) { selected = null; renderHighlights(); }
+  }
+  boardEl.addEventListener('pointerup', endDrag);
+  boardEl.addEventListener('pointercancel', () => endDrag(null));
 
-  // --- side panel
+  function showPromo() {
+    const box = $('promoBox'); box.innerHTML = '';
+    for (const p of ['q', 'r', 'b', 'n']) {
+      const d = document.createElement('div');
+      d.style.backgroundImage = `url(${pieceUrl(state.human === 'w' ? p.toUpperCase() : p)})`;
+      d.onclick = ev => { ev.stopPropagation(); $('promo').classList.remove('on'); send({ t: 'move', uci: pendingPromo + p }); pendingPromo = null; selected = null; renderHighlights(); };
+      box.appendChild(d);
+    }
+    $('promo').classList.add('on');
+  }
+  $('promo').onclick = () => { $('promo').classList.remove('on'); pendingPromo = null; selected = null; render(false); };
+
+  // ---- side panel
   function renderPanel() {
     if (!state) return;
-    const st = state.status, you = state.human === 'w' ? 'White' : 'Black';
+    const st = state.status, youWhite = state.human === 'w';
+    const engineTop = !flipped ? true : false;   // the side shown on top is whoever is not at the bottom
+    // Player bars: bottom is the human unless the board is flipped away from them.
+    const humanBottom = (youWhite && !flipped) || (!youWhite && flipped);
+    $('topName').textContent = humanBottom ? (hello ? hello.engine : 'Anna') : 'You';
+    $('botName').textContent = humanBottom ? 'You' : (hello ? hello.engine : 'Anna');
+    $('topAv').textContent = humanBottom ? 'A' : 'Y'; $('botAv').textContent = humanBottom ? 'Y' : 'A';
+    $('topAv').classList.toggle('you', !humanBottom); $('botAv').classList.toggle('you', humanBottom);
+    $('topTag').textContent = humanBottom ? (hello ? hello.net : '') : (youWhite ? 'white' : 'black');
+    $('botTag').textContent = humanBottom ? (youWhite ? 'white' : 'black') : (hello ? hello.net : '');
+    $('topThink').classList.toggle('on', state.thinking && !humanBottom === false);
+    $('botThink').classList.toggle('on', state.thinking && !humanBottom);
     let text;
-    if (st === 'playing') text = state.thinking ? (hello.engine + ' is thinking…') : (state.turn === state.human ? 'Your move (' + you + ')' : 'Waiting for engine');
-    else if (st === 'checkmate') text = 'Checkmate — ' + (state.result === '1-0' ? 'White' : 'Black') + ' wins (' + state.result + ')';
-    else if (st === 'resigned') text = 'You resigned (' + state.result + ')';
-    else text = 'Draw by ' + st.replace(/_/g, ' ') + ' (' + state.result + ')';
+    if (st === 'playing') text = state.thinking ? 'Anna is thinking…' : (state.turn === state.human ? 'Your move' : 'Waiting for engine');
+    else if (st === 'checkmate') text = 'Checkmate. ' + (state.result === '1-0' ? 'White' : 'Black') + ' wins';
+    else if (st === 'resigned') text = 'You resigned';
+    else text = 'Draw by ' + st.replace(/_/g, ' ');
     $('status').textContent = text;
+    $('result').textContent = state.result ? state.result : '';
     $('fen').textContent = state.fen;
     const mv = $('moves'); mv.innerHTML = '';
-    state.history.forEach((m, i) => {
-      if (i % 2 === 0) { const n = document.createElement('span'); n.className = 'n'; n.textContent = (i / 2 + 1) + '.'; mv.appendChild(n); }
-      const s = document.createElement('span'); s.textContent = m.san; if (i === state.history.length - 1) s.className = 'cur'; mv.appendChild(s);
-    });
-    if (state.history.length % 2 === 1) mv.appendChild(document.createElement('span'));
+    for (let i = 0; i < state.history.length; i += 2) {
+      const r = document.createElement('div'); r.className = 'mrow';
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = (i / 2 + 1) + '.'; r.appendChild(n);
+      for (const j of [i, i + 1]) {
+        const s = document.createElement('span'); s.className = 'm';
+        if (state.history[j]) { s.textContent = state.history[j].san; if (j === state.history.length - 1) s.classList.add('cur'); }
+        r.appendChild(s);
+      }
+      mv.appendChild(r);
+    }
     mv.scrollTop = mv.scrollHeight;
-    $('undo').disabled = !state.history.length || (state.status !== 'playing' && state.status !== 'resigned');
-    $('resign').disabled = state.status !== 'playing';
-    if (!state.thinking && st !== 'playing') { $('think').textContent = ''; }
+    $('undo').disabled = !state.history.length || (st !== 'playing' && st !== 'resigned');
+    $('resign').disabled = st !== 'playing';
   }
   function renderInfo(info) {
-    lastInfo = info;
     let score, pct;
-    if (info.mate_white != null) { score = (info.mate_white > 0 ? '+M' : '-M') + Math.abs(info.mate_white); pct = info.mate_white > 0 ? 100 : 0; }
-    else if (info.cp_white != null) { const p = info.cp_white / 100; score = (p >= 0 ? '+' : '') + p.toFixed(2); pct = 100 / (1 + Math.exp(-info.cp_white / 250)); }
-    else { score = '?'; pct = 50; }
-    $('evalfill').style.height = pct + '%';
-    $('think').textContent = `depth ${info.depth ?? '?'}/${info.seldepth ?? '?'}  eval ${score}  ${info.nps ? Math.round(info.nps / 1000) + 'k nps' : ''}  ${info.nodes ? (info.nodes / 1e6).toFixed(2) + 'M nodes' : ''}`;
+    if (info.mate_white != null) { score = 'M' + Math.abs(info.mate_white); pct = info.mate_white > 0 ? 100 : 0; }
+    else if (info.cp_white != null) { const p = Math.abs(info.cp_white) / 100; score = p.toFixed(1); pct = 100 / (1 + Math.exp(-info.cp_white / 250)); }
+    else { score = ''; pct = 50; }
+    const whiteAhead = (info.mate_white ?? info.cp_white ?? 0) >= 0;
+    $('evalfill').style.height = (flipped ? 100 - pct : pct) + '%';
+    // Bar: white portion grows from the bottom when white is at the bottom; label sits on the winning side.
+    $('evalTop').textContent = whiteAhead === flipped ? score : '';
+    $('evalBot').textContent = whiteAhead !== flipped ? score : '';
+    const sc = info.mate_white != null ? (info.mate_white > 0 ? '+M' : '-M') + Math.abs(info.mate_white) : (info.cp_white >= 0 ? '+' : '') + (info.cp_white / 100).toFixed(2);
+    $('think').textContent = `depth ${info.depth ?? '?'}/${info.seldepth ?? '?'} · eval ${sc} · ${info.nps ? Math.round(info.nps / 1000) + 'k nps' : ''} · ${info.nodes ? (info.nodes / 1e6).toFixed(2) + 'M nodes' : ''}`;
     $('pv').textContent = (info.pv_san || info.pv || []).join(' ');
   }
+  function setFlipped(v) { flipped = v; $('evalbar').classList.toggle('flipped', v); buildSquares(); render(false); renderPanel(); }
 
-  // --- websocket
+  // ---- websocket
   function send(o) { if (ws && ws.readyState === 1) ws.send(JSON.stringify(o)); }
   function connect() {
     const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -224,14 +362,15 @@
       if (m.t === 'hello') {
         hello = m;
         $('title').textContent = m.engine;
-        $('sub').textContent = `net: ${m.net} · ${m.threads} thread${m.threads > 1 ? 's' : ''} · max ${fmtMs(m.max_movetime)}/move`;
+        $('sub').textContent = `net: ${m.net} · ${m.threads} thread${m.threads > 1 ? 's' : ''} · up to ${fmtMs(m.max_movetime)} per move`;
         const sel = $('depth'); sel.innerHTML = '<option value="">off</option>';
         for (let d = 1; d <= Math.min(m.max_depth, 30); d++) { const o = document.createElement('option'); o.value = d; o.textContent = d; sel.appendChild(o); }
         $('mtLabel').textContent = fmtMs(currentMs());
       } else if (m.t === 'state') {
-        state = m; selected = null;
-        if (!m.thinking) { /* keep the last engine line visible */ }
-        render(); renderPanel();
+        const prev = state; state = m; selected = null;
+        if (m.depth) $('depth').value = String(m.depth); else $('depth').value = '';
+        const animate = prev && prev.history.length + 1 === m.history.length && m.last;
+        render(!!animate); renderPanel();
       } else if (m.t === 'info') {
         renderInfo(m);
       } else if (m.t === 'error') {
@@ -241,16 +380,21 @@
   }
   function newGame(color) {
     const depth = $('depth').value ? +$('depth').value : null;
-    flipped = color === 'black';
-    $('think').textContent = ''; $('pv').textContent = ''; $('evalfill').style.height = '50%';
+    $('think').textContent = ''; $('pv').textContent = ''; $('evalfill').style.height = '50%'; $('evalTop').textContent = ''; $('evalBot').textContent = '';
+    if (flipped !== (color === 'black')) setFlipped(color === 'black');
     send({ t: 'new', color, movetime: currentMs(), depth });
   }
   $('newW').onclick = () => newGame('white');
   $('newB').onclick = () => newGame('black');
-  $('flip').onclick = () => { flipped = !flipped; render(); };
+  $('flip').onclick = () => setFlipped(!flipped);
   $('undo').onclick = () => send({ t: 'undo' });
-  $('resign').onclick = () => { if (myTurn() || state.thinking) send({ t: 'resign' }); };
+  $('resign').onclick = () => { if (state && state.status === 'playing') send({ t: 'resign' }); };
   setInterval(() => send({ t: 'ping' }), 25000);
+  // Test hook: click a square by name (used by the headless browser test).
+  window.annaClick = name => { const b = boardEl.getBoundingClientRect(); const x = b.left + (col(name) + 0.5) * b.width / 8, y = b.top + (row(name) + 0.5) * b.height / 8;
+    boardEl.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y, pointerId: 1, bubbles: true }));
+    boardEl.dispatchEvent(new PointerEvent('pointerup', { clientX: x, clientY: y, pointerId: 1, bubbles: true })); };
+  buildSquares();
   connect();
 })();
 </script>

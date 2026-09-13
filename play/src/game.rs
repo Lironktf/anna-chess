@@ -77,6 +77,9 @@ impl Game {
         Ok(Game { start_fen, positions: vec![pos], moves: Vec::new(), human, resigned: None })
     }
 
+    pub fn start_fen(&self) -> Option<&str> {
+        self.start_fen.as_deref()
+    }
     pub fn current(&self) -> &Position {
         self.positions.last().expect("positions is never empty")
     }

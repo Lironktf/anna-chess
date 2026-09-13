@@ -2,7 +2,7 @@
 //!
 //! cargo run --release -p play -- [--bind 0.0.0.0] [--port 8080] [--engine target/release/engine]
 //!     [--net nets/default.bin] [--syzygy syzygy] [--hash 64] [--threads 1]
-//!     [--max-movetime 10000] [--max-depth 30] [--max-games 4] [--name Anna]
+//!     [--max-movetime 10000] [--max-depth 30] [--max-games 4] [--name Anna] [--db play/games.sqlite | --no-db]
 
 use std::net::SocketAddr;
 
@@ -10,7 +10,7 @@ use play::Config;
 
 fn usage() -> ! {
     eprintln!("{}", "usage: play [--bind ADDR] [--port N] [--engine PATH] [--net PATH] [--syzygy DIR] [--hash MB] \
-        [--threads N] [--max-movetime MS] [--max-depth N] [--max-games N] [--name NAME]");
+        [--threads N] [--max-movetime MS] [--max-depth N] [--max-games N] [--name NAME] [--db FILE | --no-db]");
     std::process::exit(2)
 }
 
@@ -38,6 +38,8 @@ async fn main() {
             "--max-depth" => cfg.max_depth = next(&mut i).parse().unwrap_or_else(|_| usage()),
             "--max-games" => cfg.max_games = next(&mut i).parse().unwrap_or_else(|_| usage()),
             "--name" => cfg.engine_name = next(&mut i),
+            "--db" => cfg.db_path = Some(next(&mut i).into()),
+            "--no-db" => cfg.db_path = None,
             "-h" | "--help" => usage(),
             _ => usage(),
         }

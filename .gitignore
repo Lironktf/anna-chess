@@ -18,3 +18,4 @@ trainer/checkpoints/
 !runs/**/*.log
 syzygy/
 runs/*/selfdestruct_key_id.txt
+play/games.sqlite*

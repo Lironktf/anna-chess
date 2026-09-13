@@ -6,6 +6,7 @@
 //! client -> server
 //!   {"t":"new", "color":"white"|"black"|"random", "movetime":1000, "depth":null, "fen":null}
 //!   {"t":"move", "uci":"e2e4"}          human move (promotion: "e7e8q")
+//!   {"t":"level", "movetime":1000, "depth":null}   change the engine limits for the following moves
 //!   {"t":"undo"}                         take back to the human's previous turn
 //!   {"t":"resign"}
 //!   {"t":"ping"}
@@ -20,6 +21,7 @@
 //!   {"t":"pong"}
 
 pub mod game;
+pub mod store;
 pub mod uci;
 
 use std::net::SocketAddr;
@@ -38,9 +40,20 @@ use serde_json::json;
 use tokio::sync::Semaphore;
 
 use game::Game;
-use uci::{EngineOptions, EngineProc};
+use store::{NewGame, Store};
+use uci::{EngineOptions, EngineProc, Info};
 
 pub const INDEX_HTML: &str = include_str!("../static/index.html");
+
+/// cburnett piece set (Wikimedia Commons, CC BY-SA 3.0), served at /pieces/<piece><l|d>.svg
+const PIECES: [(&str, &[u8]); 12] = [
+    ("kl.svg", include_bytes!("../static/pieces/kl.svg")), ("kd.svg", include_bytes!("../static/pieces/kd.svg")),
+    ("ql.svg", include_bytes!("../static/pieces/ql.svg")), ("qd.svg", include_bytes!("../static/pieces/qd.svg")),
+    ("rl.svg", include_bytes!("../static/pieces/rl.svg")), ("rd.svg", include_bytes!("../static/pieces/rd.svg")),
+    ("bl.svg", include_bytes!("../static/pieces/bl.svg")), ("bd.svg", include_bytes!("../static/pieces/bd.svg")),
+    ("nl.svg", include_bytes!("../static/pieces/nl.svg")), ("nd.svg", include_bytes!("../static/pieces/nd.svg")),
+    ("pl.svg", include_bytes!("../static/pieces/pl.svg")), ("pd.svg", include_bytes!("../static/pieces/pd.svg")),
+];
 
 #[derive(Clone, Debug)]
 pub struct Config {
@@ -53,6 +66,8 @@ pub struct Config {
     pub max_depth: u32,
     pub max_games: usize,
     pub engine_name: String,
+    /// SQLite file recording every game and move; `None` disables recording.
+    pub db_path: Option<PathBuf>,
 }
 
 impl Default for Config {
@@ -67,6 +82,7 @@ impl Default for Config {
             max_depth: 30,
             max_games: 4,
             engine_name: "Anna".to_string(),
+            db_path: Some(PathBuf::from("play/games.sqlite")),
         }
     }
 }
@@ -74,13 +90,27 @@ impl Default for Config {
 struct AppState {
     cfg: Config,
     slots: Semaphore,
+    store: Option<Store>,
 }
 
 pub fn router(cfg: Config) -> Router {
-    let state = Arc::new(AppState { slots: Semaphore::new(cfg.max_games), cfg });
+    let store = match &cfg.db_path {
+        Some(p) => match Store::open(p) {
+            Ok(s) => Some(s),
+            Err(e) => {
+                eprintln!("play: cannot open game database {}: {e} (games will NOT be recorded)", p.display());
+                None
+            }
+        },
+        None => None,
+    };
+    let state = Arc::new(AppState { slots: Semaphore::new(cfg.max_games), store, cfg });
     Router::new()
         .route("/", get(index))
         .route("/health", get(|| async { "ok" }))
+        .route("/games", get(games_list))
+        .route("/games/{id}/pgn", get(game_pgn))
+        .route("/pieces/{name}", get(piece_svg))
         .route("/ws", get(ws_upgrade))
         .with_state(state)
 }
@@ -97,8 +127,41 @@ async fn index() -> impl IntoResponse {
     Html(INDEX_HTML)
 }
 
-async fn ws_upgrade(ws: WebSocketUpgrade, State(st): State<Arc<AppState>>) -> impl IntoResponse {
-    ws.on_upgrade(move |socket| session(socket, st))
+async fn piece_svg(axum::extract::Path(name): axum::extract::Path<String>) -> axum::response::Response {
+    match PIECES.iter().find(|(n, _)| *n == name) {
+        Some((_, bytes)) => (
+            [(axum::http::header::CONTENT_TYPE, "image/svg+xml"), (axum::http::header::CACHE_CONTROL, "public, max-age=86400")],
+            *bytes,
+        )
+            .into_response(),
+        None => axum::http::StatusCode::NOT_FOUND.into_response(),
+    }
+}
+
+async fn games_list(State(st): State<Arc<AppState>>) -> axum::response::Response {
+    match &st.store {
+        Some(s) => match s.recent(200) {
+            Ok(rows) => axum::Json(rows).into_response(),
+            Err(e) => (axum::http::StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        },
+        None => (axum::http::StatusCode::NOT_FOUND, "game recording disabled").into_response(),
+    }
+}
+
+async fn game_pgn(State(st): State<Arc<AppState>>, axum::extract::Path(id): axum::extract::Path<i64>) -> axum::response::Response {
+    match st.store.as_ref().and_then(|s| s.pgn(id).ok().flatten()) {
+        Some(p) => ([(axum::http::header::CONTENT_TYPE, "application/x-chess-pgn; charset=utf-8")], p).into_response(),
+        None => axum::http::StatusCode::NOT_FOUND.into_response(),
+    }
+}
+
+async fn ws_upgrade(ws: WebSocketUpgrade, State(st): State<Arc<AppState>>, headers: axum::http::HeaderMap) -> impl IntoResponse {
+    // Behind Cloudflare the real client is in CF-Connecting-IP; otherwise X-Forwarded-For or nothing.
+    let client = ["cf-connecting-ip", "x-forwarded-for"]
+        .iter()
+        .find_map(|h| headers.get(*h).and_then(|v| v.to_str().ok()).map(|v| v.to_string()))
+        .unwrap_or_else(|| "direct".to_string());
+    ws.on_upgrade(move |socket| session(socket, st, client))
 }
 
 #[derive(Deserialize)]
@@ -108,6 +171,8 @@ enum ClientMsg {
     New { color: Option<String>, movetime: Option<u64>, depth: Option<u32>, fen: Option<String> },
     #[serde(rename = "move")]
     Move { uci: String },
+    #[serde(rename = "level")]
+    Level { movetime: Option<u64>, depth: Option<u32> },
     #[serde(rename = "undo")]
     Undo,
     #[serde(rename = "resign")]
@@ -147,7 +212,7 @@ fn state_json(game: &Game, thinking: bool, limits: &Limits) -> serde_json::Value
     })
 }
 
-async fn session(mut ws: WebSocket, st: Arc<AppState>) {
+async fn session(mut ws: WebSocket, st: Arc<AppState>, client: String) {
     let Ok(_permit) = st.slots.try_acquire() else {
         send_json(&mut ws, json!({"t":"error","msg":"server is full, try again later"})).await;
         return;
@@ -193,6 +258,11 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
     // A `stop` was sent and the next bestmove must be ignored (undo / new game / resign mid-search).
     let mut discard_bestmove = false;
     let mut client_alive = true;
+    // Recording: the database row is created on the first move of a game, so empty games leave no trace.
+    let mut game_id: Option<i64> = None;
+    let mut last_info: Option<Info> = None;
+    let store = st.store.as_ref();
+    let record_err = |e: rusqlite::Error| eprintln!("play: game record failed: {e}");
 
     // Start a search if it is the engine's turn. Requires no search in flight.
     macro_rules! maybe_go {
@@ -216,6 +286,46 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
                 client_alive = false;
                 break;
             }
+        };
+    }
+    // Record a move that was just pushed onto `game` (info = engine search output for engine moves).
+    macro_rules! record_move {
+        ($by_engine:expr, $info:expr) => {
+            if let Some(store) = store {
+                if game_id.is_none() {
+                    match store.new_game(&NewGame {
+                        human: color_char(game.human), start_fen: game.start_fen(), movetime_ms: limits.movetime_ms, depth: limits.depth,
+                        engine_name: &cfg.engine_name, net: &net_name, threads: cfg.threads, client: &client,
+                    }) {
+                        Ok(id) => game_id = Some(id),
+                        Err(e) => record_err(e),
+                    }
+                }
+                if let Some(id) = game_id {
+                    let ply = game.moves().len() - 1;
+                    let m = &game.moves()[ply];
+                    // eval sign: the search ran with the mover to move; convert to white's point of view
+                    let sign = if game.turn() == Color::White { -1 } else { 1 };
+                    if let Err(e) = store.add_move(id, ply, &m.uci, &m.san, &game.current().to_fen(), $by_engine, $info, sign) { record_err(e); }
+                    let status = game.status();
+                    if status.is_over() {
+                        if let Err(e) = store.finish(id, status.name(), status.result().unwrap_or("*")) { record_err(e); }
+                    }
+                }
+            }
+        };
+    }
+    // Close the record of the current game if it has moves and is not finished (new game / disconnect).
+    macro_rules! record_abandon {
+        () => {
+            if let (Some(store), Some(id)) = (store, game_id) {
+                if game.moves().is_empty() {
+                    if let Err(e) = store.delete_if_empty(id) { record_err(e); }
+                } else if !game.status().is_over() {
+                    if let Err(e) = store.finish(id, "abandoned", "*") { record_err(e); }
+                }
+            }
+            game_id = None;
         };
     }
     // Interrupt a running search; its bestmove will be discarded.
@@ -259,6 +369,7 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
                         match Game::new(fen.as_deref().filter(|f| !f.trim().is_empty()), human) {
                             Ok(g) => {
                                 interrupt!();
+                                record_abandon!();
                                 game = g;
                                 limits.movetime_ms = movetime.unwrap_or(1000).clamp(50, cfg.max_movetime_ms);
                                 limits.depth = depth.map(|d| d.clamp(1, cfg.max_depth));
@@ -277,23 +388,38 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
                         match game.parse_move(&uci) {
                             Some(m) => {
                                 game.push(m);
+                                record_move!(false, None);
                                 if !discard_bestmove { maybe_go!(); }
                                 push_state!();
                             }
                             None => { if !send_json(&mut ws, json!({"t":"error","msg":format!("illegal move {uci}")})).await { break } }
                         }
                     }
+                    ClientMsg::Level { movetime, depth } => {
+                        if let Some(m) = movetime { limits.movetime_ms = m.clamp(50, cfg.max_movetime_ms); }
+                        limits.depth = depth.map(|d| d.clamp(1, cfg.max_depth));
+                        if let (Some(store), Some(id)) = (store, game_id) {
+                            if let Err(e) = store.set_level(id, limits.movetime_ms, limits.depth) { record_err(e); }
+                        }
+                        push_state!();
+                    }
                     ClientMsg::Undo => {
                         // Back to the human's previous turn: one ply if the human just moved, else two.
                         let n = if game.turn() == game.engine_color() { 1 } else { 2 };
                         interrupt!();
                         game.undo(n);
+                        if let (Some(store), Some(id)) = (store, game_id) {
+                            if let Err(e) = store.truncate(id, game.moves().len()) { record_err(e); }
+                        }
                         push_state!();
                     }
                     ClientMsg::Resign => {
                         if !game.status().is_over() {
                             interrupt!();
                             game.resign(game.human);
+                            if let (Some(store), Some(id)) = (store, game_id) {
+                                if let Err(e) = store.finish(id, "resigned", game.status().result().unwrap_or("*")) { record_err(e); }
+                            }
                             push_state!();
                         }
                     }
@@ -315,7 +441,11 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
                     thinking = false;
                     let mv = rest.split_whitespace().next().unwrap_or("");
                     match game.parse_move(mv) {
-                        Some(m) => game.push(m),
+                        Some(m) => {
+                            game.push(m);
+                            let info = last_info.take();
+                            record_move!(true, info.as_ref());
+                        }
                         None => {
                             // "(none)" when the engine has no legal move (should be caught by status) or a bug.
                             if !send_json(&mut ws, json!({"t":"error","msg":format!("engine returned unusable move '{mv}'")})).await { break }
@@ -326,6 +456,7 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
                     if let Some(info) = uci::parse_info(&line) {
                         let sign = if game.turn() == Color::White { 1 } else { -1 };
                         let pv_san = game.pv_to_san(&info.pv);
+                        if info.multipv.unwrap_or(1) == 1 { last_info = Some(info.clone()); }
                         let v = json!({
                             "t":"info", "depth":info.depth, "seldepth":info.seldepth,
                             "cp_white": info.cp.map(|c| c * sign), "mate_white": info.mate.map(|m| m * sign),
@@ -343,5 +474,7 @@ async fn session(mut ws: WebSocket, st: Arc<AppState>) {
         }
     }
     let _ = client_alive;
+    record_abandon!();
+    let _ = game_id;
     eng.quit().await;
 }

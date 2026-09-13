@@ -21,7 +21,9 @@ fn engine_bin() -> PathBuf {
 }
 
 async fn start() -> SocketAddr {
-    let cfg = play::Config { engine_bin: engine_bin(), max_games: 2, hash_mb: 16, ..Default::default() };
+    let db = std::env::temp_dir().join(format!("anna-play-ws-test-{}.sqlite", std::process::id()));
+    let _ = std::fs::remove_file(&db);
+    let cfg = play::Config { engine_bin: engine_bin(), max_games: 2, hash_mb: 16, db_path: Some(db), ..Default::default() };
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let addr = listener.local_addr().unwrap();
     tokio::spawn(async move { axum::serve(listener, play::router(cfg)).await.unwrap() });
@@ -178,6 +180,23 @@ async fn full_game_flow() {
     // Malformed JSON -> error.
     ws.send(Message::Text("{not json".into())).await.unwrap();
     assert_eq!(recv_non_info(&mut ws).await["t"], "error");
+
+    // Recorded games: the mate game and the resigned game. The first game was undone to zero moves
+    // before the next "new", so its empty row was deleted rather than kept as "abandoned".
+    let games = reqwest_free_get(addr, "/games").await;
+    let body = games.split("\r\n\r\n").nth(1).unwrap();
+    let rows: Vec<Value> = serde_json::from_str(body).unwrap();
+    assert_eq!(rows.len(), 2, "{rows:?}");
+    assert_eq!(rows[0]["status"], "checkmate");
+    assert_eq!(rows[0]["result"], "1-0");
+    assert_eq!(rows[0]["plies"], 1);
+    assert_eq!(rows[1]["status"], "resigned");
+    assert_eq!(rows[1]["undos"], 1);
+    assert_eq!(rows[1]["plies"], 1);
+    let id = rows[0]["id"].as_i64().unwrap();
+    let pgn = reqwest_free_get(addr, &format!("/games/{id}/pgn")).await;
+    assert!(pgn.contains("1. Qxf7# 1-0"), "{pgn}");
+    assert!(pgn.contains("[SetUp \"1\"]"));
 
     // Server capacity: max_games=2, so a third connection is refused.
     let mut ws2 = connect(addr).await;

@@ -26,6 +26,8 @@ pub struct TimeManager {
     /// Hard limit in ms.
     pub maximum: f64,
     pub use_time: bool,
+    /// `go movetime`: search until the hard limit, no soft (optimum-based) stop.
+    pub fixed: bool,
 }
 
 impl TimeManager {
@@ -34,10 +36,10 @@ impl TimeManager {
         let (time, inc) = if us_white { (p.wtime, p.winc.unwrap_or(0)) } else { (p.btime, p.binc.unwrap_or(0)) };
         if let Some(mt) = p.movetime {
             let t = (mt - overhead).max(1) as f64;
-            return TimeManager { start, optimum: t, maximum: t, use_time: true };
+            return TimeManager { start, optimum: t, maximum: t, use_time: true, fixed: true };
         }
         let Some(time) = time else {
-            return TimeManager { start, optimum: f64::MAX, maximum: f64::MAX, use_time: false };
+            return TimeManager { start, optimum: f64::MAX, maximum: f64::MAX, use_time: false, fixed: false };
         };
         let time = time.max(1) as f64;
         let inc = inc as f64;
@@ -58,7 +60,7 @@ impl TimeManager {
         }
         let optimum = opt_scale * time_left;
         let maximum = (max_scale * optimum).min(0.825 * time - overhead).max(1.0);
-        TimeManager { start, optimum: optimum.max(1.0), maximum, use_time: true }
+        TimeManager { start, optimum: optimum.max(1.0), maximum, use_time: true, fixed: false }
     }
 
     #[inline]

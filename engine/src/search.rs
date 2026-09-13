@@ -1328,7 +1328,7 @@ impl<'a> Thread<'a> {
             }
 
             // ---- Time management ----
-            if self.is_main() && self.limits.tm.use_time && !self.should_stop() && !self.limits.go.infinite {
+            if self.is_main() && self.limits.tm.use_time && !self.limits.tm.fixed && !self.should_stop() && !self.limits.go.infinite {
                 let best_value = self.root_moves[0].score;
                 let prev_iter = self.iter_value[0];
                 // Stockfish: fallingEval = (66 + 14*(prevBest - now) + 6*(prevIter - now)) / 616 clamped; with the
