@@ -1,6 +1,7 @@
 pub mod bitboard;
 pub mod cuckoo;
 pub mod params;
+pub mod policy;
 pub mod datagen;
 pub mod history;
 pub mod movepick;

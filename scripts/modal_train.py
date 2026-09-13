@@ -66,6 +66,40 @@ image = (
 LC0 = "https://storage.lczero.org/files/training_data/test80"
 
 
+torch_image = (
+    modal.Image.debian_slim(python_version="3.11")
+    .pip_install("torch", "numpy")
+    .add_local_file(ROOT / "scripts" / "policy_train.py", "/root/policy_train.py", copy=True)
+)
+
+
+@app.function(image=torch_image, volumes={"/data": vol}, gpu=GPU, cpu=8, memory=65536, timeout=int(HOURS * 3600) + 900)
+def policy_train(files: list[str], epochs: int, batch: int, lr: str, hidden: int, limit: int, out_name: str) -> str:
+    """Train the policy net on /data/policy/<file>.bin records; writes /data/policy_nets/<out_name>{,.pt,.log}."""
+    os.makedirs("/data/policy_nets", exist_ok=True)
+    data = ",".join(f"/data/policy/{f}.bin" for f in files)
+    for f in data.split(","):
+        assert os.path.exists(f), f"missing {f}"
+    out = f"/data/policy_nets/{out_name}"
+    cmd = ["python", "/root/policy_train.py", "--data", data, "--epochs", str(epochs), "--batch", str(batch), "--lr", lr, "--hidden", str(hidden), "--out", out]
+    if limit:
+        cmd += ["--limit", str(limit)]
+    log = open(out + ".log", "w", buffering=1)
+    log.write(" ".join(cmd) + "\n")
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    last = time.time()
+    for line in proc.stdout:
+        log.write(line)
+        if time.time() - last > 60:
+            vol.commit()
+            last = time.time()
+    rc = proc.wait()
+    log.write(f"=== exit={rc}\n")
+    log.close()
+    vol.commit()
+    return f"exit={rc}; {out}"
+
+
 @app.function(image=image, volumes={"/data": vol}, cpu=8, memory=16384, timeout=6 * 3600)
 def policy_data(tars: list[str]) -> str:
     """Stream Lc0 T80 training tars through lc0conv into /data/policy/<tar>.bin (8 at a time, idempotent)."""
@@ -169,10 +203,14 @@ def status(net_id: str) -> str:
 
 @app.local_entrypoint()
 def main(action: str = "status", net_id: str = "anna-v3c", months: str = "01,02,03,05", resume: str = "",
-         sb0: int = 0, sb1: int = 430, sb2: int = 30, lr1: str = "5e-4", l1: int = 512, tars: str = ""):
+         sb0: int = 0, sb1: int = 430, sb2: int = 30, lr1: str = "5e-4", l1: int = 512, tars: str = "",
+         epochs: int = 2, batch: int = 8192, hidden: int = 256, limit: int = 0, out_name: str = "policy-v1.bin"):
     ms = [m.strip() for m in months.split(",") if m.strip()]
     if action == "fetch":
         print(fetch.remote(ms))
+    elif action == "policy-train":
+        names = [t.strip() for t in tars.split(",") if t.strip()]
+        print(policy_train.remote([f"training-run1-test80-{n}" for n in names], epochs, batch, lr1, hidden, limit, out_name))
     elif action == "policy-data":
         # --tars is a comma-separated list of training-run1-test80-YYYYMMDD-HHMM names (see runs/policy/PLAN.md).
         names = [t.strip() for t in tars.split(",") if t.strip()]
