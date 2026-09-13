@@ -808,14 +808,28 @@ impl<'a> Thread<'a> {
                 let value = self.search(pos, NodeType::NonPv, singular_beta - 1, singular_beta, singular_depth, cut_node, ply);
                 self.ss(ply).excluded = Move::NONE;
                 if value < singular_beta {
-                    let double_margin = 2 + 204 * pv_node as i32 - 152 * (!tt_capture) as i32 - cv.abs() / 4096;
-                    let triple_margin = 70 + 279 * pv_node as i32 - 188 * (!tt_capture) as i32 + 81 * tt_pv as i32;
+                    let ttm = crate::params::SE_TTM.get() != 0;
+                    let corr_adj = cv.abs() / 4096;
+                    let deep = (ply as i32 > self.root_depth) as i32;
+                    let double_margin = if ttm {
+                        -2 + 204 * pv_node as i32 - 152 * (!tt_capture) as i32 - corr_adj - 1175 * self.hist.tt_move_history / 114178 - 38 * deep
+                    } else {
+                        2 + 204 * pv_node as i32 - 152 * (!tt_capture) as i32 - corr_adj
+                    };
+                    let triple_margin = if ttm {
+                        70 + 279 * pv_node as i32 - 188 * (!tt_capture) as i32 + 81 * tt_pv as i32 - corr_adj - 43 * deep
+                    } else {
+                        70 + 279 * pv_node as i32 - 188 * (!tt_capture) as i32 + 81 * tt_pv as i32
+                    };
                     extension = 1 + (value < singular_beta - double_margin) as i32 + (value < singular_beta - triple_margin) as i32;
                     if depth < 16 {
                         depth += 1;
                     }
                 } else if value >= beta && !is_decisive(value) {
                     // Multi-cut: the TT move and at least one other move fail high.
+                    if crate::params::SE_TTM.get() != 0 {
+                        self.hist.ttm_update(-421 - 110 * depth);
+                    }
                     return value;
                 } else if tt_value >= beta {
                     extension = -3;
@@ -968,6 +982,9 @@ impl<'a> Thread<'a> {
             };
         } else if !best_move.is_none() {
             self.update_all_stats(pos, ply, best_move, &quiets_searched, &captures_searched, depth, tt_move);
+            if !pv_node && crate::params::SE_TTM.get() != 0 {
+                self.hist.ttm_update(if best_move == tt_move { 918 } else { -747 });
+            }
         } else if ply >= 1 && !prev_null && !prev_move.is_none() {
             // Bonus for the previous move that caused this fail-low.
             let p1 = *self.ss_prev(ply, 1);

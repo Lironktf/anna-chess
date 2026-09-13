@@ -128,6 +128,13 @@ impl History {
         gravity(&mut self.pawn[(pawn_key as usize) % PAWN_HIST_SIZE][piece.idx()][to as usize], bonus, HIST_MAX);
     }
     #[inline(always)]
+    /// TT-move history: Stockfish `StatsEntry<i16, 8192>` gravity update (bonus clamped to +-8192).
+    #[inline(always)]
+    pub fn ttm_update(&mut self, bonus: i32) {
+        let b = bonus.clamp(-8192, 8192);
+        let v = self.tt_move_history;
+        self.tt_move_history = v + b - v * b.abs() / 8192;
+    }
     pub fn update_killers(&mut self, ply: usize, m: Move) {
         let k = &mut self.killers[ply];
         if k[0] != m {

@@ -23,6 +23,9 @@ params! {
     CUCKOO, "Cuckoo", 1, 0, 1;
     // Main history indexed by whether the from/to squares are attacked by the opponent (0 = plain butterfly).
     THREAT_HIST, "ThreatHist", 0, 0, 1;
+    // Stockfish (2026) singular-extension margins: TT-move history term, corr adjustment in the triple margin,
+    // and the ply>rootDepth terms; also maintains the TT-move history counter. 0 = previous margins.
+    SE_TTM, "SeTtmHist", 0, 0, 1;
     MAT_SCALE_BASE, "MatScaleBase", 700, 400, 1024;
     MAT_SCALE_DIV, "MatScaleDiv", 16, 4, 64;
     // Time management (percent scalers)
