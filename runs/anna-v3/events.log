@@ -1,0 +1,15 @@
+2026-09-12T16:29:14Z create offer=49080480 run=anna-v3 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=160
+{
+ "instance_api_key": "<redacted, key 27830155 deleted 2026-09-12 20:50>",
+ "new_contract": 50767449,
+ "success": true
+}
+2026-09-12T16:50:04Z destroyed instance 50767449: box network dead (0 B/s cloudflare, ~300 B/s HF); ~$0.35 spent
+2026-09-12T16:51:04Z create offer=34221023 run=anna-v3 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=160
+{
+ "instance_api_key": "<redacted, key 27830155 deleted 2026-09-12 20:50>",
+ "new_contract": 50770185,
+ "success": true
+}
+2026-09-12T17:39:04Z train start superbatches=310 self-destruct armed max_hours=9
+2026-09-13T00:47:51Z destroyed instance 50770185 (train complete, final checkpoint anna-v3-s2-30 + raw/optimiser pulled)

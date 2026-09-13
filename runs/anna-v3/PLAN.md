@@ -1,6 +1,7 @@
 # Run plan: anna-v3 (threat-input multilayer NNUE)
 
-Status: **RUNNING since 2026-09-12 ~13:50 local** on instance 50770185 (offer 34221023, Korea RTX 4090 + 14-core Xeon, ~$0.45/hr).
+Status: **DONE 2026-09-12 20:20 local** (instance 50770185, offer 34221023, Korea RTX 4090 + 14-core Xeon, ~$0.45/hr; destroyed 20:49; anna-v3 total $3.50 incl. the dead first host).
+Final net: runs/anna-v3/checkpoints/anna-v3-s2-30/quantised.bin (91,247,168 bytes, netcheck --strict ok, trainer float evals match the engine within rounding); raw.bin + optimiser_state kept for a later fine-tune. Full trainer stdout: runs/anna-v3/train.log (1.79M pos/s, 56 s/SB, final running loss 0.0593).
 Owner chose option A. Smoke checks passed: engine reads quantised.bin to the trainer's own values (layout proven); 5-SB warmup
 shows material learned (missing rook -476/+482). Throughput ~1.6M pos/s (GPU 65%, CPU-bound mapping) = ~65 s/SB.
 Schedule: SB0=30 / SB1=310 / SB2=30 (37B samples), ~7 h, ~$3.2 training; cost guard $4.50; self-destruct MAX_HOURS=9.
@@ -52,3 +53,12 @@ not representative. If the budget must stay under $5, B.
 - Smoke: `train_v3` with SB0=1 SB1=1 SB2=1 BATCHES_PER_SB=50, sync, `engine netcheck` (loads as v3, incremental == reference).
 - Real run: stages 40 / 600 / 60 superbatches at 131072 x 763 = 100M positions per superbatch.
   Throughput unknown (feature mapping is CPU-heavy): measure in the smoke run, cap $4.50 via the cost guard.
+
+## Midway sanity checks (free, laptop, fixed nodes so speed does not matter)
+
+| checkpoint | opponent | games | result | Elo |
+|---|---|---|---|---|
+| anna-v3-s1-60 (stage 1 at 60/310, LR still high) | v1 final (default.bin) | 100 @ 30k nodes/move | +24 -31 =45 | -24 +/- 54 (statistically level) |
+| anna-v3-s1-160 (stage 1 at 160/310) | v1 final (default.bin) | 100 @ 30k nodes/move | +34 -15 =51 | +67 +/- 48 |
+
+A 20%-trained v3 already matches the fully trained v1 at equal nodes (log: sprt/v3mid_s1_60_nodes30k.log).
