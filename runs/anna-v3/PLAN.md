@@ -70,6 +70,9 @@ Single-thread search speed measured on the box under match load: v1 974k nps, v3
 | match | games | result | Elo |
 |---|---|---|---|
 | v3 vs v1, 8+0.08 | 400 | +86 -109 =205 | -20 +/- 21 |
+| v3 vs Stormphrax 8, 8+0.08 | 400 | +22 -219 =159 | -187 +/- 22 |
+| v3 vs Stash 37.26, 8+0.08 | 400 | +168 -29 =203 | +126 +/- 23 |
+| v1 vs Stormphrax 8, 8+0.08 | 400 | +32 -211 =157 | -167 +/- 21 (laptop earlier: -139 +/- 45) |
 
 ## Speed work on the v3 inference path (2026-09-12 evening, laptop, quiet)
 
