@@ -100,3 +100,12 @@ The search already reuses TT static evals, so there is no cheap "evaluate less" 
 Conclusion: at L1=1024 with 1 KB rows the architecture is memory-latency bound at ~3x v1's cost per node on
 current hardware; the +83 Elo/node buys roughly break-even at blitz. Options: L1=512 retrain (~$3.5, rows half
 the size, est. 330k nps) or keep v3 for longer time controls only.
+
+## 2026-09-13 01:xx: the real v3 slowness was refreshes, not memory latency
+prof with the v3 net in a real search: a FULL from-scratch accumulator rebuild happened once per 2.5 evaluations
+(king bucket/mirror changes), ~115 rows each, = 26% of all time; the incremental path was only 4%.
+Fix: split the accumulator into a king-dependent part (piece-square + pawn pairs; rebuilt via a v1-style refresh cache
+on bucket/mirror changes) and a threat part (rebuilt only when the king crosses the mirror line, since threat indices
+are mirrored by the king file; otherwise incremental). Threat rebuilds fell from 1 per 2.5 evals to 1 per 62.
+Result: identical searches (same node counts) use 17-27% fewer CPU seconds with v3. Tests: incremental == reference for
+both widths; bench unchanged 854588.

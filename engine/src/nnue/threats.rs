@@ -315,6 +315,11 @@ impl FeatureMapper {
         TOTAL_PAIRS + self.threats.num_inputs()
     }
     /// Emit features for the perspective that owns the "white" pieces of `bbs` (on_stm) and the other (on_ntm).
+    /// Pawn-pair features only, for the perspective `bbs` was built for (mirrored by the king file).
+    pub fn map_pairs(&self, bbs: &RelBoard, mut on: impl FnMut(usize)) {
+        collect_pairs(&self.masks, &bbs.normalize_hm(), &mut on);
+    }
+
     pub fn map_features(&self, bbs: &RelBoard, mut on_stm: impl FnMut(usize), mut on_ntm: impl FnMut(usize)) {
         map_threats(&self.threats, bbs, |s| on_stm(TOTAL_PAIRS + s), |n| on_ntm(TOTAL_PAIRS + n));
         collect_pairs(&self.masks, &bbs.normalize_hm(), &mut on_stm);

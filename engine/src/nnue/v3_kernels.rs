@@ -56,6 +56,16 @@ pub mod scalar {
             out[off + i] = ((a * b) >> PAIR_SHIFT) as u8;
         }
     }
+    /// `pairwise` over the element-wise (wrapping i16) sum of two accumulators (piece-square part +
+    /// threat part), without materialising the sum.
+    #[inline]
+    pub fn pairwise2(x: &[i16; N], y: &[i16; N], out: &mut [u8; N], off: usize) {
+        for i in 0..HALF {
+            let a = (x[i].wrapping_add(y[i]) as i32).clamp(0, QA);
+            let b = (x[i + HALF].wrapping_add(y[i + HALF]) as i32).clamp(0, QA);
+            out[off + i] = ((a * b) >> PAIR_SHIFT) as u8;
+        }
+    }
     /// L2 (f32): h2[o] = crelu(b[o] + sum_i w[o][i] * h1[i]).
     #[inline]
     pub fn l2_forward(h1: &[f32; L2_DUAL], w: &[[f32; L2_DUAL]], b: &[f32], h2: &mut [f32; L3]) {
@@ -160,6 +170,30 @@ pub mod avx2 {
                 let a1 = _mm256_min_epi16(_mm256_max_epi16(_mm256_loadu_si256(p.add(2 * i + 1)), zero), qa);
                 let b0 = _mm256_min_epi16(_mm256_max_epi16(_mm256_loadu_si256(p.add(HALF / 16 + 2 * i)), zero), qa);
                 let b1 = _mm256_min_epi16(_mm256_max_epi16(_mm256_loadu_si256(p.add(HALF / 16 + 2 * i + 1)), zero), qa);
+                // (a*b) >> 9 == ((a << 7) * b) >> 16 (a*b < 65536).
+                let p0 = _mm256_mulhi_epu16(_mm256_slli_epi16(a0, 16 - PAIR_SHIFT as i32), b0);
+                let p1 = _mm256_mulhi_epu16(_mm256_slli_epi16(a1, 16 - PAIR_SHIFT as i32), b1);
+                // packus interleaves 128-bit lanes: fix the order with a permute.
+                let packed = _mm256_permute4x64_epi64(_mm256_packus_epi16(p0, p1), 0b11_01_10_00);
+                _mm256_storeu_si256(out.as_mut_ptr().add(off + i * 32) as *mut __m256i, packed);
+            }
+        }
+    }
+
+    /// See scalar::pairwise2.
+    #[inline]
+    pub fn pairwise2(x: &[i16; N], y: &[i16; N], out: &mut [u8; N], off: usize) {
+        unsafe {
+            let zero = _mm256_setzero_si256();
+            let qa = _mm256_set1_epi16(QA as i16);
+            let p = x.as_ptr() as *const __m256i;
+            let q = y.as_ptr() as *const __m256i;
+            // Process 32 outputs per iteration (two i16 vectors -> one packed u8 vector).
+            for i in 0..HALF / 32 {
+                let a0 = _mm256_min_epi16(_mm256_max_epi16(_mm256_add_epi16(_mm256_loadu_si256(p.add(2 * i)), _mm256_loadu_si256(q.add(2 * i))), zero), qa);
+                let a1 = _mm256_min_epi16(_mm256_max_epi16(_mm256_add_epi16(_mm256_loadu_si256(p.add(2 * i + 1)), _mm256_loadu_si256(q.add(2 * i + 1))), zero), qa);
+                let b0 = _mm256_min_epi16(_mm256_max_epi16(_mm256_add_epi16(_mm256_loadu_si256(p.add(HALF / 16 + 2 * i)), _mm256_loadu_si256(q.add(HALF / 16 + 2 * i))), zero), qa);
+                let b1 = _mm256_min_epi16(_mm256_max_epi16(_mm256_add_epi16(_mm256_loadu_si256(p.add(HALF / 16 + 2 * i + 1)), _mm256_loadu_si256(q.add(HALF / 16 + 2 * i + 1))), zero), qa);
                 // (a*b) >> 9 == ((a << 7) * b) >> 16 (a*b < 65536).
                 let p0 = _mm256_mulhi_epu16(_mm256_slli_epi16(a0, 16 - PAIR_SHIFT as i32), b0);
                 let p1 = _mm256_mulhi_epu16(_mm256_slli_epi16(a1, 16 - PAIR_SHIFT as i32), b1);
@@ -299,3 +333,30 @@ mod tests {
     }
 }
 
+#[cfg(test)]
+mod tests_pairwise2 {
+    use super::*;
+    #[test]
+    fn pairwise2_matches_scalar() {
+        let mut x = [0i16; N];
+        let mut y = [0i16; N];
+        let mut seed = 12345u64;
+        for i in 0..N {
+            seed ^= seed << 13; seed ^= seed >> 7; seed ^= seed << 17;
+            x[i] = (seed % 700) as i16 - 200;
+            seed ^= seed << 13; seed ^= seed >> 7; seed ^= seed << 17;
+            y[i] = (seed % 700) as i16 - 200;
+        }
+        let mut a = [0u8; N];
+        let mut b = [0u8; N];
+        pairwise2(&x, &y, &mut a, 0);
+        scalar::pairwise2(&x, &y, &mut b, 0);
+        assert_eq!(a[..HALF], b[..HALF]);
+        // and equals pairwise over the materialised sum
+        let mut sum = [0i16; N];
+        for i in 0..N { sum[i] = x[i].wrapping_add(y[i]); }
+        let mut c = [0u8; N];
+        scalar::pairwise(&sum, &mut c, 0);
+        assert_eq!(a[..HALF], c[..HALF]);
+    }
+}

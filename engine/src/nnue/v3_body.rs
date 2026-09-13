@@ -1,4 +1,4 @@
-use super::super::threats::{FeatureMapper, RelBoard};
+use super::super::threats::{FeatureMapper, RelBoard, TOTAL_PAIRS};
 use super::super::{feature_index, king_bucket, output_bucket, Align64, INPUT_BUCKETS, OUTPUT_BUCKETS};
 use crate::bitboard::*;
 use crate::position::Position;
@@ -264,6 +264,56 @@ impl NetworkV3 {
         }
     }
 
+    /// Piece-square part for perspective `p` via the refresh cache entry `f` (v1-style Finny table):
+    /// apply only the pieces that differ from the board the entry last saw, then copy out.
+    fn refresh_psq_cached(&self, f: &mut FinnyEntry3, pos: &Position, p: Color, out: &mut [i16; L1]) {
+        let rk = if p == Color::Black { pos.king_sq(p) ^ 56 } else { pos.king_sq(p) };
+        for c in [Color::White, Color::Black] {
+            for pt in PieceType::ALL {
+                let cur = pos.pieces_c(c, pt);
+                let old = f.by_color[c.idx()] & f.by_type[pt.idx()];
+                let piece = Piece::new(c, pt);
+                for s in bits(cur & !old) {
+                    add_i16_row(&mut f.acc.0, &self.psq_w[feature_index(p, rk, piece, s)].0);
+                }
+                for s in bits(old & !cur) {
+                    sub_i16_row(&mut f.acc.0, &self.psq_w[feature_index(p, rk, piece, s)].0);
+                }
+            }
+        }
+        f.by_color = [pos.colored(Color::White), pos.colored(Color::Black)];
+        for pt in PieceType::ALL {
+            f.by_type[pt.idx()] = pos.pieces(pt);
+        }
+        out.copy_from_slice(&f.acc.0);
+    }
+
+    /// Threat part (threat features only, no pawn pairs, no bias) for perspective `p` from scratch.
+    pub fn refresh_threats(&self, pos: &Position, p: Color, out: &mut [i16; L1]) {
+        out.fill(0);
+        let rel = RelBoard::from_position(pos, p);
+        self.mapper.map_features(&rel, |s| if s >= TOTAL_PAIRS { add_i8_row(out, &self.pp_w[s].0) }, |_| {});
+    }
+
+    /// Add the pawn-pair rows (mirrored by the king file) of perspective `p` onto `acc`.
+    pub fn add_pairs(&self, pos: &Position, p: Color, acc: &mut [i16; L1]) {
+        let rel = RelBoard::from_position(pos, p);
+        self.mapper.map_pairs(&rel, |s| add_i8_row(acc, &self.pp_w[s].0));
+    }
+
+    /// Forward pass from split accumulators (piece-square part + threat part per side, stm first).
+    /// Bit-identical to `forward` on the summed accumulators.
+    pub fn forward_split(&self, us_psq: &[i16; L1], us_thr: &[i16; L1], them_psq: &[i16; L1], them_thr: &[i16; L1], bucket: usize) -> Value {
+        use self::kernels::{l1_dots, pairwise2};
+        let mut x = Align64([0u8; L1]);
+        pairwise2(us_psq, us_thr, &mut x.0, 0);
+        pairwise2(them_psq, them_thr, &mut x.0, HALF);
+        let mut sums = [0i32; L2];
+        let rows: &[[i8; L1]] = unsafe { std::slice::from_raw_parts(self.l1_w[bucket * L2..].as_ptr() as *const [i8; L1], L2) };
+        l1_dots(&x.0, rows, &mut sums);
+        self.tail(&sums, bucket)
+    }
+
     /// Forward pass from two computed accumulators (stm first). Scalar reference.
     pub fn forward_scalar(&self, us: &[i16; L1], them: &[i16; L1], bucket: usize) -> Value {
         let mut x = [0u8; L1];
@@ -338,7 +388,11 @@ use super::super::DirtyPiece;
 
 #[derive(Clone, Copy)]
 struct Entry3 {
+    /// King-dependent part: piece-square features (king bucket + mirror, includes the FT bias) plus the
+    /// pawn-pair features (mirrored by the king file). Rebuilt via the refresh cache on king-bucket/mirror changes.
     acc: [Align64<[i16; L1]>; 2],
+    /// Threat features (king-independent): only ever updated incrementally.
+    thr: [Align64<[i16; L1]>; 2],
     computed: [bool; 2],
     /// Position after this entry's move.
     pos: Position,
@@ -355,6 +409,7 @@ impl Entry3 {
     fn blank() -> Entry3 {
         Entry3 {
             acc: [Align64([0; L1]); 2],
+            thr: [Align64([0; L1]); 2],
             computed: [false; 2],
             pos: Position::empty(),
             dirty: DirtyPiece::default(),
@@ -369,24 +424,43 @@ impl Entry3 {
 /// Per-thread incremental state. The entry stack is allocated once and indexed by `len`: a push
 /// only writes the small metadata fields, never the 4 KB of accumulators (those are produced lazily,
 /// straight from the previous entry, when an evaluation is actually needed).
+/// Refresh cache for the piece-square part: per perspective and king bucket/mirror, the accumulator
+/// of the last board seen there plus that board's piece sets (a refresh only applies the difference).
+#[derive(Clone, Copy)]
+struct FinnyEntry3 {
+    acc: Align64<[i16; L1]>,
+    by_color: [u64; 2],
+    by_type: [u64; 6],
+}
+
 pub struct StateV3 {
     stack: Vec<Entry3>,
     len: usize,
+    /// [perspective][king_bucket * 2 + mirror]
+    finny: Vec<[FinnyEntry3; INPUT_BUCKETS * 2]>,
     scratch_old: Vec<usize>,
     scratch_new: Vec<usize>,
     scratch_old_b: Vec<usize>,
     scratch_new_b: Vec<usize>,
     apply_add: Vec<usize>,
     apply_sub: Vec<usize>,
+    thr_add: Vec<usize>,
+    thr_sub: Vec<usize>,
 }
 
-use self::kernels::{add_i16_row, add_i8_row, apply_rows};
+use self::kernels::{add_i16_row, add_i8_row, apply_rows, sub_i16_row};
 
 /// Number of 64-byte lines to prefetch per applied weight row (0 disables). Measured 2026-09-12: 0, 2, 4 and
 /// 16 lines are within noise of each other on the laptop (16 slightly worse), so prefetching is off.
 pub const PREFETCH_LINES: usize = 0;
 /// Applied-row counter for benchmarking (relaxed, only read by nnuebench).
 pub static ROWS_APPLIED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+/// Diagnostics: from-scratch refreshes and incremental applies (relaxed counters, read by `prof`).
+pub static REFRESHES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+pub static INCR_APPLIES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+pub static EVALS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+/// Threat-part rebuilds (king crossed the mirror line): the expensive refresh.
+pub static THR_REFRESHES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 /// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, diff+prefetch, row apply].
 /// Only active with `--features nnue_profile`; otherwise compiled out.
 pub static PHASE_NS: [std::sync::atomic::AtomicU64; 4] = [
@@ -432,29 +506,52 @@ fn prefetch_row<T>(row: &T) {
 
 impl StateV3 {
     pub fn new() -> Self {
+        let empty = FinnyEntry3 { acc: Align64([0; L1]), by_color: [0; 2], by_type: [0; 6] };
         StateV3 {
             stack: vec![Entry3::blank(); MAX_PLY + 8],
             len: 0,
+            finny: vec![[empty; INPUT_BUCKETS * 2]; 2],
             scratch_old: Vec::with_capacity(512),
             scratch_new: Vec::with_capacity(512),
             scratch_old_b: Vec::with_capacity(512),
             scratch_new_b: Vec::with_capacity(512),
             apply_add: Vec::with_capacity(512),
             apply_sub: Vec::with_capacity(512),
+            thr_add: Vec::with_capacity(512),
+            thr_sub: Vec::with_capacity(512),
         }
     }
 
     pub fn reset(&mut self, pos: &Position, net: &NetworkV3) {
-        let e = &mut self.stack[0];
+        // Refresh cache back to "bias only, empty board".
+        for p in 0..2 {
+            for f in self.finny[p].iter_mut() {
+                f.acc = net.ft_b;
+                f.by_color = [0; 2];
+                f.by_type = [0; 6];
+            }
+        }
+        let StateV3 { stack, finny, .. } = self;
+        let e = &mut stack[0];
         e.pos = *pos;
         e.dirty = DirtyPiece::default();
         e.changed = 0;
         e.is_null = false;
         e.rel_ok = false;
-        net.refresh_accumulator(pos, Color::White, &mut e.acc[0].0);
-        net.refresh_accumulator(pos, Color::Black, &mut e.acc[1].0);
+        for p in [Color::White, Color::Black] {
+            let idx = Self::finny_index(p, pos.king_sq(p));
+            net.refresh_psq_cached(&mut finny[p.idx()][idx], pos, p, &mut e.acc[p.idx()].0);
+            net.add_pairs(pos, p, &mut e.acc[p.idx()].0);
+            net.refresh_threats(pos, p, &mut e.thr[p.idx()].0);
+        }
         e.computed = [true; 2];
         self.len = 1;
+    }
+
+    #[inline(always)]
+    fn finny_index(p: Color, ksq: Square) -> usize {
+        let rk = Self::rel_king(p, ksq);
+        king_bucket(rk) * 2 + (file_of(rk) > 3) as usize
     }
 
     #[inline]
@@ -515,8 +612,8 @@ impl StateV3 {
     /// Compute entry j's accumulators from entry j-1's for the requested perspectives. The threat
     /// diff is computed once (both perspectives come out of one pass over the affected attackers);
     /// each accumulator is then produced in a single fused pass over all changed rows.
-    fn apply_incremental(&mut self, j: usize, need: [bool; 2], net: &NetworkV3) {
-        let StateV3 { stack, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, .. } = self;
+    fn apply_incremental(&mut self, j: usize, need: [bool; 2], refresh_psq: [bool; 2], refresh_thr: [bool; 2], net: &NetworkV3) {
+        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, .. } = self;
         let (before, after) = stack.split_at_mut(j);
         let prev = &mut before[j - 1];
         let cur = &mut after[0];
@@ -524,6 +621,7 @@ impl StateV3 {
             for p in 0..2 {
                 if need[p] {
                     cur.acc[p] = prev.acc[p];
+                    cur.thr[p] = prev.thr[p];
                     cur.computed[p] = true;
                 }
             }
@@ -540,7 +638,7 @@ impl StateV3 {
         let mut psq_add = [[0usize; 2]; 2];
         let mut psq_sub = [[0usize; 2]; 2];
         for p in [Color::White, Color::Black] {
-            if !need[p.idx()] {
+            if !need[p.idx()] || refresh_psq[p.idx()] {
                 continue;
             }
             let rk = Self::rel_king(p, new_pos.king_sq(p));
@@ -583,15 +681,18 @@ impl StateV3 {
             so.sort_unstable();
             sn.sort_unstable();
             // Set difference both ways: rows in old only are subtracted, rows in new only are added.
+            // Pawn pairs (index < TOTAL_PAIRS) go to the king-dependent accumulator, threats to `thr`.
             apply_add.clear();
             apply_sub.clear();
+            thr_add.clear();
+            thr_sub.clear();
             let (mut a, mut b) = (0, 0);
             while a < so.len() || b < sn.len() {
                 if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
-                    apply_sub.push(so[a]);
+                    if so[a] < TOTAL_PAIRS { apply_sub.push(so[a]) } else { thr_sub.push(so[a]) }
                     a += 1;
                 } else if a >= so.len() || sn[b] < so[a] {
-                    apply_add.push(sn[b]);
+                    if sn[b] < TOTAL_PAIRS { apply_add.push(sn[b]) } else { thr_add.push(sn[b]) }
                     b += 1;
                 } else {
                     a += 1;
@@ -599,16 +700,34 @@ impl StateV3 {
                 }
             }
             if PREFETCH_LINES > 0 {
-                for &f in apply_add.iter().chain(apply_sub.iter()) {
+                for &f in apply_add.iter().chain(apply_sub.iter()).chain(thr_add.iter()).chain(thr_sub.iter()) {
                     prefetch_row(&net.pp_w[f]);
                 }
             }
             phase(2, &mut tm);
-            let na = dirty.n_add as usize;
-            let ns = dirty.n_sub as usize;
-            apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, apply_add, apply_sub);
+            // Piece-square part: incremental, or rebuilt from the refresh cache when the king changed bucket.
+            if refresh_psq[p] {
+                REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                let pc = Color::from_idx(p);
+                let idx = Self::finny_index(pc, new_pos.king_sq(pc));
+                net.refresh_psq_cached(&mut finny[p][idx], &new_pos, pc, &mut cur.acc[p].0);
+                net.add_pairs(&new_pos, pc, &mut cur.acc[p].0);
+            } else {
+                let na = dirty.n_add as usize;
+                let ns = dirty.n_sub as usize;
+                apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, apply_add, apply_sub);
+            }
+            // Threat part: always incremental (king-independent).
+            // Threat part: incremental, except when the king crossed the mirror line (every threat index
+            // is mirrored by the king file, see FeatureMapper::map_restricted), which needs a rebuild.
+            if refresh_thr[p] {
+                THR_REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                net.refresh_threats(&new_pos, Color::from_idx(p), &mut cur.thr[p].0);
+            } else {
+                apply_rows(&prev.thr[p].0, &mut cur.thr[p].0, &net.psq_w, &[], &[], &net.pp_w, thr_add, thr_sub);
+            }
             cur.computed[p] = true;
-            ROWS_APPLIED.fetch_add((apply_add.len() + apply_sub.len()) as u64, std::sync::atomic::Ordering::Relaxed);
+            ROWS_APPLIED.fetch_add((apply_add.len() + apply_sub.len() + thr_add.len() + thr_sub.len()) as u64, std::sync::atomic::Ordering::Relaxed);
             phase(3, &mut tm);
         }
     }
@@ -622,27 +741,13 @@ impl StateV3 {
             if self.stack[top].computed[pi] {
                 continue;
             }
+            // Walk back to the nearest computed entry (entry 0 always is): the threat part is carried
+            // incrementally through king moves; only the piece-square part is rebuilt at bucket changes.
             let mut i = top;
-            loop {
-                if self.stack[i].computed[pi] || i == 0 {
-                    break;
-                }
-                let ka = self.stack[i - 1].pos.king_sq(p);
-                let kb = self.stack[i].pos.king_sq(p);
-                if ka != kb && Self::needs_refresh(p, ka, kb) {
-                    break;
-                }
+            while !self.stack[i].computed[pi] {
                 i -= 1;
             }
-            if !self.stack[i].computed[pi] {
-                let pos = self.stack[top].pos;
-                let mut acc = Align64([0i16; L1]);
-                net.refresh_accumulator(&pos, p, &mut acc.0);
-                self.stack[top].acc[pi] = acc;
-                self.stack[top].computed[pi] = true;
-            } else {
-                start[pi] = i;
-            }
+            start[pi] = i;
         }
         let lo = start[0].min(start[1]);
         if lo == usize::MAX {
@@ -650,16 +755,59 @@ impl StateV3 {
         }
         for j in lo + 1..=top {
             let need = [start[0] != usize::MAX && start[0] < j, start[1] != usize::MAX && start[1] < j];
-            self.apply_incremental(j, need, net);
+            let mut refresh = [false; 2];
+            let mut refresh_thr = [false; 2];
+            for p in [Color::White, Color::Black] {
+                if need[p.idx()] {
+                    let ka = self.stack[j - 1].pos.king_sq(p);
+                    let kb = self.stack[j].pos.king_sq(p);
+                    if ka != kb {
+                        refresh[p.idx()] = Self::needs_refresh(p, ka, kb);
+                        let (ra, rb) = (Self::rel_king(p, ka), Self::rel_king(p, kb));
+                        refresh_thr[p.idx()] = (file_of(ra) > 3) != (file_of(rb) > 3);
+                    }
+                }
+            }
+            INCR_APPLIES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            self.apply_incremental(j, need, refresh, refresh_thr, net);
         }
     }
 
+    /// Test helper: lanes where (psq + thr) differs from a from-scratch accumulator, per perspective,
+    /// plus the same for the psq part alone against a from-scratch psq-only accumulator.
+    #[cfg(test)]
+    pub fn debug_mismatch(&mut self, net: &NetworkV3) -> [(usize, usize); 2] {
+        self.ensure_both(net);
+        let top = &self.stack[self.len - 1];
+        let mut out = [(0usize, 0usize); 2];
+        for p in [Color::White, Color::Black] {
+            let mut full = [0i16; L1];
+            net.refresh_accumulator(&top.pos, p, &mut full);
+            let mut psq_only = [0i16; L1];
+            psq_only.copy_from_slice(&net.ft_b.0);
+            let rk = if p == Color::Black { top.pos.king_sq(p) ^ 56 } else { top.pos.king_sq(p) };
+            for sq in bits(top.pos.occupied()) {
+                add_i16_row(&mut psq_only, &net.psq_w[feature_index(p, rk, top.pos.piece_on(sq), sq)].0);
+            }
+            net.add_pairs(&top.pos, p, &mut psq_only); // king-dependent part = psq + pairs
+            let mut thr_only = [0i16; L1];
+            net.refresh_threats(&top.pos, p, &mut thr_only);
+            let (a, t) = (&top.acc[p.idx()].0, &top.thr[p.idx()].0);
+            let bad_acc = (0..L1).filter(|&i| a[i] != psq_only[i]).count();
+            let bad_thr = (0..L1).filter(|&i| t[i] != thr_only[i]).count();
+            let _ = full;
+            out[p.idx()] = (bad_acc, bad_thr);
+        }
+        out
+    }
+
     pub fn evaluate(&mut self, net: &NetworkV3) -> Value {
+        EVALS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
         self.ensure_both(net);
         let top = &self.stack[self.len - 1];
         let us = top.pos.side_to_move();
         let bucket = output_bucket(&top.pos);
-        net.forward(&top.acc[us.idx()].0, &top.acc[(!us).idx()].0, bucket)
+        net.forward_split(&top.acc[us.idx()].0, &top.thr[us.idx()].0, &top.acc[(!us).idx()].0, &top.thr[(!us).idx()].0, bucket)
     }
 }
 
@@ -723,7 +871,11 @@ mod tests {
                     pos = next;
                     stack.push(pos);
                     if rng % 3 != 0 {
-                        assert_eq!(st.evaluate(&net), net.evaluate_reference(&pos), "fen {} game {} ply {} move {}", fen, game, ply, m);
+                        let (e, r) = (st.evaluate(&net), net.evaluate_reference(&pos));
+                        if e != r {
+                            let mm = st.debug_mismatch(&net);
+                            panic!("fen {} game {} ply {} move {}: eval {} vs ref {}; mismatched lanes (acc=psq+pairs, thr) white {:?} black {:?}", fen, game, ply, m, e, r, mm[0], mm[1]);
+                        }
                     }
                 }
             }

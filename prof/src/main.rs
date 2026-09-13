@@ -26,6 +26,17 @@ fn main() {
     let t = std::time::Instant::now();
     engine::uci::bench(&mut e, depth);
     let secs = t.elapsed().as_secs_f64();
+    {
+        use std::sync::atomic::Ordering::Relaxed;
+        let (r, i, e) = (engine::nnue::v3::w1024::REFRESHES.load(Relaxed) + engine::nnue::v3::w512::REFRESHES.load(Relaxed),
+            engine::nnue::v3::w1024::INCR_APPLIES.load(Relaxed) + engine::nnue::v3::w512::INCR_APPLIES.load(Relaxed),
+            engine::nnue::v3::w1024::EVALS.load(Relaxed) + engine::nnue::v3::w512::EVALS.load(Relaxed));
+        let tr = engine::nnue::v3::w1024::THR_REFRESHES.load(Relaxed) + engine::nnue::v3::w512::THR_REFRESHES.load(Relaxed);
+        if e > 0 {
+            println!("v3 stats: evals {e}, incremental applies {i} ({:.2}/eval), psq refreshes {r} ({:.3}/eval), threat rebuilds {tr} ({:.3}/eval, one per {:.0} evals)", i as f64 / e as f64, r as f64 / e as f64, tr as f64 / e as f64, e as f64 / tr.max(1) as f64);
+        }
+        println!("size_of Position = {} bytes, Entry3(1024) = {} bytes", std::mem::size_of::<engine::position::Position>(), std::mem::size_of::<engine::nnue::v3::w1024::StateV3>() );
+    }
     let report = guard.report().build().unwrap();
 
     // Aggregate: self time = leaf frame; inclusive = any frame in the stack (deduplicated per sample).
