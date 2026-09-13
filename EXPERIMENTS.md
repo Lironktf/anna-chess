@@ -60,7 +60,10 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 
 ## Infrastructure lessons
 
-- `pgrep -f` matches the shell that runs it: killed my own shell twice and reported an unarmed self-destruct as armed. Select by exact argv fields.
+- `pgrep -f` / `pkill -f` match the shell that runs them: killed my own shell three times (last: 2026-09-13, a `pkill -f "ssh ... chmod"`
+  inside a command line containing that string). Select by exact argv fields with awk, never by substring.
+- The ssh that starts the detached on-box self-destruct can hang after arming (vast_launch.sh and cpu_eval.sh, 2026-09-13): bound it
+  with `timeout` and verify arming in a separate ssh.
 - vast.ai unverified CPU-only hosts failed 3 of 4 times (ssh never up, never running, container exited); verified hosts with GPUs worked.
 - Some hosts drop long rsyncs: `rsync --bwlimit=6000 --partial` per file succeeds where a plain rsync gets "Broken pipe".
 - Stormphrax 8 release binary needs GLIBCXX_3.4.31 (toolchain PPA libstdc++6); Weiss needs gcc-13.
