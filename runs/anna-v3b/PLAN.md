@@ -12,6 +12,6 @@ roundtrip); `randomnet-v3 out 512` + `netcheck --strict` ok; trainer builds and 
 gradient step; vast scripts pass L1 through. Box smoke run + netcheck vs "TRAINER EVAL" lines before the real run, as for v3.
 
 Budget: credit $4.29. Host offer 29761291 (Quebec, RTX 4090 + 32 threads EPYC 9554, ~$0.48/hr all-in). Expected 4-5 h,
-~$2.0-2.5. Cost guard cap **$3.00**, self-destruct MAX_HOURS 8. Restricted key id 27906658 (delete after).
+~$2.0-2.5. Cost guard cap **$3.90** (owner 00:40: may use all credit, keep ~$0.30 for the validation box), self-destruct MAX_HOURS 9. Restricted key id 27906658 (delete after).
 
 ## Status

@@ -1,0 +1,7 @@
+2026-09-13T04:21:41Z create offer=29761291 run=anna-v3b image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "15c2229d4c5df8d5d6058df8a4088e2d41ae929ebe4ebc300224969f5f5efc44",
+ "new_contract": 50845524,
+ "success": true
+}
+2026-09-13T04:47:46Z train start superbatches=310 (SB0=30 SB2=30, L1=512) self-destruct armed max_hours=9 (log verified)
