@@ -53,3 +53,5 @@ then the real run. Kill: `modal app stop anna-train`. Hard cap: ANNA_HOURS (the 
   anna-v3c-s2-30 pulled (quantised + raw.bin; optimiser_state stays on the volume), `netcheck --strict` ok, engine evals match
   the trainer (28/30, -1661/-1694, 1723/1754, -477/-449, -1433/-1447, -14/-13). Modal spend ~$6 (fetch + smoke + run).
   Verdict match: v3c final vs v3b at equal nodes, 200 games (sprt/v3cfinal_vs_v3b_nodes30k.log).
+- 18:38 verdict: v3c final vs v3b at equal nodes, 200 games: **+19 +/- 32** (66-55-79). Not the +40..+80 hoped for; 400 more
+  games running (sprt/v3cfinal_vs_v3b_nodes30k_b.log) to resolve the sign. Reading: v3b was nearer convergence than v1@340.
