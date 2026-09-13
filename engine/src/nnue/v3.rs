@@ -17,11 +17,20 @@
 /// Threat-input net at the trained width 1024 (anna-v3).
 pub mod w1024 {
     pub const L1: usize = 1024;
+    pub const HAS_THREATS: bool = true;
     include!("v3_body.rs");
 }
 /// Same architecture at half width (anna-v3b): 512 B threat rows instead of 1 KB.
 pub mod w512 {
     pub const L1: usize = 512;
+    pub const HAS_THREATS: bool = true;
+    include!("v3_body.rs");
+}
+/// anna-v4: the same multilayer/pairwise net WITHOUT threat or pawn-pair inputs (piece-square only),
+/// i.e. v1's inputs with v3's output stack. No threat rows to fetch, so it runs at ~v1 speed.
+pub mod w1024nt {
+    pub const L1: usize = 1024;
+    pub const HAS_THREATS: bool = false;
     include!("v3_body.rs");
 }
 pub use w1024::*;

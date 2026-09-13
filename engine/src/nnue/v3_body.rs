@@ -18,8 +18,10 @@ pub const SCALE: f32 = 400.0;
 pub const L1_INPUT_SCALE: f32 = 255.0 * 255.0 / 512.0;
 pub const PAIR_SHIFT: u32 = 9;
 
+/// Threat/pawn-pair rows present in the file (0 for the no-threats variant).
+pub const PP_ROWS: usize = if HAS_THREATS { PP_FEATURES } else { 0 };
 pub const NET_BYTES_UNPADDED: usize = PSQ_FEATURES * L1 * 2
-    + PP_FEATURES * L1
+    + PP_ROWS * L1
     + L1 * 2
     + OUTPUT_BUCKETS * L2 * L1
     + OUTPUT_BUCKETS * L2 * 4
@@ -74,7 +76,7 @@ impl NetworkV3 {
         }
         let mut r = Reader { b: bytes, off: 0 };
         let psq = r.i16s(PSQ_FEATURES * L1);
-        let pp = r.i8s(PP_FEATURES * L1);
+        let pp = r.i8s(PP_ROWS * L1);
         let ftb = r.i16s(L1);
         let l1w = r.i8s(OUTPUT_BUCKETS * L2 * L1);
         let l1b = r.f32s(OUTPUT_BUCKETS * L2);
@@ -88,8 +90,8 @@ impl NetworkV3 {
             a.0.copy_from_slice(&psq[f * L1..(f + 1) * L1]);
             psq_w.push(a);
         }
-        let mut pp_w = Vec::with_capacity(PP_FEATURES);
-        for f in 0..PP_FEATURES {
+        let mut pp_w = Vec::with_capacity(PP_ROWS);
+        for f in 0..PP_ROWS {
             let mut a = Align64([0i8; L1]);
             a.0.copy_from_slice(&pp[f * L1..(f + 1) * L1]);
             pp_w.push(a);
@@ -145,8 +147,8 @@ impl NetworkV3 {
             }
             psq_w.push(a);
         }
-        let mut pp_w = Vec::with_capacity(PP_FEATURES);
-        for _ in 0..PP_FEATURES {
+        let mut pp_w = Vec::with_capacity(PP_ROWS);
+        for _ in 0..PP_ROWS {
             let mut a = Align64([0i8; L1]);
             for v in a.0.iter_mut() {
                 *v = (next() % 21) as i8 - 10;
@@ -250,13 +252,15 @@ impl NetworkV3 {
             psq[np] = f;
             np += 1;
         }
-        let rel = RelBoard::from_position(pos, p);
         let mut feats = [0usize; 320];
         let mut n = 0;
-        self.mapper.map_features(&rel, |s| {
-            feats[n] = s;
-            n += 1;
-        }, |_| {});
+        if HAS_THREATS {
+            let rel = RelBoard::from_position(pos, p);
+            self.mapper.map_features(&rel, |s| {
+                feats[n] = s;
+                n += 1;
+            }, |_| {});
+        }
         for &f in &feats[..n] {
             prefetch_row(&self.pp_w[f]);
         }
@@ -582,8 +586,10 @@ impl StateV3 {
         for p in [Color::White, Color::Black] {
             let idx = Self::finny_index(p, pos.king_sq(p));
             net.refresh_psq_cached(&mut finny[p.idx()][idx], pos, p, &mut e.acc[p.idx()].0);
-            net.add_pairs(pos, p, &mut e.acc[p.idx()].0);
-            net.refresh_threats(pos, p, &mut e.thr[p.idx()].0);
+            if HAS_THREATS {
+                net.add_pairs(pos, p, &mut e.acc[p.idx()].0);
+                net.refresh_threats(pos, p, &mut e.thr[p.idx()].0);
+            }
         }
         e.computed = [true; 2];
         self.len = 1;
@@ -694,6 +700,27 @@ impl StateV3 {
         }
         // Threat + pawn-pair part: features emitted by affected attackers, old vs new, both
         // perspectives from the white-relative board (on_stm = white, on_ntm = black).
+        if !HAS_THREATS {
+            // Piece-square only: incremental rows or a cache refresh; nothing else to do.
+            for p in 0..2 {
+                if !need[p] {
+                    continue;
+                }
+                if refresh_psq[p] {
+                    REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                    let pc = Color::from_idx(p);
+                    let idx = Self::finny_index(pc, new_pos.king_sq(pc));
+                    net.refresh_psq_cached(&mut finny[p][idx], &new_pos, pc, &mut cur.acc[p].0);
+                } else {
+                    let na = dirty.n_add as usize;
+                    let ns = dirty.n_sub as usize;
+                    apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, &[], &[]);
+                }
+                cur.computed[p] = true;
+            }
+            let _ = (old_pos, changed, refresh_thr, &mut tm, ow, nw, ob, nb, lists, diff_bits);
+            return;
+        }
         let mut att_old = changed;
         let mut att_new = changed;
         for s in bits(changed) {
@@ -866,7 +893,11 @@ impl StateV3 {
         let top = &self.stack[self.len - 1];
         let us = top.pos.side_to_move();
         let bucket = output_bucket(&top.pos);
-        net.forward_split(&top.acc[us.idx()].0, &top.thr[us.idx()].0, &top.acc[(!us).idx()].0, &top.thr[(!us).idx()].0, bucket)
+        if HAS_THREATS {
+            net.forward_split(&top.acc[us.idx()].0, &top.thr[us.idx()].0, &top.acc[(!us).idx()].0, &top.thr[(!us).idx()].0, bucket)
+        } else {
+            net.forward(&top.acc[us.idx()].0, &top.acc[(!us).idx()].0, bucket)
+        }
     }
 }
 

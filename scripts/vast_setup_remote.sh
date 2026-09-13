@@ -56,11 +56,12 @@ done
 
 echo "=== smoke run"
 cd "$REPO/trainer"
-if [[ "${ARCH:-v1}" == "v3" ]]; then
-    # v3: one superbatch per stage, 50 batches each, save each -> smoke3-s{0,1,2}-1
-    DATA="$DATA_LIST" NET_ID=smoke3 SB0=1 SB1=1 SB2=1 BATCHES_PER_SB=50 SAVE_RATE=1 THREADS="${MAP_THREADS:-12}" \
-        L1="${L1:-1024}" LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/train_v3 2>&1 | tail -25
-    ls -la "$WORK/checkpoints"/smoke3-*/quantised.bin
+if [[ "${ARCH:-v1}" == "v3" || "${ARCH:-v1}" == "v4" ]]; then
+    # v3/v4: one superbatch per stage, 50 batches each, save each -> smoke{3,4}-s{0,1,2}-1
+    SMOKE="smoke${ARCH#v}"
+    DATA="$DATA_LIST" NET_ID="$SMOKE" SB0=1 SB1=1 SB2=1 BATCHES_PER_SB=50 SAVE_RATE=1 THREADS="${MAP_THREADS:-12}" \
+        L1="${L1:-1024}" LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" "./target/release/train_${ARCH}" 2>&1 | tail -25
+    ls -la "$WORK/checkpoints"/"$SMOKE"-*/quantised.bin
 else
     DATA="$DATA_LIST" NET_ID=smoke SUPERBATCHES=2 BATCHES_PER_SB=200 BATCH_SIZE=16384 SAVE_RATE=1 THREADS=4 \
         LOADER_THREADS=8 BUFFER_MB=2048 OUT_DIR="$WORK/checkpoints" ./target/release/trainer 2>&1 | tail -15

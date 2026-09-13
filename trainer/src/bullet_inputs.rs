@@ -13,6 +13,8 @@ use bullet::wdl::WdlScheduler;
 use bullet_trainer::model::{DenseInput, ModelInputs, ModelInputsMapper, SparseInput};
 
 pub type InputTy = (((((SparseInput, SparseInput), SparseInput), SparseInput), SparseInput), DenseInput<f32>);
+/// anna-v4 inputs: stm/psqt, ntm/psqt, buckets, targets.
+pub type PsqInputTy = (((SparseInput, SparseInput), SparseInput), DenseInput<f32>);
 
 pub fn make_inputs_mapper(
     params: (&ModelInputs<InputTy>, &PawnPawnInputs, ChessBucketsMirrored, impl OutputBuckets<ChessBoard>),
@@ -65,6 +67,32 @@ pub fn make_inputs_mapper(
             target[0] = lambda * result + (1. - lambda) * score;
         },
     )
+}
+
+
+/// Piece-square-only mapper (anna-v4): the same psqt features and targets, no pawn-pair/threat inputs.
+pub fn make_psq_inputs_mapper(
+    params: (&ModelInputs<PsqInputTy>, ChessBucketsMirrored, impl OutputBuckets<ChessBoard>),
+    wdl: impl WdlScheduler,
+) -> ModelInputsMapper<ChessBoard> {
+    ModelInputsMapper::build(params.0, move |pos, step, (((stm_psqt, ntm_psqt), bucket), target)| {
+        let mut cnt = 0;
+        params.1.map_features(pos, |stm, ntm| {
+            stm_psqt[cnt] = stm.try_into().unwrap();
+            ntm_psqt[cnt] = ntm.try_into().unwrap();
+            cnt += 1;
+        });
+        if cnt < params.1.max_active() {
+            stm_psqt[cnt] = -1;
+            ntm_psqt[cnt] = -1;
+        }
+        bucket[0] = i32::from(params.2.bucket(pos));
+        let result = f32::from(pos.result) / 2.0;
+        let score = 1.0 / (1.0 + (f32::from(-pos.score) / 400.0).exp());
+        let lambda = wdl.blend(step.batch(), step.superbatch(), step.final_superbatch());
+        assert!((0.0..=1.0).contains(&lambda), "WDL lambda must be in [0, 1]");
+        target[0] = lambda * result + (1. - lambda) * score;
+    })
 }
 
 pub fn three_file_band_mask() -> [u64; 64] {
