@@ -440,6 +440,33 @@ impl Entry3 {
 /// Per-thread incremental state. The entry stack is allocated once and indexed by `len`: a push
 /// only writes the small metadata fields, never the 4 KB of accumulators (those are produced lazily,
 /// straight from the previous entry, when an evaluation is actually needed).
+/// Fixed-capacity index list (no heap, no capacity checks on the hot path).
+#[derive(Clone, Copy)]
+struct IdxList {
+    n: usize,
+    v: [u32; IdxList::CAP],
+}
+impl IdxList {
+    const CAP: usize = 384;
+    const fn new() -> Self {
+        IdxList { n: 0, v: [0; Self::CAP] }
+    }
+    #[inline(always)]
+    fn clear(&mut self) {
+        self.n = 0;
+    }
+    #[inline(always)]
+    fn push(&mut self, f: usize) {
+        debug_assert!(self.n < Self::CAP);
+        self.v[self.n] = f as u32;
+        self.n += 1;
+    }
+    #[inline(always)]
+    fn as_slice(&self) -> &[u32] {
+        &self.v[..self.n]
+    }
+}
+
 /// Refresh cache for the piece-square part: per perspective and king bucket/mirror, the accumulator
 /// of the last board seen there plus that board's piece sets (a refresh only applies the difference).
 #[derive(Clone, Copy)]
@@ -458,14 +485,8 @@ pub struct StateV3 {
     scratch_new: Vec<usize>,
     scratch_old_b: Vec<usize>,
     scratch_new_b: Vec<usize>,
-    apply_add: Vec<usize>,
-    apply_sub: Vec<usize>,
-    thr_add: Vec<usize>,
-    thr_sub: Vec<usize>,
-    apply_add_b: Vec<usize>,
-    apply_sub_b: Vec<usize>,
-    thr_add_b: Vec<usize>,
-    thr_sub_b: Vec<usize>,
+    /// Per perspective: rows to add/sub in the king-dependent part (pairs) and in the threat part.
+    lists: Box<[[IdxList; 4]; 2]>,
     /// Feature bitmap for the old/new set difference (always all-zero between uses).
     diff_bits: Vec<u64>,
 }
@@ -537,14 +558,7 @@ impl StateV3 {
             scratch_new: Vec::with_capacity(512),
             scratch_old_b: Vec::with_capacity(512),
             scratch_new_b: Vec::with_capacity(512),
-            apply_add: Vec::with_capacity(512),
-            apply_sub: Vec::with_capacity(512),
-            thr_add: Vec::with_capacity(512),
-            thr_sub: Vec::with_capacity(512),
-            apply_add_b: Vec::with_capacity(512),
-            apply_sub_b: Vec::with_capacity(512),
-            thr_add_b: Vec::with_capacity(512),
-            thr_sub_b: Vec::with_capacity(512),
+            lists: Box::new([[IdxList::new(); 4]; 2]),
             diff_bits: vec![0u64; (PP_FEATURES + 63) / 64],
         }
     }
@@ -640,7 +654,7 @@ impl StateV3 {
     /// diff is computed once (both perspectives come out of one pass over the affected attackers);
     /// each accumulator is then produced in a single fused pass over all changed rows.
     fn apply_incremental(&mut self, j: usize, need: [bool; 2], refresh_psq: [bool; 2], refresh_thr: [bool; 2], net: &NetworkV3) {
-        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, apply_add_b, apply_sub_b, thr_add_b, thr_sub_b, diff_bits, .. } = self;
+        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, lists, diff_bits, .. } = self;
         let (before, after) = stack.split_at_mut(j);
         let prev = &mut before[j - 1];
         let cur = &mut after[0];
@@ -706,8 +720,7 @@ impl StateV3 {
                 continue;
             }
             let (so, sn): (&mut Vec<usize>, &mut Vec<usize>) = if p == 0 { (&mut *ow, &mut *nw) } else { (&mut *ob, &mut *nb) };
-            let (pa, ps, ta, ts): (&mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>) =
-                if p == 0 { (&mut *apply_add, &mut *apply_sub, &mut *thr_add, &mut *thr_sub) } else { (&mut *apply_add_b, &mut *apply_sub_b, &mut *thr_add_b, &mut *thr_sub_b) };
+            let [pa, ps, ta, ts] = &mut lists[p];
             pa.clear();
             ps.clear();
             ta.clear();
@@ -739,9 +752,11 @@ impl StateV3 {
         }
         // Phase B: prefetch every row both perspectives will touch, so the misses overlap.
         if PREFETCH_LINES > 0 {
-            for l in [&*apply_add, &*apply_sub, &*thr_add, &*thr_sub, &*apply_add_b, &*apply_sub_b, &*thr_add_b, &*thr_sub_b] {
-                for &f in l.iter() {
-                    prefetch_row(&net.pp_w[f]);
+            for pl in lists.iter() {
+                for l in pl.iter() {
+                    for &f in l.as_slice() {
+                        prefetch_row(&net.pp_w[f as usize]);
+                    }
                 }
             }
         }
@@ -751,8 +766,8 @@ impl StateV3 {
             if !need[p] {
                 continue;
             }
-            let (pa, ps, ta, ts): (&Vec<usize>, &Vec<usize>, &Vec<usize>, &Vec<usize>) =
-                if p == 0 { (&*apply_add, &*apply_sub, &*thr_add, &*thr_sub) } else { (&*apply_add_b, &*apply_sub_b, &*thr_add_b, &*thr_sub_b) };
+            let [pa, ps, ta, ts] = &lists[p];
+            let (pa, ps, ta, ts) = (pa.as_slice(), ps.as_slice(), ta.as_slice(), ts.as_slice());
             if refresh_psq[p] {
                 REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 let pc = Color::from_idx(p);

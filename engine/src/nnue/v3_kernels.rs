@@ -12,14 +12,14 @@ pub mod scalar {
     pub fn apply_rows(
         base: &[i16; N], out: &mut [i16; N],
         psq: &[super::super::super::super::Align64<[i16; N]>], add16: &[usize], sub16: &[usize],
-        pp: &[super::super::super::super::Align64<[i8; N]>], add8: &[usize], sub8: &[usize],
+        pp: &[super::super::super::super::Align64<[i8; N]>], add8: &[u32], sub8: &[u32],
     ) {
         for i in 0..N {
             let mut v = base[i];
             for &r in add16 { v = v.wrapping_add(psq[r].0[i]); }
             for &r in sub16 { v = v.wrapping_sub(psq[r].0[i]); }
-            for &r in add8 { v = v.wrapping_add(pp[r].0[i] as i16); }
-            for &r in sub8 { v = v.wrapping_sub(pp[r].0[i] as i16); }
+            for &r in add8 { v = v.wrapping_add(pp[r as usize].0[i] as i16); }
+            for &r in sub8 { v = v.wrapping_sub(pp[r as usize].0[i] as i16); }
             out[i] = v;
         }
     }
@@ -115,7 +115,7 @@ pub mod avx2 {
     pub fn apply_rows(
         base: &[i16; N], out: &mut [i16; N],
         psq: &[super::super::super::super::Align64<[i16; N]>], add16: &[usize], sub16: &[usize],
-        pp: &[super::super::super::super::Align64<[i8; N]>], add8: &[usize], sub8: &[usize],
+        pp: &[super::super::super::super::Align64<[i8; N]>], add8: &[u32], sub8: &[u32],
     ) {
         unsafe {
             let b = base.as_ptr() as *const __m256i;
@@ -124,8 +124,8 @@ pub mod avx2 {
                 let mut v = _mm256_loadu_si256(b.add(i));
                 for &r in add16 { v = _mm256_add_epi16(v, _mm256_loadu_si256((psq.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
                 for &r in sub16 { v = _mm256_sub_epi16(v, _mm256_loadu_si256((psq.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
-                for &r in add8 { v = _mm256_add_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r).0.as_ptr().add(i * 16) as *const __m128i))); }
-                for &r in sub8 { v = _mm256_sub_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r).0.as_ptr().add(i * 16) as *const __m128i))); }
+                for &r in add8 { v = _mm256_add_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r as usize).0.as_ptr().add(i * 16) as *const __m128i))); }
+                for &r in sub8 { v = _mm256_sub_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r as usize).0.as_ptr().add(i * 16) as *const __m128i))); }
                 _mm256_storeu_si256(o.add(i), v);
             }
         }
