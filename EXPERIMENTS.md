@@ -90,4 +90,6 @@ so our Lazy SMP scaling must be verified. Laptop 4-vs-1-thread test (2026-09-13)
 side never had 4 cores. Moved to the rented-box script (`MATCHES=slow4`: 4 vs 1 threads at 60+0.6, then 4-thread matches vs v1,
 Stormphrax 8 and Stash at 60+0.6, the direct 40/15 anchor). **Measured on cpu-eval3 (EPYC 7742, 2026-09-13): v3b 4 threads
 vs 1 thread at 60+0.6: +89 +/- 48 (40 games, 62.5%)**: normal Lazy SMP scaling (the usual figure for 4 threads is +80 to +120), so
-the 4-CPU list conditions do not penalise us.
+the 4-CPU list conditions do not penalise us. **v3b vs v1, both 4 threads, 60+0.6: +53 +/- 32 (100 games, 57.5%)**, the same
++53 as single-threaded, so the threat net's slow-control edge carries over to the list's conditions (even at 0.45x of v1's
+speed on this EPYC box: 418k vs 926k nps).
