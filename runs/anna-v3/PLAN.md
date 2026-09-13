@@ -60,5 +60,6 @@ not representative. If the budget must stay under $5, B.
 |---|---|---|---|---|
 | anna-v3-s1-60 (stage 1 at 60/310, LR still high) | v1 final (default.bin) | 100 @ 30k nodes/move | +24 -31 =45 | -24 +/- 54 (statistically level) |
 | anna-v3-s1-160 (stage 1 at 160/310) | v1 final (default.bin) | 100 @ 30k nodes/move | +34 -15 =51 | +67 +/- 48 |
+| **anna-v3-s2-30 (final)** | v1 final (default.bin) | 200 @ 30k nodes/move | +74 -27 =99 | **+83 +/- 32** (sprt/v3final_nodes30k.log) |
 
 A 20%-trained v3 already matches the fully trained v1 at equal nodes (log: sprt/v3mid_s1_60_nodes30k.log).
