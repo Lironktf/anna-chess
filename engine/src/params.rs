@@ -28,6 +28,9 @@ params! {
     SE_TTM, "SeTtmHist", 0, 0, 1;
     // Stockfish move ordering: +/- 20*piece_value for a quiet move escaping / entering a square attacked by a lesser piece.
     THREAT_ORDER, "ThreatOrder", 0, 0, 1;
+    // Two-tier evaluation: when a second net is loaded (EvalFileFast), nodes with depth < TierDepth and all quiescence
+    // nodes use the fast net; interior nodes use the main net. 0 = fast net only in quiescence (if loaded at all).
+    TIER_DEPTH, "TierDepth", 0, 0, 30;
     MAT_SCALE_BASE, "MatScaleBase", 700, 400, 1024;
     MAT_SCALE_DIV, "MatScaleDiv", 16, 4, 64;
     // Time management (percent scalers)

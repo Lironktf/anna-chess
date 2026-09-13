@@ -107,6 +107,11 @@ pub struct Thread<'a> {
     shared: &'a Shared,
     net: Option<&'a AnyNet>,
     nnue: AnyState,
+    /// Optional fast second net (two-tier evaluation), with its own accumulator state kept in sync.
+    net_fast: Option<&'a AnyNet>,
+    nnue_fast: AnyState,
+    /// Evaluation counters (main net, fast net) for the two-tier diagnostics.
+    pub n_eval: [u64; 2],
     pub hist: History,
     ss: Vec<StackEntry>,
     pv: Vec<[Move; MAX_PLY + 2]>,
@@ -142,7 +147,7 @@ fn value_draw(nodes: u64) -> Value {
 }
 
 impl<'a> Thread<'a> {
-    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
+    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, net_fast: Option<&'a AnyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
         let mut reductions = [0i32; 256];
         for (i, r) in reductions.iter_mut().enumerate().skip(1) {
             *r = ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32;
@@ -152,6 +157,9 @@ impl<'a> Thread<'a> {
             shared,
             net,
             nnue: AnyState::for_net(net),
+            net_fast,
+            nnue_fast: AnyState::for_net(net_fast),
+            n_eval: [0; 2],
             hist,
             ss: vec![StackEntry::default(); MAX_PLY + SS_OFFSET + 8],
             pv: vec![[Move::NONE; MAX_PLY + 2]; MAX_PLY + 2],
@@ -232,8 +240,37 @@ impl<'a> Thread<'a> {
     }
 
     #[inline]
-    fn evaluate(&mut self, pos: &Position) -> Value {
+    /// `fast`: this is a leaf-ish node (quiescence, or depth below TierDepth) where the cheap second net is used if loaded.
+    fn evaluate(&mut self, pos: &Position, fast: bool) -> Value {
+        if fast {
+            if let Some(nf) = self.net_fast {
+                self.n_eval[1] += 1;
+                return eval::evaluate(pos, Some(nf), &mut self.nnue_fast);
+            }
+        }
+        self.n_eval[0] += 1;
         eval::evaluate(pos, self.net, &mut self.nnue)
+    }
+    #[inline(always)]
+    fn nn_push(&mut self, before: &Position, m: Move, after: &Position) {
+        self.nnue.push(before, m, after);
+        if self.net_fast.is_some() {
+            self.nnue_fast.push(before, m, after);
+        }
+    }
+    #[inline(always)]
+    fn nn_push_null(&mut self, after: &Position) {
+        self.nnue.push_null(after);
+        if self.net_fast.is_some() {
+            self.nnue_fast.push_null(after);
+        }
+    }
+    #[inline(always)]
+    fn nn_pop(&mut self) {
+        self.nnue.pop();
+        if self.net_fast.is_some() {
+            self.nnue_fast.pop();
+        }
     }
 
     /// Draw by repetition or 50-move rule (position on top of the key stack).
@@ -427,7 +464,7 @@ impl<'a> Thread<'a> {
                 }
             }
             if ply >= MAX_PLY - 1 {
-                return if pos.in_check() { VALUE_DRAW } else { self.evaluate(pos) };
+                return if pos.in_check() { VALUE_DRAW } else { self.evaluate(pos, true) };
             }
             alpha = alpha.max(mated_in(ply));
             beta = beta.min(mate_in(ply + 1));
@@ -548,14 +585,14 @@ impl<'a> Thread<'a> {
                 unadjusted_eval = self.ss_at(ply).static_eval;
                 eval = unadjusted_eval;
             } else if tt_hit {
-                unadjusted_eval = if is_valid(tt.eval) { tt.eval } else { self.evaluate(pos) };
+                unadjusted_eval = if is_valid(tt.eval) { tt.eval } else { self.evaluate(pos, depth < crate::params::TIER_DEPTH.get()) };
                 eval = self.corrected_eval(unadjusted_eval, cv);
                 self.ss(ply).static_eval = eval;
                 if is_valid(tt_value) && (if tt_value > eval { tt.bound.has_lower() } else { tt.bound.has_upper() }) {
                     eval = tt_value;
                 }
             } else {
-                unadjusted_eval = self.evaluate(pos);
+                unadjusted_eval = self.evaluate(pos, depth < crate::params::TIER_DEPTH.get());
                 eval = self.corrected_eval(unadjusted_eval, cv);
                 self.ss(ply).static_eval = eval;
                 self.shared.tt.save(&writer, key, VALUE_NONE, tt_pv, Bound::None, DEPTH_UNSEARCHED, Move::NONE, unadjusted_eval);
@@ -621,12 +658,12 @@ impl<'a> Thread<'a> {
                     s.cont_corr_idx = Piece::None.idx() * 64;
                 }
                 let child = pos.make_null_move();
-                self.nnue.push_null(&child);
+                self.nn_push_null(&child);
                 self.keys.push(key);
                 self.nodes += 1;
                 let null_value = -self.search(&child, NodeType::NonPv, -beta, -beta + 1, depth - r, false, ply + 1);
                 self.keys.pop();
-                self.nnue.pop();
+                self.nn_pop();
                 self.ss(ply).is_null = false;
 
                 if null_value >= beta && !is_win(null_value) {
@@ -671,7 +708,7 @@ impl<'a> Thread<'a> {
                         s.cont_corr_idx = mp_piece.idx() * 64 + m.to() as usize;
                     }
                     let child = pos.make_move(m);
-                    self.nnue.push(pos, m, &child);
+                    self.nn_push(pos, m, &child);
                     self.keys.push(key);
                     self.nodes += 1;
                     let mut value = -self.qsearch(&child, false, -probcut_beta, -probcut_beta + 1, ply + 1);
@@ -679,7 +716,7 @@ impl<'a> Thread<'a> {
                         value = -self.search(&child, NodeType::NonPv, -probcut_beta, -probcut_beta + 1, probcut_depth, !cut_node, ply + 1);
                     }
                     self.keys.pop();
-                    self.nnue.pop();
+                    self.nn_pop();
                     if value >= probcut_beta {
                         self.shared.tt.save(&writer, key, value_to_tt(value, ply), tt_pv, Bound::Lower, probcut_depth + 1, m, unadjusted_eval);
                         if !is_decisive(value) {
@@ -851,7 +888,7 @@ impl<'a> Thread<'a> {
             }
             let child = pos.make_move(m);
             self.shared.tt.prefetch(child.key());
-            self.nnue.push(pos, m, &child);
+            self.nn_push(pos, m, &child);
             self.keys.push(key);
             self.nodes += 1;
             self.shared.nodes[self.id].store(self.nodes, Ordering::Relaxed);
@@ -920,7 +957,7 @@ impl<'a> Thread<'a> {
             }
 
             self.keys.pop();
-            self.nnue.pop();
+            self.nn_pop();
 
             if self.should_stop() {
                 return 0;
@@ -1070,7 +1107,7 @@ impl<'a> Thread<'a> {
             }
         }
         if ply >= MAX_PLY - 1 {
-            return if pos.in_check() { VALUE_DRAW } else { self.evaluate(pos) };
+            return if pos.in_check() { VALUE_DRAW } else { self.evaluate(pos, true) };
         }
         let in_check = pos.in_check();
         {
@@ -1100,14 +1137,14 @@ impl<'a> Thread<'a> {
         } else {
             let cv = self.corr_value(pos, ply);
             if tt_hit {
-                unadjusted_eval = if is_valid(tt.eval) { tt.eval } else { self.evaluate(pos) };
+                unadjusted_eval = if is_valid(tt.eval) { tt.eval } else { self.evaluate(pos, true) };
                 best_value = self.corrected_eval(unadjusted_eval, cv);
                 self.ss(ply).static_eval = best_value;
                 if is_valid(tt_value) && (if tt_value > best_value { tt.bound.has_lower() } else { tt.bound.has_upper() }) {
                     best_value = tt_value;
                 }
             } else {
-                unadjusted_eval = self.evaluate(pos);
+                unadjusted_eval = self.evaluate(pos, true);
                 best_value = self.corrected_eval(unadjusted_eval, cv);
                 self.ss(ply).static_eval = best_value;
             }
@@ -1180,12 +1217,12 @@ impl<'a> Thread<'a> {
             }
             let child = pos.make_move(m);
             self.shared.tt.prefetch(child.key());
-            self.nnue.push(pos, m, &child);
+            self.nn_push(pos, m, &child);
             self.keys.push(key);
             self.nodes += 1;
             let value = -self.qsearch(&child, pv_node, -beta, -alpha, ply + 1);
             self.keys.pop();
-            self.nnue.pop();
+            self.nn_pop();
 
             if self.should_stop() {
                 return 0;
@@ -1229,6 +1266,9 @@ impl<'a> Thread<'a> {
         self.completed_depth = 0;
         if let Some(net) = self.net {
             self.nnue.reset(root, net);
+        }
+        if let Some(nf) = self.net_fast {
+            self.nnue_fast.reset(root, nf);
         }
         for s in self.ss.iter_mut() {
             *s = StackEntry::default();
@@ -1396,6 +1436,9 @@ impl<'a> Thread<'a> {
         self.last_best_move = self.root_moves[0].mv;
         self.last_best_depth = self.completed_depth;
         self.prev_time_reduction = time_reduction;
+        if self.net_fast.is_some() && self.is_main() && !self.silent {
+            println!("info string evals main={} fast={}", self.n_eval[0], self.n_eval[1]);
+        }
     }
 
     fn print_info(&self, root: &Position, depth: i32, pv_idx: usize, alpha: Value, beta: Value) {
@@ -1463,6 +1506,7 @@ pub fn go(
     game_keys: &[u64],
     shared: &Shared,
     net: Option<&AnyNet>,
+    net_fast: Option<&AnyNet>,
     limits: &Limits,
     opts: &Options,
     hists: &mut Vec<History>,
@@ -1488,7 +1532,7 @@ pub fn go(
                 std::thread::Builder::new()
                     .stack_size(64 * 1024 * 1024)
                     .spawn_scoped(s, move || {
-                        let mut t = Thread::new(id, shared, net, limits, opts, hist);
+                        let mut t = Thread::new(id, shared, net, net_fast, limits, opts, hist);
                         t.iterative_deepening(&root, &keys);
                         if id == 0 {
                             shared.stop.store(true, Ordering::Relaxed);
