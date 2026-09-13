@@ -8,7 +8,8 @@
 set -uo pipefail
 RUN_NAME="${RUN_NAME:?}"; WORK=/workspace; SRC=$WORK/chess; OUT=$WORK/runs/$RUN_NAME; mkdir -p "$OUT" $WORK/tools
 LOG="$OUT/train.log"
-NET_V3="${NET_V3:-$WORK/nets/anna-v3.bin}"; NET_V1="${NET_V1:-$WORK/nets/anna-v1.bin}"
+NET_V3="${NET_V3:-$WORK/nets/anna-v3.bin}"; NET_V1="${NET_V1:-$WORK/nets/anna-v1.bin}"; NET_OLD="${NET_OLD:-$WORK/nets/anna-old.bin}"
+MATCHES="${MATCHES:-default}"   # default = full anchor set; "validate" = new net vs v1/old/Stormphrax at blitz + long
 CONC="${CONC:-28}"; GAMES_FAST="${GAMES_FAST:-400}"; GAMES_LONG="${GAMES_LONG:-100}"; TC_FAST="${TC_FAST:-8+0.08}"; TC_LONG="${TC_LONG:-60+0.6}"
 BOOK=$WORK/books/UHO_Lichess_4852_v1.epd
 log() { printf '%s %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$LOG"; }
@@ -90,6 +91,17 @@ match() {
 }
 A_V3="-engine cmd=$ENGINE name=anna_v3 option.EvalFile=$NET_V3"
 A_V1="-engine cmd=$ENGINE name=anna_v1 option.EvalFile=$NET_V1"
+A_OLD="-engine cmd=$ENGINE name=anna_old option.EvalFile=$NET_OLD"
+if [[ "$MATCHES" == "validate" ]]; then
+    match new_vs_v1_fast  "$GAMES_FAST" "$TC_FAST" $A_V3 $A_V1
+    [[ -f $NET_OLD ]] && match new_vs_old_fast "$GAMES_FAST" "$TC_FAST" $A_V3 $A_OLD
+    [[ -x $STORM ]] && match new_vs_stormphrax8 "$GAMES_FAST" "$TC_FAST" $A_V3 -engine cmd=$STORM name=stormphrax8
+    match new_vs_v1_long  "$GAMES_LONG" "$TC_LONG" $A_V3 $A_V1
+    [[ -f $NET_OLD ]] && match new_vs_old_long "$GAMES_LONG" "$TC_LONG" $A_V3 $A_OLD
+    match new_vs_v1_rapid 60 "120+1.2" $A_V3 $A_V1
+    log "=== train end exit=0"
+    exit 0
+fi
 match v3_vs_v1_fast      "$GAMES_FAST" "$TC_FAST" $A_V3 $A_V1
 [[ -x $STORM ]] && match v3_vs_stormphrax8 "$GAMES_FAST" "$TC_FAST" $A_V3 -engine cmd=$STORM name=stormphrax8
 [[ -x $STASH ]] && match v3_vs_stash       "$GAMES_FAST" "$TC_FAST" $A_V3 -engine cmd=$STASH name=stash

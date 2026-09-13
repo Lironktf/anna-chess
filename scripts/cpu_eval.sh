@@ -10,8 +10,9 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 IMAGE="${IMAGE:-nvidia/cuda:12.4.1-devel-ubuntu22.04}"   # known-good with vast ssh + build tools
 DISK="${DISK:-40}"
 CAP="${CAP:-1.00}"; MAX_HOURS="${MAX_HOURS:-3}"
-NET_V3="${NET_V3:-$ROOT/runs/anna-v3/checkpoints/anna-v3-s2-30/quantised.bin}"
-NET_V1="${NET_V1:-$ROOT/nets/default.bin}"
+NET_V3="${NET_V3:-$ROOT/runs/anna-v3/checkpoints/anna-v3-s2-30/quantised.bin}"   # the net under test ("new")
+NET_V1="${NET_V1:-$ROOT/nets/default.bin}"                                            # shipped baseline
+NET_OLD="${NET_OLD:-}"                                                                # optional third net (e.g. previous threat net)
 cmd="${1:-}"; shift || true
 need_go() { [[ "${GO:-0}" == "1" ]] || { echo "REFUSING: this step costs money. Re-run with GO=1 only after the human said go."; exit 3; }; }
 run_file() { echo "$ROOT/runs/$1/instance.env"; }
@@ -60,6 +61,7 @@ case "$cmd" in
         echo "=== upload nets, book, prebuilt binaries (stormphrax 8 release, stockfish 19 universal)"
         rsync -az --info=progress2 -e "ssh -p $PORT ${SSH_OPTS[*]}" "$NET_V3" root@"$HOST":/workspace/nets/anna-v3.bin
         rsync -az -e "ssh -p $PORT ${SSH_OPTS[*]}" "$NET_V1" root@"$HOST":/workspace/nets/anna-v1.bin
+        [[ -n "$NET_OLD" ]] && rsync -az --info=progress2 -e "ssh -p $PORT ${SSH_OPTS[*]}" "$NET_OLD" root@"$HOST":/workspace/nets/anna-old.bin
         rsync -az -e "ssh -p $PORT ${SSH_OPTS[*]}" "$ROOT/books/UHO_Lichess_4852_v1.epd" root@"$HOST":/workspace/books/
         rsync -az --info=progress2 -e "ssh -p $PORT ${SSH_OPTS[*]}" "$ROOT/tools/stormphrax/stormphrax" "$ROOT/tools/stockfish/stockfish" root@"$HOST":/workspace/tools/
         ssh -p "$PORT" "${SSH_OPTS[@]}" root@"$HOST" "chmod +x /workspace/tools/stormphrax /workspace/tools/stockfish; ls -la /workspace/nets /workspace/tools; sha256sum /workspace/nets/anna-v3.bin"
@@ -87,7 +89,7 @@ print('key id', kid, 'len', len(key))"
         # Verify through the self-destruct's own log line; `pgrep -f` would match this ssh command line itself.
         ssh -p "$PORT" "${SSH_OPTS[@]}" root@"$HOST" "chmod +x /workspace/vast_selfdestruct.sh; grep -q '^.* armed:' /workspace/selfdestruct.log 2>/dev/null && ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' || setsid nohup /workspace/vast_selfdestruct.sh $INSTANCE_ID $(cat "$KEYFILE") $MAX_HOURS 20 /workspace/runs/$RUN/train.log >/dev/null 2>&1 </dev/null & sleep 3; ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' && grep -q 'armed:' /workspace/selfdestruct.log && { echo 'self-destruct ARMED:'; tail -n 1 /workspace/selfdestruct.log; } || { echo 'self-destruct NOT running'; exit 5; }"
         echo "$(date -u +%FT%TZ) run start self-destruct armed max_hours=$MAX_HOURS cap=$CAP" >> "$ROOT/runs/$RUN/events.log"
-        ssh -p "$PORT" "${SSH_OPTS[@]}" root@"$HOST" "command -v tmux >/dev/null || (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq tmux >/dev/null); chmod +x /workspace/chess/scripts/cpu_eval_remote.sh; tmux new-session -d -s eval 'RUN_NAME=$RUN CONC=${CONC:-28} GAMES_FAST=${GAMES_FAST:-400} GAMES_LONG=${GAMES_LONG:-100} bash /workspace/chess/scripts/cpu_eval_remote.sh'"
+        ssh -p "$PORT" "${SSH_OPTS[@]}" root@"$HOST" "command -v tmux >/dev/null || (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq tmux >/dev/null); chmod +x /workspace/chess/scripts/cpu_eval_remote.sh; tmux new-session -d -s eval 'RUN_NAME=$RUN CONC=${CONC:-28} GAMES_FAST=${GAMES_FAST:-400} GAMES_LONG=${GAMES_LONG:-100} MATCHES=${MATCHES:-default} bash /workspace/chess/scripts/cpu_eval_remote.sh'"
         # Kill layer 2 (laptop cost guard) and the results sync loop, both detached.
         # (no pgrep guards here: `pgrep -f` would match this script's own command line; start, then verify by log)
         (setsid nohup "$ROOT/scripts/vast_cost_guard.sh" "$RUN" "$CAP" 60 >/dev/null 2>&1 </dev/null &)
