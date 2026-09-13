@@ -26,9 +26,10 @@ def play(args, theta_plus, theta_minus, k):
     opts_p = " ".join(f"option.{n}={int(round(v))}" for n, v in theta_plus.items())
     opts_m = " ".join(f"option.{n}={int(round(v))}" for n, v in theta_minus.items())
     rounds = max(1, args.games // 2)
+    common = args.engine_opts.split()
     cmd = [args.fastchess,
-           "-engine", f"cmd={args.engine}", "name=plus", *opts_p.split(),
-           "-engine", f"cmd={args.engine}", "name=minus", *opts_m.split(),
+           "-engine", f"cmd={args.engine}", "name=plus", *common, *opts_p.split(),
+           "-engine", f"cmd={args.engine}", "name=minus", *common, *opts_m.split(),
            "-each", f"tc={args.tc}", "proto=uci", f"option.Hash={args.hash}",
            "-openings", f"file={args.book}", "format=epd", "order=random",
            "-concurrency", str(args.conc), "-rounds", str(rounds), "-games", "2", "-repeat", "-recover",
@@ -62,6 +63,7 @@ def main():
     ap.add_argument("--gamma", type=float, default=0.101)
     ap.add_argument("--out", required=True)
     ap.add_argument("--param", action="append", required=True, help="name:start:min:max:c_end")
+    ap.add_argument("--engine-opts", default="", help="extra fastchess engine options applied to BOTH sides, e.g. 'option.EvalFile=path'")
     args = ap.parse_args()
     params = [parse_param(p) for p in args.param]
     os.makedirs(args.out, exist_ok=True)
