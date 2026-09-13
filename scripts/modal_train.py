@@ -55,8 +55,41 @@ image = (
     .add_local_dir(ROOT / "engine", "/root/chess/engine", copy=True, ignore=_skip)
     .add_local_dir(ROOT / "trainer", "/root/chess/trainer", copy=True, ignore=_skip)
     .add_local_file(ROOT / "nets" / "default.bin", "/root/chess/nets/default.bin", copy=True)
-    .run_commands("cd /root/chess/trainer && cargo build --release --features cuda --bin train_v3 --bin inspect 2>&1 | tail -n 5")
+    .add_local_dir(ROOT / "lc0conv", "/root/chess/lc0conv", copy=True, ignore=_skip)
+    .run_commands(
+        "cd /root/chess/trainer && cargo build --release --features cuda --bin train_v3 --bin inspect 2>&1 | tail -n 5",
+        # lc0conv is a member of the repo's root workspace; give it a minimal workspace here (engine + lc0conv only).
+        "printf '[workspace]\\nresolver = \"2\"\\nmembers = [\"engine\", \"lc0conv\"]\\n' > /root/chess/Cargo.toml && cd /root/chess && cargo build --release -p lc0conv 2>&1 | tail -n 3",
+    )
 )
+
+LC0 = "https://storage.lczero.org/files/training_data/test80"
+
+
+@app.function(image=image, volumes={"/data": vol}, cpu=8, memory=16384, timeout=6 * 3600)
+def policy_data(tars: list[str]) -> str:
+    """Stream Lc0 T80 training tars through lc0conv into /data/policy/<tar>.bin (8 at a time, idempotent)."""
+    import concurrent.futures
+    os.makedirs("/data/policy", exist_ok=True)
+
+    def one(name: str) -> str:
+        dst = f"/data/policy/{name}.bin"
+        if os.path.exists(dst) and os.path.getsize(dst) > 0:
+            return f"have {name}"
+        cmd = f"curl -sSL --retry 5 '{LC0}/{name}.tar' | /root/chess/target/release/lc0conv convert '{dst}.part' - && mv '{dst}.part' '{dst}'"
+        t = time.time()
+        r = subprocess.run(["bash", "-c", cmd], capture_output=True, text=True)
+        if r.returncode != 0:
+            return f"FAILED {name}: {r.stderr[-300:]}"
+        return f"{name}: {r.stdout.strip().splitlines()[-1][:160]} ({time.time() - t:.0f} s)"
+
+    out = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=8) as ex:
+        for line in ex.map(one, tars):
+            print(line)
+            out.append(line)
+            vol.commit()
+    return "\n".join(out)
 
 
 @app.function(image=image, volumes={"/data": vol}, cpu=8, memory=16384, timeout=4 * 3600)
@@ -136,10 +169,14 @@ def status(net_id: str) -> str:
 
 @app.local_entrypoint()
 def main(action: str = "status", net_id: str = "anna-v3c", months: str = "01,02,03,05", resume: str = "",
-         sb0: int = 0, sb1: int = 430, sb2: int = 30, lr1: str = "5e-4", l1: int = 512):
+         sb0: int = 0, sb1: int = 430, sb2: int = 30, lr1: str = "5e-4", l1: int = 512, tars: str = ""):
     ms = [m.strip() for m in months.split(",") if m.strip()]
     if action == "fetch":
         print(fetch.remote(ms))
+    elif action == "policy-data":
+        # --tars is a comma-separated list of training-run1-test80-YYYYMMDD-HHMM names (see runs/policy/PLAN.md).
+        names = [t.strip() for t in tars.split(",") if t.strip()]
+        print(policy_data.remote([f"training-run1-test80-{n}" for n in names]))
     elif action == "train":
         print(f"gpu={GPU} cap={HOURS} h (ANNA_GPU / ANNA_HOURS)")
         print(train.remote(net_id, ms, resume, sb0, sb1, sb2, lr1, l1, HOURS))

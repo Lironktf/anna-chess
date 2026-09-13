@@ -25,9 +25,11 @@ use engine::position::Position;
 use engine::types::{Move, PieceType, Square, FLAG_CASTLE};
 
 const RECORD: usize = 8356;
-const MAX_POLICY: usize = 12;
+/// All legal moves of a position are stored (Lc0 lists every legal move, unvisited ones with probability 0);
+/// positions with more legal moves than this are dropped (well under 1%).
+const MAX_POLICY: usize = 64;
 /// Output record size in bytes (see `write_record`).
-pub const OUT_RECORD: usize = 96;
+pub const OUT_RECORD: usize = 304;
 
 fn reverse_bits_in_bytes(mut v: u64) -> u64 {
     v = ((v >> 1) & 0x5555_5555_5555_5555) | ((v & 0x5555_5555_5555_5555) << 1);
@@ -356,6 +358,7 @@ struct Stats {
     illegal_policy: u64,
     illegal_best: u64,
     illegal_played: u64,
+    too_many_moves: u64,
     written: u64,
     mass: f64,
     n_policy: u64,
@@ -364,12 +367,12 @@ struct Stats {
     fail_by_t: [u64; 8],
 }
 
-/// Output record (96 bytes):
+/// Output record (304 bytes):
 ///   0  occ u64 | 8 pieces [u8;16] (nibble per occupied square in ascending order: colour*6 + type)
 ///   24 stm u8 | 25 ep_file u8 (255 = none) | 26 castling u8 (1 K, 2 Q, 4 k, 8 q) | 27 rule50 u8
-///   28 best u16 (engine Move) | 30 played u16 | 32 n u8 | 33 pad
-///   34 entries [(u16 move, u16 prob*65535)] x 12 = 48 bytes -> 82
-///   82 pad u16 | 84 best_q f32 | 88 result_q f32 | 92 plies_left f32 -> 96
+///   28 best u16 (engine Move) | 30 played u16 | 32 n_moves u8 (all legal moves) | 33 n_visited u8 (prob > 0) | 34 pad u16
+///   36 entries [(u16 move, u16 prob*65535)] x 64, sorted by prob descending = 256 bytes -> 292
+///   292 best_q f32 | 296 result_q f32 | 300 plies_left f32 -> 304
 fn write_record(out: &mut impl Write, pos: &Position, d: &Decoded, best: Move, played: Move, entries: &[(Move, f32)]) -> std::io::Result<()> {
     let mut buf = [0u8; OUT_RECORD];
     let occ = pos.occupied();
@@ -399,14 +402,15 @@ fn write_record(out: &mut impl Write, pos: &Position, d: &Decoded, best: Move, p
     buf[28..30].copy_from_slice(&best.0.to_le_bytes());
     buf[30..32].copy_from_slice(&played.0.to_le_bytes());
     buf[32] = entries.len() as u8;
+    buf[33] = entries.iter().filter(|(_, p)| *p > 0.0).count() as u8;
     for (i, (m, p)) in entries.iter().enumerate() {
-        let o = 34 + i * 4;
+        let o = 36 + i * 4;
         buf[o..o + 2].copy_from_slice(&m.0.to_le_bytes());
         buf[o + 2..o + 4].copy_from_slice(&((p.clamp(0.0, 1.0) * 65535.0).round() as u16).to_le_bytes());
     }
-    buf[84..88].copy_from_slice(&d.best_q.to_le_bytes());
-    buf[88..92].copy_from_slice(&d.result_q.to_le_bytes());
-    buf[92..96].copy_from_slice(&d.plies_left.to_le_bytes());
+    buf[292..296].copy_from_slice(&d.best_q.to_le_bytes());
+    buf[296..300].copy_from_slice(&d.result_q.to_le_bytes());
+    buf[300..304].copy_from_slice(&d.plies_left.to_le_bytes());
     out.write_all(&buf)
 }
 
@@ -467,10 +471,18 @@ fn process_record(r: &[u8], st: &mut Stats, out: &mut Option<BufWriter<std::fs::
             return;
         }
     };
+    if entries.len() != legal.len() {
+        // Lc0 lists every legal move; a count mismatch means a decoding difference. Count and drop.
+        st.illegal_policy += 1;
+        return;
+    }
+    if entries.len() > MAX_POLICY {
+        st.too_many_moves += 1;
+        return;
+    }
     st.mass += mass;
     st.n_policy += entries.len() as u64;
     entries.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap());
-    entries.truncate(MAX_POLICY);
     if let Some(o) = out {
         write_record(o, &pos, &d, best, played, &entries).expect("write");
     }
@@ -530,8 +542,8 @@ fn main() {
             let np = if st.written > 0 { st.n_policy as f64 / st.written as f64 } else { 0.0 };
             println!("input formats {:?}; records by transform {:?}, illegal-policy failures by transform {:?}", st.formats, st.by_t, st.fail_by_t);
             println!(
-                "records {} written {} ({:.3}%) | decode_err {} fen_err {} illegal_policy {} illegal_best {} illegal_played {} | mean policy mass on legal moves {:.4}, mean legal policy entries {:.1}",
-                st.records, st.written, 100.0 * st.written as f64 / st.records.max(1) as f64, st.decode_err, st.fen_err, st.illegal_policy, st.illegal_best, st.illegal_played, pm, np
+                "records {} written {} ({:.3}%) | decode_err {} fen_err {} illegal_policy {} illegal_best {} illegal_played {} too_many_moves {} | mean policy mass on legal moves {:.4}, mean legal policy entries {:.1}",
+                st.records, st.written, 100.0 * st.written as f64 / st.records.max(1) as f64, st.decode_err, st.fen_err, st.illegal_policy, st.illegal_best, st.illegal_played, st.too_many_moves, pm, np
             );
         }
         Some("dump") => {
@@ -558,15 +570,15 @@ fn main() {
                     s.push('/');
                 }
                 let best = Move(u16::from_le_bytes(rec[28..30].try_into().unwrap()));
-                let cnt = rec[32] as usize;
+                let cnt = (rec[32] as usize).min(12);
                 let mut pol = String::new();
                 for k in 0..cnt {
-                    let o = 34 + k * 4;
+                    let o = 36 + k * 4;
                     let m = Move(u16::from_le_bytes(rec[o..o + 2].try_into().unwrap()));
                     let p = u16::from_le_bytes(rec[o + 2..o + 4].try_into().unwrap()) as f32 / 65535.0;
                     pol.push_str(&format!(" {m}:{p:.3}"));
                 }
-                println!("{s} stm={} ep={} castle={:04b} r50={} best={best} q={:.3} policy:{pol}", if rec[24] == 1 { 'b' } else { 'w' }, rec[25], rec[26], rec[27], f32_at(rec, 84));
+                println!("{s} stm={} ep={} castle={:04b} r50={} best={best} q={:.3} legal={} visited={} policy(top12):{pol}", if rec[24] == 1 { 'b' } else { 'w' }, rec[25], rec[26], rec[27], f32_at(rec, 292), rec[32], rec[33]);
             }
         }
         _ => {
