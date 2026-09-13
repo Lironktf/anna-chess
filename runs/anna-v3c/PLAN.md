@@ -45,3 +45,7 @@ then the real run. Kill: `modal app stop anna-train`. Hard cap: ANNA_HOURS (the 
   `netcheck --strict` ok; engine evals match trainer evals (38/39, -1653/-1664, 1667/1681, -374/-368, -1688/-1686, 17/17).
 - 15:36 real run launched detached: anna-v3c, SB 0/430/30, LR1 5e-4, L40S, cap 4 h (expected ~2.6 h, ~$5-6 of Modal credit).
   Monitor polls the volume log every 10 min (runs/anna-v3c/remote_events.txt).
+- 16:55 midway check: anna-v3c-s1-170 vs v3b at equal nodes (30k, 100 games): **-78 +/- 49** (18-40-42, 39%). Expected direction
+  after a warm restart at LR 5e-4 (v3b ended at 1e-6): the net is mid-anneal, LR still ~3e-4 at SB 170. The verdict is the
+  final checkpoint after the LR tail and the WDL stage. If it ends below v3b, the restart LR was too high: retry with LR1=1e-4
+  and ~300 SB (~$4), not more of the same.
