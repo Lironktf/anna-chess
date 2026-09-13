@@ -1,0 +1,4 @@
+anna v1      depth 13: 16/16 done, total nodes 1.86M, total time 3.9s, geo nps 476k
+anna v3b     depth 13: 16/16 done, total nodes 1.65M, total time 8.7s, geo nps 190k
+stormphrax8  depth 13: 0/16 done, total nodes 0.00M, total time 0.0s, geo nps 0k
+stash37      depth 13: 16/16 done, total nodes 1.73M, total time 2.2s, geo nps 785k
