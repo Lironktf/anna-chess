@@ -1,0 +1,10 @@
+[package]
+name = "lc0conv"
+version = "0.1.0"
+edition = "2021"
+description = "Converts Leela Chess Zero V6 training chunks (policy targets) into compact records for policy-net training"
+
+[dependencies]
+engine = { path = "../engine" }
+tar = "0.4"
+flate2 = "1"
