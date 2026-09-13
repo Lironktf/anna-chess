@@ -66,6 +66,18 @@ pub mod scalar {
             out[off + i] = ((a * b) >> PAIR_SHIFT) as u8;
         }
     }
+    /// L2 over transposed weights `wt[i][o]` (32 inputs x 32 outputs), no horizontal sums.
+    /// Per output: acc = wt[0][o]*h1[0], then acc = fma(wt[i][o], h1[i], acc) for i = 1..32; crelu(acc + b[o]).
+    #[inline]
+    pub fn l2_forward_t(h1: &[f32; L2_DUAL], wt: &[[f32; L3]], b: &[f32], h2: &mut [f32; L3]) {
+        for o in 0..L3 {
+            let mut acc = wt[0][o] * h1[0];
+            for i in 1..L2_DUAL {
+                acc = wt[i][o].mul_add(h1[i], acc);
+            }
+            h2[o] = (acc + b[o]).clamp(0.0, 1.0);
+        }
+    }
     /// L2 (f32): h2[o] = crelu(b[o] + sum_i w[o][i] * h1[i]).
     #[inline]
     pub fn l2_forward(h1: &[f32; L2_DUAL], w: &[[f32; L2_DUAL]], b: &[f32], h2: &mut [f32; L3]) {
@@ -229,6 +241,35 @@ pub mod avx2 {
             }
         }
     }
+    /// L2 over transposed weights: 4 accumulators of 8 outputs, one broadcast per input, no horizontal sums.
+    /// Bit-identical to scalar::l2_forward_t (same mul-then-fma order per output).
+    #[inline]
+    pub fn l2_forward_t(h1: &[f32; L2_DUAL], wt: &[[f32; L3]], b: &[f32], h2: &mut [f32; L3]) {
+        unsafe {
+            let zero = _mm256_setzero_ps();
+            let one = _mm256_set1_ps(1.0);
+            let w0 = wt[0].as_ptr();
+            let x = _mm256_set1_ps(h1[0]);
+            let mut a0 = _mm256_mul_ps(_mm256_loadu_ps(w0), x);
+            let mut a1 = _mm256_mul_ps(_mm256_loadu_ps(w0.add(8)), x);
+            let mut a2 = _mm256_mul_ps(_mm256_loadu_ps(w0.add(16)), x);
+            let mut a3 = _mm256_mul_ps(_mm256_loadu_ps(w0.add(24)), x);
+            for i in 1..L2_DUAL {
+                let wp = wt[i].as_ptr();
+                let x = _mm256_set1_ps(h1[i]);
+                a0 = _mm256_fmadd_ps(_mm256_loadu_ps(wp), x, a0);
+                a1 = _mm256_fmadd_ps(_mm256_loadu_ps(wp.add(8)), x, a1);
+                a2 = _mm256_fmadd_ps(_mm256_loadu_ps(wp.add(16)), x, a2);
+                a3 = _mm256_fmadd_ps(_mm256_loadu_ps(wp.add(24)), x, a3);
+            }
+            let bp = b.as_ptr();
+            let o = h2.as_mut_ptr();
+            for (k, a) in [a0, a1, a2, a3].into_iter().enumerate() {
+                let v = _mm256_add_ps(a, _mm256_loadu_ps(bp.add(8 * k)));
+                _mm256_storeu_ps(o.add(8 * k), _mm256_min_ps(_mm256_max_ps(v, zero), one));
+            }
+        }
+    }
     /// L2 forward with 8-wide FMA over the 32 inputs.
     #[inline]
     pub fn l2_forward(h1: &[f32; L2_DUAL], w: &[[f32; L2_DUAL]], b: &[f32], h2: &mut [f32; L3]) {
@@ -358,5 +399,29 @@ mod tests_pairwise2 {
         let mut c = [0u8; N];
         scalar::pairwise(&sum, &mut c, 0);
         assert_eq!(a[..HALF], c[..HALF]);
+    }
+}
+
+#[cfg(test)]
+mod tests_l2t {
+    use super::*;
+    #[test]
+    fn l2_forward_t_matches_scalar_and_old() {
+        let mut seed = 99u64;
+        let mut rnd = || { seed ^= seed << 13; seed ^= seed >> 7; seed ^= seed << 17; ((seed % 2000) as f32 - 1000.0) / 1000.0 };
+        let mut h1 = [0f32; L2_DUAL];
+        for v in h1.iter_mut() { *v = rnd().abs(); }
+        let mut w = [[0f32; L2_DUAL]; L3];
+        for o in 0..L3 { for i in 0..L2_DUAL { w[o][i] = rnd(); } }
+        let mut wt = [[0f32; L3]; L2_DUAL];
+        for o in 0..L3 { for i in 0..L2_DUAL { wt[i][o] = w[o][i]; } }
+        let mut b = [0f32; L3];
+        for v in b.iter_mut() { *v = rnd(); }
+        let (mut a, mut c, mut d) = ([0f32; L3], [0f32; L3], [0f32; L3]);
+        l2_forward_t(&h1, &wt, &b, &mut a);
+        scalar::l2_forward_t(&h1, &wt, &b, &mut c);
+        assert_eq!(a, c, "avx2 vs scalar transposed");
+        l2_forward(&h1, &w, &b, &mut d);
+        for o in 0..L3 { assert!((a[o] - d[o]).abs() < 1e-5, "vs old kernel at {o}: {} {}", a[o], d[o]); }
     }
 }

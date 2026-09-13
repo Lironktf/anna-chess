@@ -35,6 +35,8 @@ pub struct NetworkV3 {
     pub l1_w: Vec<Align64<[i8; L1]>>, // [bucket*L2 + out]
     pub l1_b: Vec<f32>,               // [bucket*L2 + out]
     pub l2_w: Vec<[f32; L2_DUAL]>,    // [bucket*L3 + out]
+    /// l2_w transposed per bucket: [bucket*L2_DUAL + input][out], for the horizontal-sum-free kernel.
+    pub l2_wt: Vec<[f32; L3]>,
     pub l2_b: Vec<f32>,               // [bucket*L3 + out]
     pub l3_w: Vec<[f32; L3]>,         // [bucket]
     pub l3_b: Vec<f32>,               // [bucket]
@@ -117,7 +119,8 @@ impl NetworkV3 {
                 return Err(format!("v3 network has an implausible float weight {}", v));
             }
         }
-        Ok(NetworkV3 { psq_w, pp_w, ft_b, l1_w, l1_b: l1b, l2_w, l2_b: l2b, l3_w, l3_b: l3b, mapper: FeatureMapper::new() })
+        let l2_wt = Self::transpose_l2(&l2_w);
+        Ok(NetworkV3 { psq_w, pp_w, ft_b, l1_w, l1_b: l1b, l2_w, l2_wt, l2_b: l2b, l3_w, l3_b: l3b, mapper: FeatureMapper::new() })
     }
 
     pub fn load(path: &str) -> Result<NetworkV3, String> {
@@ -184,7 +187,8 @@ impl NetworkV3 {
             })
             .collect();
         let l3_b: Vec<f32> = (0..OUTPUT_BUCKETS).map(|_| fr(next()) * 0.2).collect();
-        NetworkV3 { psq_w, pp_w, ft_b, l1_w, l1_b, l2_w, l2_b, l3_w, l3_b, mapper: FeatureMapper::new() }
+        let l2_wt = Self::transpose_l2(&l2_w);
+        NetworkV3 { psq_w, pp_w, ft_b, l1_w, l1_b, l2_w, l2_wt, l2_b, l3_w, l3_b, mapper: FeatureMapper::new() }
     }
 
     pub fn to_bytes(&self) -> Vec<u8> {
@@ -351,6 +355,18 @@ impl NetworkV3 {
     }
 
     #[inline]
+    fn transpose_l2(l2_w: &[[f32; L2_DUAL]]) -> Vec<[f32; L3]> {
+        let mut t = vec![[0f32; L3]; OUTPUT_BUCKETS * L2_DUAL];
+        for bkt in 0..OUTPUT_BUCKETS {
+            for o in 0..L3 {
+                for i in 0..L2_DUAL {
+                    t[bkt * L2_DUAL + i][o] = l2_w[bkt * L3 + o][i];
+                }
+            }
+        }
+        t
+    }
+
     fn tail(&self, sums: &[i32; L2], bucket: usize) -> Value {
         let mut h1 = [0f32; L2_DUAL];
         for o in 0..L2 {
@@ -359,7 +375,7 @@ impl NetworkV3 {
             h1[L2 + o] = (v * v).clamp(0.0, 1.0);
         }
         let mut h2 = [0f32; L3];
-        self::kernels::l2_forward(&h1, &self.l2_w[bucket * L3..bucket * L3 + L3], &self.l2_b[bucket * L3..bucket * L3 + L3], &mut h2);
+        self::kernels::l2_forward_t(&h1, &self.l2_wt[bucket * L2_DUAL..bucket * L2_DUAL + L2_DUAL], &self.l2_b[bucket * L3..bucket * L3 + L3], &mut h2);
         let w = &self.l3_w[bucket];
         let mut out = self.l3_b[bucket];
         for i in 0..L3 {
