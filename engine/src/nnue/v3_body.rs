@@ -450,6 +450,8 @@ pub struct StateV3 {
     apply_sub_b: Vec<usize>,
     thr_add_b: Vec<usize>,
     thr_sub_b: Vec<usize>,
+    /// Feature bitmap for the old/new set difference (always all-zero between uses).
+    diff_bits: Vec<u64>,
 }
 
 use self::kernels::{add_i16_row, add_i8_row, apply_rows, sub_i16_row};
@@ -527,6 +529,7 @@ impl StateV3 {
             apply_sub_b: Vec::with_capacity(512),
             thr_add_b: Vec::with_capacity(512),
             thr_sub_b: Vec::with_capacity(512),
+            diff_bits: vec![0u64; (PP_FEATURES + 63) / 64],
         }
     }
 
@@ -621,7 +624,7 @@ impl StateV3 {
     /// diff is computed once (both perspectives come out of one pass over the affected attackers);
     /// each accumulator is then produced in a single fused pass over all changed rows.
     fn apply_incremental(&mut self, j: usize, need: [bool; 2], refresh_psq: [bool; 2], refresh_thr: [bool; 2], net: &NetworkV3) {
-        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, apply_add_b, apply_sub_b, thr_add_b, thr_sub_b, .. } = self;
+        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, apply_add_b, apply_sub_b, thr_add_b, thr_sub_b, diff_bits, .. } = self;
         let (before, after) = stack.split_at_mut(j);
         let prev = &mut before[j - 1];
         let cur = &mut after[0];
@@ -689,23 +692,32 @@ impl StateV3 {
             let (so, sn): (&mut Vec<usize>, &mut Vec<usize>) = if p == 0 { (&mut *ow, &mut *nw) } else { (&mut *ob, &mut *nb) };
             let (pa, ps, ta, ts): (&mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>) =
                 if p == 0 { (&mut *apply_add, &mut *apply_sub, &mut *thr_add, &mut *thr_sub) } else { (&mut *apply_add_b, &mut *apply_sub_b, &mut *thr_add_b, &mut *thr_sub_b) };
-            so.sort_unstable();
-            sn.sort_unstable();
             pa.clear();
             ps.clear();
             ta.clear();
             ts.clear();
-            let (mut a, mut b) = (0, 0);
-            while a < so.len() || b < sn.len() {
-                if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
-                    if so[a] < TOTAL_PAIRS { ps.push(so[a]) } else { ts.push(so[a]) }
-                    a += 1;
-                } else if a >= so.len() || sn[b] < so[a] {
-                    if sn[b] < TOTAL_PAIRS { pa.push(sn[b]) } else { ta.push(sn[b]) }
-                    b += 1;
+            // Set difference via a feature bitmap (no sorting): mark old, cancel with new, sweep the rest.
+            // The bitmap is all-zero on entry and on exit (every set bit is cleared by one of the two passes).
+            for &f in so.iter() {
+                diff_bits[f >> 6] |= 1u64 << (f & 63);
+            }
+            for &f in sn.iter() {
+                let w = &mut diff_bits[f >> 6];
+                let bit = 1u64 << (f & 63);
+                if *w & bit != 0 {
+                    *w &= !bit;
+                } else if f < TOTAL_PAIRS {
+                    pa.push(f);
                 } else {
-                    a += 1;
-                    b += 1;
+                    ta.push(f);
+                }
+            }
+            for &f in so.iter() {
+                let w = &mut diff_bits[f >> 6];
+                let bit = 1u64 << (f & 63);
+                if *w & bit != 0 {
+                    *w &= !bit;
+                    if f < TOTAL_PAIRS { ps.push(f) } else { ts.push(f) }
                 }
             }
         }
