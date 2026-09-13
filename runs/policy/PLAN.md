@@ -45,3 +45,13 @@ Trainer: PyTorch on Modal (L4/L40S), a few epochs over 100M positions: ~1 h.
 2. Engine reads the net and reproduces the trainer's logits on 1000 positions (like netcheck).
 3. Fixed-depth node counts with policy ordering vs history ordering (fewer nodes to depth = better ordering).
 4. SPRT.
+
+## Progress log
+
+- 2026-09-13 19:00-19:40: converter verified (100.000% of 4.11M sample records legal); Modal conversion of 25 tars from
+  Aug 2025 (T80's last real months; 2026 tars on storage.lczero.org are 10 KB placeholders) at ~4-5M records each,
+  ~500 s per tar with 8 in parallel. Trainer smoke on the laptop (270k records, 1 epoch): top-1 16%, top-3 35%.
+  Engine: `engine/src/policy.rs` (both-perspective accumulator, incremental == refresh test), UCI `PolicyFile`,
+  param `PolicyScale` (history units per logit, 0 = off; bench 854588 unchanged), `engine policycheck` reproduces the
+  trainer's logits (mean |diff| 0.02, top-1 agreement 97-98%: quantisation only).
+- Next: Modal training on ~110M records (2 epochs, L4), then fixed-depth node counts and SPRT of PolicyScale.
