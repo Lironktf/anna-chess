@@ -76,6 +76,12 @@ Single-thread search speed measured on the box under match load: v1 974k nps, v3
 | v3 vs Weiss 2.1-dev, 8+0.08 | 400 | +87 -45 =268 | +37 +/- 18 |
 | **v3 vs v1, 60+0.6** | 100 | +32 -20 =48 | **+42 +/- 41** (sign flips vs blitz: speed gap matters less with time) |
 | v3 vs Stockfish 19, 8+0.08 | 200 | +0 -143 =57 | -312 +/- 41 (v1 on the laptop: -301) |
+| **v3 vs v1, 120+1.2** | 60 | +20 -15 =25 | **+29 +/- 61** |
+
+Box total: $0.20 (1.4 h). Verdict: v3 is the better evaluator (+83/node) and the slower engine (3.7x);
+it loses ~20 at 8+0.08 and wins ~30-40 at 60+0.6 and 120+1.2 (both within error). Blitz anchors put v1 at
+~3577 and v3 at ~3557 relative to Stormphrax 8 (3744). Next: make v3 fast (half-width retrain) or use v3 for
+long time controls only.
 
 ## Speed work on the v3 inference path (2026-09-12 evening, laptop, quiet)
 

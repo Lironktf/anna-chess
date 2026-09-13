@@ -1,1 +1,4 @@
 2026-09-13T01:40:27Z === train start (rapid follow-up)
+2026-09-13T02:03:28Z match rapid_v3_vs_v1: 60 games at 120+1.2
+2026-09-13T02:23:27Z result rapid_v3_vs_v1: Elo: 29.02 +/- 61.30, nElo: 42.26 +/- 87.91 | Games: 60, Wins: 20, Losses: 15, Draws: 25, Points: 32.5 (54.17 %)
+2026-09-13T02:23:27Z === train end exit=0

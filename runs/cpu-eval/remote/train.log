@@ -32,3 +32,7 @@ Mem:             503          47         230           0         225         451
 2026-09-13T01:35:11Z match v3_vs_weiss: 400 games at 8+0.08
 2026-09-13T01:43:34Z result v3_vs_weiss: Elo: 36.62 +/- 18.33, nElo: 68.58 +/- 34.05 | Games: 400, Wins: 87, Losses: 45, Draws: 268, Points: 221.0 (55.25 %)
 2026-09-13T01:43:34Z match v3_vs_v1_long: 100 games at 60+0.6
+2026-09-13T01:59:44Z result v3_vs_v1_long: Elo: 41.89 +/- 41.14, nElo: 70.35 +/- 68.10 | Games: 100, Wins: 32, Losses: 20, Draws: 48, Points: 56.0 (56.00 %)
+2026-09-13T01:59:44Z match v3_vs_stockfish19: 200 games at 8+0.08
+2026-09-13T02:03:14Z result v3_vs_stockfish19: Elo: -311.77 +/- 41.41, nElo: -598.03 +/- 48.15 | Games: 200, Wins: 0, Losses: 143, Draws: 57, Points: 28.5 (14.25 %)
+2026-09-13T02:03:14Z === train end exit=0
