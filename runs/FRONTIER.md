@@ -60,9 +60,12 @@ another output-stack-only net (v4).
 
 ## 4. The policy-net design (item 2), concretely
 
-- Data: `test80-2024-MM-*.tar.zst` from linrock/test80-2024 are Lc0 v6 chunks (`V6TrainingData`, 8356 bytes: 1858 policy
-  floats, 104 planes, q/d/m targets, best_idx/played_idx). A Rust converter emits (position, top-8 moves with
-  probabilities, best move) in a compact record; ~100M positions per month.
+- Data (corrected 2026-09-13 18:45 after inspection): linrock's `*.tar.zst` are per-chunk SF binpacks with no policy.
+  The real Lc0 training data with policy live at storage.lczero.org/files/training_data/test80/ as
+  `training-run1-test80-YYYYMMDD-HHMM.tar` (~0.7-2 GB each, gz chunks of `V6TrainingData`, 8356 bytes: 1858 policy floats,
+  104 planes, q/d/m, best_idx/played_idx; 500+ tars per month). A converter streams tars (no storage), undoes Lc0's
+  canonicalisation (input_format / invariance_info), and emits (position, top-8 moves with probabilities, best move);
+  ~100M positions need ~200 tars, done on a Modal CPU function for ~$2.
 - Net: side-to-move accumulator 768 -> 256 (no king buckets; threats optional later) + per-move score
   `s(m) = relu(acc) . V[piece][to] + B[from][to]`; softmax cross-entropy against Lc0's distribution. ~10 MB. Trained in
   PyTorch on Modal (bullet at our pinned rev has no policy head; Monty extends it, not worth porting).
