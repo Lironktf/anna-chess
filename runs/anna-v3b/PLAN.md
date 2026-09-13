@@ -23,4 +23,4 @@ Budget: credit $4.29. Host offer 29761291 (Quebec, RTX 4090 + 32 threads EPYC 95
 - Engine speed (same day): split accumulator removed the per-2.5-evals full rebuild; v3b measured ~0.56x of v1's nodes per
   CPU-second under load (v3: 0.43x). Validation: equal-nodes vs v1 on the laptop (running), then the permitted CPU box.
 - **Final equal-nodes vs v1 (200 games, 30k nodes/move): +77 -30 =93, +83 +/- 31** (sprt/v3bfinal_vs_v1_nodes30k.log) - the same
-  per-node quality as the full-width v3 (+83 +/- 32), at half the row bytes. v3b vs v3 equal-nodes running (sprt/v3b_vs_v3_nodes30k.log).
+  per-node quality as the full-width v3 (+83 +/- 32), at half the row bytes. v3b vs v3 equal-nodes (200 games): +56 -67 =77, -19 +/- 34 (level within noise).
