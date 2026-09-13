@@ -92,6 +92,16 @@ match() {
 A_V3="-engine cmd=$ENGINE name=anna_v3 option.EvalFile=$NET_V3"
 A_V1="-engine cmd=$ENGINE name=anna_v1 option.EvalFile=$NET_V1"
 A_OLD="-engine cmd=$ENGINE name=anna_old option.EvalFile=$NET_OLD"
+if [[ "$MATCHES" == "slow4" ]]; then
+    # 40/15-list style anchor: 4 threads per engine, 60+0.6, 8 games in parallel on a 32-thread box.
+    T4="option.Threads=4"
+    CONC=$(( $(nproc) / 4 ))
+    match slow4_new_vs_v1          200 "60+0.6" $A_V3 $T4 $A_V1 $T4
+    [[ -x $STORM ]] && match slow4_new_vs_stormphrax8 200 "60+0.6" $A_V3 $T4 -engine cmd=$STORM name=stormphrax8 $T4
+    [[ -x $STASH ]] && match slow4_new_vs_stash 100 "60+0.6" $A_V3 $T4 -engine cmd=$STASH name=stash $T4
+    log "=== train end exit=0"
+    exit 0
+fi
 if [[ "$MATCHES" == "validate" ]]; then
     match new_vs_v1_fast  "$GAMES_FAST" "$TC_FAST" $A_V3 $A_V1
     [[ -f $NET_OLD ]] && match new_vs_old_fast "$GAMES_FAST" "$TC_FAST" $A_V3 $A_OLD
