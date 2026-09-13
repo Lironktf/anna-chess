@@ -2,7 +2,7 @@
 //! Adapted from bullet examples/advanced/main.rs (rev 629ee50). The saved layout matches
 //! engine/src/nnue/v3.rs exactly (see the doc comment there). Configuration by env vars:
 //!   DATA (comma-separated SF binpacks), NET_ID, SB0/SB1/SB2 (superbatches per stage),
-//!   THREADS (map threads), LOADER_THREADS, BUFFER_MB, SAVE_RATE, OUT_DIR, L1 must equal the const.
+//!   THREADS (map threads), LOADER_THREADS, BUFFER_MB, SAVE_RATE, OUT_DIR, L1 (accumulator width: 1024 default, 512 half).
 use bullet::{
     game::{
         inputs::{get_num_buckets, ChessBucketsMirrored, SparseInputType},
@@ -26,7 +26,6 @@ use bullet_trainer::{
 use trainer::bullet_inputs::{make_inputs_mapper, three_file_band_mask, PawnPawnInputs};
 use trainer::{filter, BUCKET_LAYOUT};
 
-const L1: usize = 1024;
 const L2: usize = 16;
 const L3: usize = 32;
 const Q0: i16 = 255;
@@ -42,6 +41,8 @@ fn env_or<T: std::str::FromStr>(name: &str, default: T) -> T {
 
 fn main() {
     let net_id: String = std::env::var("NET_ID").unwrap_or_else(|_| "anna-v3".to_string());
+    let width: usize = env_or("L1", 1024);
+    assert!(width % 64 == 0 && width >= 128, "width must be a multiple of 64");
     let data_paths: String = std::env::var("DATA").expect("set DATA=comma,separated,binpacks");
     let sb0: usize = env_or("SB0", 40);
     let sb1: usize = env_or("SB1", 600);
@@ -69,22 +70,22 @@ fn main() {
         .add_dense("targets", (1, 1));
 
     let defn = ModelDefinition::build(&inputs, |builder, (((((stm_pp, ntm_pp), stm_psqt), ntm_psqt), output_buckets), target)| {
-        let l0_pp = builder.new_affine("l0/pp/", pp.num_inputs(), L1);
-        let l0f = builder.new_weights("l0/fac", (L1, 768), InitSettings::Zeroed);
+        let l0_pp = builder.new_affine("l0/pp/", pp.num_inputs(), width);
+        let l0f = builder.new_weights("l0/fac", (width, 768), InitSettings::Zeroed);
         let psqt_init = InitSettings::Normal { mean: 0.0, stdev: (2f32 / 32.0).sqrt() };
-        let mut l0_psqt = builder.new_weights("l0/psqt", (L1, psqt.num_inputs()), psqt_init);
+        let mut l0_psqt = builder.new_weights("l0/psqt", (width, psqt.num_inputs()), psqt_init);
         l0_psqt = l0_psqt + l0f.repeat(psqt.num_inputs() / 768);
 
-        let l1 = builder.new_affine("l1/", L1, OUTPUT_BUCKETS * L2);
+        let l1 = builder.new_affine("l1/", width, OUTPUT_BUCKETS * L2);
         let l2 = builder.new_affine("l2/", L2 * 2, OUTPUT_BUCKETS * L3);
         let l3 = builder.new_affine("l3/", L3, OUTPUT_BUCKETS);
 
         // Feature transformer half: (pp weights + psq weights) -> crelu; pairwise product of halves.
         let ft = |pp_in, psqt_in, start, end| (l0_pp.slice(start, end).forward(pp_in) + l0_psqt.slice_rows(start, end).matmul(psqt_in)).crelu();
-        let stm_hidden = ft(stm_pp, stm_psqt, 0, L1 / 2) * ft(stm_pp, stm_psqt, L1 / 2, L1);
-        let ntm_hidden = ft(ntm_pp, ntm_psqt, 0, L1 / 2) * ft(ntm_pp, ntm_psqt, L1 / 2, L1);
+        let stm_hidden = ft(stm_pp, stm_psqt, 0, width / 2) * ft(stm_pp, stm_psqt, width / 2, width);
+        let ntm_hidden = ft(ntm_pp, ntm_psqt, 0, width / 2) * ft(ntm_pp, ntm_psqt, width / 2, width);
         let l0_out = stm_hidden.concat(ntm_hidden);
-        let l0_out_norm = l0_out.reduce_sum_rows() / (L1 as f32);
+        let l0_out_norm = l0_out.reduce_sum_rows() / (width as f32);
 
         let l1_out = l1.forward(l0_out).select(output_buckets);
         // Dual activation: [crelu(v), crelu(v^2)] (engine: v.clamp(0,1) and (v*v).clamp(0,1)).
@@ -135,7 +136,7 @@ fn main() {
     ];
 
     let paths: Vec<&str> = data_paths.split(',').map(|s| s.trim()).filter(|s| !s.is_empty()).collect();
-    println!("anna-v3 trainer | net {} | data {:?} | stages {}/{}/{} SB | batch {} x {} | L1 {} L2 {} L3 {}", net_id, paths, sb0, sb1, sb2, batch_size, batches_per_sb, L1, L2, L3);
+    println!("anna-v3 trainer | net {} | data {:?} | stages {}/{}/{} SB | batch {} x {} | width {} L2 {} L3 {}", net_id, paths, sb0, sb1, sb2, batch_size, batches_per_sb, width, L2, L3);
     let reader = SfBinpackLoader::new_concat_multiple(&paths, buffer_mb, loader_threads, filter);
     let params_tuple = (&inputs, &pp, psqt, output_buckets);
 

@@ -28,7 +28,7 @@ echo "=== prepare box (rsync is not in the CUDA image)"
         --exclude sprt --exclude runs --exclude tools --exclude books --exclude syzygy --exclude nets --exclude '*.pgn' --exclude checkpoints \
         -e "ssh -p $PORT -o StrictHostKeyChecking=no" "$ROOT/" root@"$HOST":/workspace/chess/
     echo "=== remote setup + smoke (this takes ~10-15 min)"
-    ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN ARCH='${ARCH:-v1}' EXTRA_GROUPS='${EXTRA_GROUPS:-}' bash /workspace/chess/scripts/vast_setup_remote.sh"
+    ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "RUN_NAME=$RUN ARCH='${ARCH:-v1}' L1='${L1:-1024}' EXTRA_GROUPS='${EXTRA_GROUPS:-}' bash /workspace/chess/scripts/vast_setup_remote.sh"
     echo "=== pull smoke checkpoint and netcheck"
     mkdir -p "$ROOT/runs/$RUN/checkpoints"
     rsync -az -e "ssh -p $PORT -o StrictHostKeyChecking=no" --include='*/' --include='quantised.bin' --include='*.txt' --include='*.log' --exclude='*' root@"$HOST":/workspace/checkpoints/ "$ROOT/runs/$RUN/checkpoints/"
@@ -93,7 +93,7 @@ for o in json.load(sys.stdin)[:12]:
         scp -P "$PORT" -o StrictHostKeyChecking=no "$ROOT/scripts/vast_selfdestruct.sh" root@"$HOST":/workspace/vast_selfdestruct.sh
         ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "chmod +x /workspace/vast_selfdestruct.sh; pgrep -f vast_selfdestruct >/dev/null || setsid nohup /workspace/vast_selfdestruct.sh $INSTANCE_ID $(cat "$KEYFILE") $MAXH 20 /workspace/runs/$RUN/train.log >/dev/null 2>&1 </dev/null & sleep 2; pgrep -f vast_selfdestruct >/dev/null && echo 'self-destruct ARMED' || { echo 'self-destruct NOT running'; exit 5; }"
         echo "$(date -u +%FT%TZ) train start superbatches=$SB self-destruct armed max_hours=$MAXH" >> "$ROOT/runs/$RUN/events.log"
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "tmux new-session -d -s train 'ARCH=${ARCH:-v1} SB0=${SB0:-40} SB2=${SB2:-60} SAVE_RATE=${SAVE_RATE:-20} bash /workspace/chess/scripts/vast_train_remote.sh $RUN $SB'"
+        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "tmux new-session -d -s train 'ARCH=${ARCH:-v1} L1=${L1:-1024} SB0=${SB0:-40} SB2=${SB2:-60} SAVE_RATE=${SAVE_RATE:-20} bash /workspace/chess/scripts/vast_train_remote.sh $RUN $SB'"
         echo "training started in tmux session 'train' on the box; watch with: scripts/vast_launch.sh status $RUN"
         ;;
     status)
