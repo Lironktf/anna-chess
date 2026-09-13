@@ -63,3 +63,10 @@ not representative. If the budget must stay under $5, B.
 | **anna-v3-s2-30 (final)** | v1 final (default.bin) | 200 @ 30k nodes/move | +74 -27 =99 | **+83 +/- 32** (sprt/v3final_nodes30k.log) |
 
 A 20%-trained v3 already matches the fully trained v1 at equal nodes (log: sprt/v3mid_s1_60_nodes30k.log).
+
+## Rented CPU box (2026-09-12, instance 50829299, AMD EPYC 7B13 Zen 3, 32 threads, 28 games in parallel, results in runs/cpu-eval/remote/)
+
+Single-thread search speed measured on the box under match load: v1 974k nps, v3 264k nps (ratio 3.7x, same as the laptop).
+| match | games | result | Elo |
+|---|---|---|---|
+| v3 vs v1, 8+0.08 | 400 | +86 -109 =205 | -20 +/- 21 |

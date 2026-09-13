@@ -363,37 +363,71 @@ struct Entry3 {
     /// Squares whose contents changed (absolute), 0 for null moves / root.
     changed: u64,
     is_null: bool,
+    /// White-relative board of `pos`, filled in lazily and reused as the next entry's "old" board.
+    rel: RelBoard,
+    rel_ok: bool,
 }
 
+impl Entry3 {
+    fn blank() -> Entry3 {
+        Entry3 {
+            acc: [Align64([0; L1]); 2],
+            computed: [false; 2],
+            pos: Position::empty(),
+            dirty: DirtyPiece::default(),
+            changed: 0,
+            is_null: false,
+            rel: RelBoard { bb: [0; 8], pieces: [13; 64] },
+            rel_ok: false,
+        }
+    }
+}
+
+/// Per-thread incremental state. The entry stack is allocated once and indexed by `len`: a push
+/// only writes the small metadata fields, never the 4 KB of accumulators (those are produced lazily,
+/// straight from the previous entry, when an evaluation is actually needed).
 pub struct StateV3 {
     stack: Vec<Entry3>,
+    len: usize,
     scratch_old: Vec<usize>,
     scratch_new: Vec<usize>,
     scratch_old_b: Vec<usize>,
     scratch_new_b: Vec<usize>,
+    apply_add: Vec<usize>,
+    apply_sub: Vec<usize>,
 }
 
-use super::simd::v3k::{add_i16_row, add_i8_row, sub_i16_row, sub_i8_row};
+use super::simd::v3k::{add_i16_row, add_i8_row, apply_rows};
 
-/// Number of 64-byte lines to prefetch per weight row (0 disables; the hardware prefetcher
-/// follows the sequential stream once the first lines are requested).
-pub const PREFETCH_LINES: usize = 16;
+/// Number of 64-byte lines to prefetch per applied weight row (0 disables). Two lines are enough to
+/// start the hardware prefetcher on the sequential 1 KB stream.
+pub const PREFETCH_LINES: usize = 2;
 /// Applied-row counter for benchmarking (relaxed, only read by nnuebench).
 pub static ROWS_APPLIED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-/// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, sort+psq, threat rows].
+/// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, diff+prefetch, row apply].
+/// Only active with `--features nnue_profile`; otherwise compiled out.
 pub static PHASE_NS: [std::sync::atomic::AtomicU64; 4] = [
     std::sync::atomic::AtomicU64::new(0),
     std::sync::atomic::AtomicU64::new(0),
     std::sync::atomic::AtomicU64::new(0),
     std::sync::atomic::AtomicU64::new(0),
 ];
-pub const PROFILE: bool = true;
+pub const PROFILE: bool = cfg!(feature = "nnue_profile");
 #[inline(always)]
 fn phase(i: usize, t: &mut std::time::Instant) {
     if PROFILE {
         let now = std::time::Instant::now();
         PHASE_NS[i].fetch_add((now - *t).as_nanos() as u64, std::sync::atomic::Ordering::Relaxed);
         *t = now;
+    }
+}
+#[inline(always)]
+fn now() -> std::time::Instant {
+    if PROFILE {
+        std::time::Instant::now()
+    } else {
+        // Never read when PROFILE is false; avoids a clock read per node.
+        unsafe { std::mem::zeroed() }
     }
 }
 
@@ -416,20 +450,28 @@ fn prefetch_row<T>(row: &T) {
 impl StateV3 {
     pub fn new() -> Self {
         StateV3 {
-            stack: Vec::with_capacity(MAX_PLY + 8),
+            stack: vec![Entry3::blank(); MAX_PLY + 8],
+            len: 0,
             scratch_old: Vec::with_capacity(512),
             scratch_new: Vec::with_capacity(512),
             scratch_old_b: Vec::with_capacity(512),
             scratch_new_b: Vec::with_capacity(512),
+            apply_add: Vec::with_capacity(512),
+            apply_sub: Vec::with_capacity(512),
         }
     }
 
     pub fn reset(&mut self, pos: &Position, net: &NetworkV3) {
-        self.stack.clear();
-        let mut e = Entry3 { acc: [Align64([0; L1]); 2], computed: [true; 2], pos: *pos, dirty: DirtyPiece::default(), changed: 0, is_null: false };
+        let e = &mut self.stack[0];
+        e.pos = *pos;
+        e.dirty = DirtyPiece::default();
+        e.changed = 0;
+        e.is_null = false;
+        e.rel_ok = false;
         net.refresh_accumulator(pos, Color::White, &mut e.acc[0].0);
         net.refresh_accumulator(pos, Color::Black, &mut e.acc[1].0);
-        self.stack.push(e);
+        e.computed = [true; 2];
+        self.len = 1;
     }
 
     #[inline]
@@ -442,19 +484,34 @@ impl StateV3 {
             let cap = if pos_before.side_to_move() == Color::White { m.to() - 8 } else { m.to() + 8 };
             changed |= bb(cap);
         }
-        self.stack.push(Entry3 { acc: [Align64([0; L1]); 2], computed: [false; 2], pos: *pos_after, dirty, changed, is_null: false });
+        debug_assert!(self.len < self.stack.len());
+        let e = &mut self.stack[self.len];
+        e.computed = [false; 2];
+        e.pos = *pos_after;
+        e.dirty = dirty;
+        e.changed = changed;
+        e.is_null = false;
+        e.rel_ok = false;
+        self.len += 1;
     }
 
     #[inline]
     pub fn push_null(&mut self, pos_after: &Position) {
-        let top = *self.stack.last().unwrap();
-        self.stack.push(Entry3 { acc: top.acc, computed: top.computed, pos: *pos_after, dirty: DirtyPiece::default(), changed: 0, is_null: true });
+        debug_assert!(self.len < self.stack.len());
+        let e = &mut self.stack[self.len];
+        e.computed = [false; 2];
+        e.pos = *pos_after;
+        e.dirty = DirtyPiece::default();
+        e.changed = 0;
+        e.is_null = true;
+        e.rel_ok = false;
+        self.len += 1;
     }
 
     #[inline]
     pub fn pop(&mut self) {
-        self.stack.pop();
-        debug_assert!(!self.stack.is_empty());
+        self.len -= 1;
+        debug_assert!(self.len > 0);
     }
 
     #[inline(always)]
@@ -473,128 +530,109 @@ impl StateV3 {
     }
 
     /// Compute entry j's accumulators from entry j-1's for the requested perspectives. The threat
-    /// diff is computed once (both perspectives come out of one pass over the affected attackers).
+    /// diff is computed once (both perspectives come out of one pass over the affected attackers);
+    /// each accumulator is then produced in a single fused pass over all changed rows.
     fn apply_incremental(&mut self, j: usize, need: [bool; 2], net: &NetworkV3) {
-        let (old_pos, new_pos, dirty, changed, is_null) = {
-            let e = &self.stack[j];
-            (self.stack[j - 1].pos, e.pos, e.dirty, e.changed, e.is_null)
-        };
-        // Work in place: copy only the needed perspectives' accumulators (2 KB each) from j-1.
-        let (before, after) = self.stack.split_at_mut(j);
-        let prev = &before[j - 1].acc;
+        let StateV3 { stack, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, .. } = self;
+        let (before, after) = stack.split_at_mut(j);
+        let prev = &mut before[j - 1];
         let cur = &mut after[0];
-        for p in 0..2 {
-            if need[p] {
-                cur.acc[p] = prev[p];
+        if cur.is_null {
+            for p in 0..2 {
+                if need[p] {
+                    cur.acc[p] = prev.acc[p];
+                    cur.computed[p] = true;
+                }
+            }
+            // The board did not change: the cached relative board carries over.
+            if prev.rel_ok {
+                cur.rel = prev.rel;
+                cur.rel_ok = true;
+            }
+            return;
+        }
+        let (old_pos, new_pos, dirty, changed) = (prev.pos, cur.pos, cur.dirty, cur.changed);
+        let mut tm = now();
+        // Piece-square feature indices per perspective (<= 2 adds, <= 2 subs).
+        let mut psq_add = [[0usize; 2]; 2];
+        let mut psq_sub = [[0usize; 2]; 2];
+        for p in [Color::White, Color::Black] {
+            if !need[p.idx()] {
+                continue;
+            }
+            let rk = Self::rel_king(p, new_pos.king_sq(p));
+            for k in 0..dirty.n_add as usize {
+                let (pc, s) = dirty.adds[k];
+                psq_add[p.idx()][k] = feature_index(p, rk, pc, s);
+            }
+            for k in 0..dirty.n_sub as usize {
+                let (pc, s) = dirty.subs[k];
+                psq_sub[p.idx()][k] = feature_index(p, rk, pc, s);
             }
         }
-        let accs = &mut cur.acc;
-        let mut tm = std::time::Instant::now();
-        if !is_null {
-            // Piece-square part, per perspective (rows prefetched first).
-            let mut psq_idx = [[0usize; 4]; 2];
-            for p in [Color::White, Color::Black] {
-                if !need[p.idx()] {
-                    continue;
-                }
-                let rk = Self::rel_king(p, new_pos.king_sq(p));
-                let mut k2 = 0;
-                for k in 0..dirty.n_add as usize {
-                    let (pc, s) = dirty.adds[k];
-                    let f = feature_index(p, rk, pc, s);
-                    prefetch_row(&net.psq_w[f]);
-                    psq_idx[p.idx()][k2] = f;
-                    k2 += 1;
-                }
-                for k in 0..dirty.n_sub as usize {
-                    let (pc, s) = dirty.subs[k];
-                    let f = feature_index(p, rk, pc, s);
-                    prefetch_row(&net.psq_w[f]);
-                    psq_idx[p.idx()][k2] = f;
-                    k2 += 1;
+        // Threat + pawn-pair part: features emitted by affected attackers, old vs new, both
+        // perspectives from the white-relative board (on_stm = white, on_ntm = black).
+        let mut att_old = changed;
+        let mut att_new = changed;
+        for s in bits(changed) {
+            att_old |= old_pos.attackers_to_occ(s, old_pos.occupied());
+            att_new |= new_pos.attackers_to_occ(s, new_pos.occupied());
+        }
+        if !prev.rel_ok {
+            prev.rel = RelBoard::from_position(&old_pos, Color::White);
+            prev.rel_ok = true;
+        }
+        cur.rel = RelBoard::from_position(&new_pos, Color::White);
+        cur.rel_ok = true;
+        phase(0, &mut tm);
+        ow.clear();
+        ob.clear();
+        nw.clear();
+        nb.clear();
+        net.mapper.map_restricted(&prev.rel, att_old, changed, |f| ow.push(f), |f| ob.push(f));
+        net.mapper.map_restricted(&cur.rel, att_new, changed, |f| nw.push(f), |f| nb.push(f));
+        phase(1, &mut tm);
+        for p in 0..2 {
+            if !need[p] {
+                continue;
+            }
+            let (so, sn): (&mut Vec<usize>, &mut Vec<usize>) = if p == 0 { (&mut *ow, &mut *nw) } else { (&mut *ob, &mut *nb) };
+            so.sort_unstable();
+            sn.sort_unstable();
+            // Set difference both ways: rows in old only are subtracted, rows in new only are added.
+            apply_add.clear();
+            apply_sub.clear();
+            let (mut a, mut b) = (0, 0);
+            while a < so.len() || b < sn.len() {
+                if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
+                    apply_sub.push(so[a]);
+                    a += 1;
+                } else if a >= so.len() || sn[b] < so[a] {
+                    apply_add.push(sn[b]);
+                    b += 1;
+                } else {
+                    a += 1;
+                    b += 1;
                 }
             }
-            // Threat + pawn-pair part: features emitted by affected attackers, old vs new, both
-            // perspectives from the white-relative board (on_stm = white, on_ntm = black).
-            let mut att_old = changed;
-            let mut att_new = changed;
-            for s in bits(changed) {
-                att_old |= old_pos.attackers_to_occ(s, old_pos.occupied());
-                att_new |= new_pos.attackers_to_occ(s, new_pos.occupied());
-            }
-            let rel_old = RelBoard::from_position(&old_pos, Color::White);
-            let rel_new = RelBoard::from_position(&new_pos, Color::White);
-            phase(0, &mut tm);
-            let (ow, ob, nw, nb) = (&mut self.scratch_old, &mut self.scratch_old_b, &mut self.scratch_new, &mut self.scratch_new_b);
-            ow.clear();
-            ob.clear();
-            nw.clear();
-            nb.clear();
-            net.mapper.map_restricted(&rel_old, att_old, changed, |f| ow.push(f), |f| ob.push(f));
-            net.mapper.map_restricted(&rel_new, att_new, changed, |f| nw.push(f), |f| nb.push(f));
-            phase(1, &mut tm);
-            // Prefetch every candidate row (a few extra for unchanged features is cheap) so the
-            // memory latency of the 66 MB table overlaps instead of serialising.
-            for (p, lists) in [(0usize, [&*ow, &*nw]), (1, [&*ob, &*nb])] {
-                if need[p] {
-                    for l in lists {
-                        for &f in l.iter() {
-                            prefetch_row(&net.pp_w[f]);
-                        }
-                    }
-                }
-            }
-            for p in 0..2 {
-                if !need[p] {
-                    continue;
-                }
-                let na = dirty.n_add as usize;
-                let acc = &mut accs[p].0;
-                for k in 0..na {
-                    add_i16_row(acc, &net.psq_w[psq_idx[p][k]].0);
-                }
-                for k in na..na + dirty.n_sub as usize {
-                    sub_i16_row(acc, &net.psq_w[psq_idx[p][k]].0);
+            if PREFETCH_LINES > 0 {
+                for &f in apply_add.iter().chain(apply_sub.iter()) {
+                    prefetch_row(&net.pp_w[f]);
                 }
             }
             phase(2, &mut tm);
-            for (p, so, sn) in [(0usize, &mut *ow, &mut *nw), (1, &mut *ob, &mut *nb)] {
-                if !need[p] {
-                    continue;
-                }
-                so.sort_unstable();
-                sn.sort_unstable();
-                let acc = &mut accs[p].0;
-                let (mut a, mut b) = (0, 0);
-                let mut applied = 0u64;
-                while a < so.len() || b < sn.len() {
-                    if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
-                        sub_i8_row(acc, &net.pp_w[so[a]].0);
-                        a += 1;
-                        applied += 1;
-                    } else if a >= so.len() || sn[b] < so[a] {
-                        add_i8_row(acc, &net.pp_w[sn[b]].0);
-                        b += 1;
-                        applied += 1;
-                    } else {
-                        a += 1;
-                        b += 1;
-                    }
-                }
-                ROWS_APPLIED.fetch_add(applied, std::sync::atomic::Ordering::Relaxed);
-            }
+            let na = dirty.n_add as usize;
+            let ns = dirty.n_sub as usize;
+            apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, apply_add, apply_sub);
+            cur.computed[p] = true;
+            ROWS_APPLIED.fetch_add((apply_add.len() + apply_sub.len()) as u64, std::sync::atomic::Ordering::Relaxed);
             phase(3, &mut tm);
-        }
-        for p in 0..2 {
-            if need[p] {
-                cur.computed[p] = true;
-            }
         }
     }
 
     /// Make both top-of-stack accumulators computed, sharing work between perspectives.
     fn ensure_both(&mut self, net: &NetworkV3) {
-        let top = self.stack.len() - 1;
+        let top = self.len - 1;
         let mut start = [usize::MAX; 2]; // index of the last computed entry to start from
         for p in [Color::White, Color::Black] {
             let pi = p.idx();
@@ -635,7 +673,7 @@ impl StateV3 {
 
     pub fn evaluate(&mut self, net: &NetworkV3) -> Value {
         self.ensure_both(net);
-        let top = &self.stack[self.stack.len() - 1];
+        let top = &self.stack[self.len - 1];
         let us = top.pos.side_to_move();
         let bucket = output_bucket(&top.pos);
         net.forward(&top.acc[us.idx()].0, &top.acc[(!us).idx()].0, bucket)

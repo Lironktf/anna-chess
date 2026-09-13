@@ -255,6 +255,24 @@ pub mod v3k {
 
     pub mod scalar {
         use super::*;
+
+        /// One pass: `out = base + sum(psq[add16]) - sum(psq[sub16]) + sum(pp[add8]) - sum(pp[sub8])`.
+        /// Every weight row is read exactly once and the accumulator is written once (i16 wrapping).
+        #[inline]
+        pub fn apply_rows(
+            base: &[i16; N], out: &mut [i16; N],
+            psq: &[super::super::super::Align64<[i16; N]>], add16: &[usize], sub16: &[usize],
+            pp: &[super::super::super::Align64<[i8; N]>], add8: &[usize], sub8: &[usize],
+        ) {
+            for i in 0..N {
+                let mut v = base[i];
+                for &r in add16 { v = v.wrapping_add(psq[r].0[i]); }
+                for &r in sub16 { v = v.wrapping_sub(psq[r].0[i]); }
+                for &r in add8 { v = v.wrapping_add(pp[r].0[i] as i16); }
+                for &r in sub8 { v = v.wrapping_sub(pp[r].0[i] as i16); }
+                out[i] = v;
+            }
+        }
         #[inline]
         pub fn add_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
             for i in 0..N {
@@ -318,6 +336,28 @@ pub mod v3k {
         use std::arch::x86_64::*;
         // SAFETY (all): arrays are 64-byte aligned (Align64) or plain arrays read with unaligned
         // loads; every index stays inside N/HALF which are multiples of 32; avx2 is a compile-time feature.
+
+        /// See scalar::apply_rows. Per 16-lane chunk all rows are summed in registers, so the
+        /// accumulator is read and written once instead of once per row.
+        #[inline]
+        pub fn apply_rows(
+            base: &[i16; N], out: &mut [i16; N],
+            psq: &[super::super::super::Align64<[i16; N]>], add16: &[usize], sub16: &[usize],
+            pp: &[super::super::super::Align64<[i8; N]>], add8: &[usize], sub8: &[usize],
+        ) {
+            unsafe {
+                let b = base.as_ptr() as *const __m256i;
+                let o = out.as_mut_ptr() as *mut __m256i;
+                for i in 0..N / 16 {
+                    let mut v = _mm256_loadu_si256(b.add(i));
+                    for &r in add16 { v = _mm256_add_epi16(v, _mm256_loadu_si256((psq.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
+                    for &r in sub16 { v = _mm256_sub_epi16(v, _mm256_loadu_si256((psq.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
+                    for &r in add8 { v = _mm256_add_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r).0.as_ptr().add(i * 16) as *const __m128i))); }
+                    for &r in sub8 { v = _mm256_sub_epi16(v, _mm256_cvtepi8_epi16(_mm_loadu_si128(pp.get_unchecked(r).0.as_ptr().add(i * 16) as *const __m128i))); }
+                    _mm256_storeu_si256(o.add(i), v);
+                }
+            }
+        }
         #[inline]
         pub fn add_i16_row(acc: &mut [i16; N], w: &[i16; N]) {
             unsafe {

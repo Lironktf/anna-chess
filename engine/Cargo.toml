@@ -11,3 +11,5 @@ path = "src/main.rs"
 
 [features]
 default = []
+# Per-phase timers inside the v3 incremental update (read by `engine nnuebench`). Off in production.
+nnue_profile = []
