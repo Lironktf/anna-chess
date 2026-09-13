@@ -13,6 +13,8 @@ Hard cap: **$10.00** total on vast.ai. Every rental is recorded here before it s
 
 | 2026-09-13 02:50-04:37 | validation CPU box: 3 dead hosts (50855884, 50858124, 50858985, destroyed) then offer 48453746 -> instance 50859195 (Nevada, Xeon E5-2686 v4 36 thr, $0.16/hr) | anna-v3b validation matches (runs/anna-v3b/PLAN.md), the one CPU rental the owner permitted | ~$0.3, cap $0.80 | **$0.27** (credit 3.19 -> 2.92) | done; destroyed 04:37, instances: 0 (verified 04:37); key 27919961 deleted |
 
+| 2026-09-13 11:10 (planned) | RTX 4090 offer 48580533 (Norway, EPYC 7742 32 thr, ~$0.47/hr all-in) | anna-v4 multilayer net without threat inputs (runs/anna-v4/PLAN.md), owner go 10:50 | ~$1.0-1.5, cap $2.50 | - | last paid run in the budget |
+
 Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$6.94** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20, anna-v3b $1.10, cpu-eval2 $0.27). Remaining: **$2.92** (credit read from the account 2026-09-13 04:37).
 
 Candidate next spend: anna-v3b half-width retrain (L1=512, ~$3.5) to cut the threat-net speed penalty. Needs owner go.
