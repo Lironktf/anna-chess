@@ -86,6 +86,12 @@ Stash at 785k vs our 476k under the same load says the C-level work is not done.
 shows move generation (pext), the move picker, correction-history lookups and small allocations. A 20% base speedup
 is +12 Elo for every net at once. Standard work, no research needed.
 
+## 3b. Target locked (2026-09-13 12:50): CCRL 40/15, top 50
+
+The 40/15 list (275 engines, 4 threads each) is where the threat net's evaluation counts. Scaled anchors: v1 ~3532 (~#70),
+v3b ~3565 (~#55); top 50 = 3572, top 40 = 3584. Steps: verify Lazy SMP scaling (4 threads), SPSA the search constants with
+v3b, own-data fine-tune of v3b, one measured 40/15 anchor run, CCRL submission.
+
 ## 4. The program
 
 Ordered by expected Elo per dollar; items 1-4 are free.
