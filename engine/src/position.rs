@@ -502,6 +502,30 @@ impl Position {
             | (king_attacks(s) & self.pieces(PieceType::King))
     }
     #[inline(always)]
+    /// Per piece type of OUR piece: squares attacked by a lesser enemy piece of colour `c`
+    /// (pawn: none; knight/bishop: pawns; rook: pawns+minors; queen: pawns+minors+rooks; king: none).
+    pub fn threats_by_lesser(&self, c: Color) -> [Bitboard; 6] {
+        let occ = self.occupied();
+        let pawns = pawn_attacks_bb(c, self.pieces_c(c, PieceType::Pawn));
+        let mut minors = 0;
+        for s in bits(self.pieces_c(c, PieceType::Knight)) {
+            minors |= knight_attacks(s);
+        }
+        for s in bits(self.pieces_c(c, PieceType::Bishop)) {
+            minors |= bishop_attacks(s, occ);
+        }
+        let mut rooks = 0;
+        for s in bits(self.pieces_c(c, PieceType::Rook)) {
+            rooks |= rook_attacks(s, occ);
+        }
+        let mut out = [0; 6];
+        out[PieceType::Knight.idx()] = pawns;
+        out[PieceType::Bishop.idx()] = pawns;
+        out[PieceType::Rook.idx()] = pawns | minors;
+        out[PieceType::Queen.idx()] = pawns | minors | rooks;
+        out
+    }
+
     /// All squares attacked by `c` (used for threat-aware history).
     pub fn attacked_squares(&self, c: Color) -> Bitboard {
         let occ = self.occupied();

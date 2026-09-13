@@ -26,6 +26,8 @@ params! {
     // Stockfish (2026) singular-extension margins: TT-move history term, corr adjustment in the triple margin,
     // and the ply>rootDepth terms; also maintains the TT-move history counter. 0 = previous margins.
     SE_TTM, "SeTtmHist", 0, 0, 1;
+    // Stockfish move ordering: +/- 20*piece_value for a quiet move escaping / entering a square attacked by a lesser piece.
+    THREAT_ORDER, "ThreatOrder", 0, 0, 1;
     MAT_SCALE_BASE, "MatScaleBase", 700, 400, 1024;
     MAT_SCALE_DIV, "MatScaleDiv", 16, 4, 64;
     // Time management (percent scalers)

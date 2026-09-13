@@ -48,6 +48,8 @@ pub struct MovePicker {
     cont_idx: [usize; 4],
     /// Squares attacked by the opponent (0 unless ThreatHist is on).
     threats: u64,
+    /// Per piece type: squares attacked by a lesser enemy piece (all 0 unless ThreatOrder is on).
+    lesser: [u64; 6],
 }
 
 pub const QUIET_LEFT_MARGIN: i32 = -3560;
@@ -76,6 +78,7 @@ impl MovePicker {
             depth,
             ply,
             threats: if crate::params::THREAT_HIST.get() != 0 { pos.attacked_squares(!pos.side_to_move()) } else { 0 },
+            lesser: if crate::params::THREAT_ORDER.get() != 0 { pos.threats_by_lesser(!pos.side_to_move()) } else { [0; 6] },
             skip_quiets: false,
             cont_idx,
         }
@@ -104,6 +107,7 @@ impl MovePicker {
             depth: 0,
             ply,
             threats: 0,
+            lesser: [0; 6],
             skip_quiets: true,
             cont_idx,
         }
@@ -125,6 +129,7 @@ impl MovePicker {
             depth: 0,
             ply: 0,
             threats: 0,
+            lesser: [0; 6],
             skip_quiets: true,
             cont_idx: [usize::MAX; 4],
         }
@@ -164,6 +169,13 @@ impl MovePicker {
             s += hist.low_ply_get(self.ply, m) * 2;
             if pos.check_squares(pc.piece_type()) & crate::types::bb(to) != 0 {
                 s += 4000;
+            }
+            // Escaping an attack by a lesser piece is good, walking into one is bad (Stockfish).
+            let pt = pc.piece_type();
+            let l = self.lesser[pt.idx()];
+            if l != 0 {
+                let v = 20 * (((l >> m.from()) & 1) as i32 - ((l >> to) & 1) as i32);
+                s += piece_value(pt) * v;
             }
             self.list.moves[i].score = s;
         }

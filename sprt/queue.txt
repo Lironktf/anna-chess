@@ -13,3 +13,7 @@ tm_instab120| option.TmInstabPct=120 | option.TmInstabPct=180
 nmp6        | option.NmpBase=6       | option.NmpBase=5
 lmp2        | option.LmpBase=2       | option.LmpBase=3
 fut90       | option.FutMargin=90    | option.FutMargin=119
+# --- 2026-09-12 evening, binary sprt/bin/anna_q (threat history + SF-2026 singular margins as params)
+settm       | option.SeTtmHist=1     | option.SeTtmHist=0
+lmp4        | option.LmpBase=4       | option.LmpBase=3
+thorder     | option.ThreatOrder=1   | option.ThreatOrder=0
