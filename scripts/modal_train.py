@@ -15,7 +15,7 @@ Commands (all from the repo root):
         --months 01,02,03,04,05,06 --resume /data/resume/anna-v3b-s2-30 --sb1 430 --sb2 30 --lr1 5e-4 --l1 512
     modal run scripts/modal_train.py --action status --net-id anna-v3c
     modal volume get anna-data /checkpoints/anna-v3c/anna-v3c-s2-30/quantised.bin runs/anna-v3c/checkpoints/anna-v3c-s2-30/quantised.bin
-Cost control: the train function's `timeout` (from --hours) is the hard wall-clock cap; `modal app stop anna-train` kills it early.
+Cost control: the train function's `timeout` (from ANNA_HOURS) is the hard wall-clock cap; `modal app stop anna-train` kills it early.
 """
 
 import os
