@@ -49,6 +49,15 @@ engine processes (default 4); idle connections are closed after 30 minutes.
 
 Tests: `cargo test --release -p play` (SAN/rules unit tests + an end-to-end WebSocket game against the real binary).
 
+## Profiling and tuning (free)
+
+- `cargo run --profile release-debug -p prof -- 13 [net]` samples the bench in-process (no perf/ptrace needed) and prints
+  self time, inclusive time, callers of the hottest leaves, and writes `prof/flamegraph.svg`.
+- `scripts/spsa.py` tunes UCI parameters by SPSA with fastchess (resumable; `best.txt` holds the current point);
+  verify any result with an SPRT before making it a default.
+- `scripts/overnight.sh` chains queued SPRTs, an SPSA run and its verification unattended; verdicts in `sprt/verdicts.txt`.
+- `scripts/cpu_eval.sh` + `scripts/cpu_eval_remote.sh` rent a CPU box and play rating matches against reference engines (paid; needs go).
+
 ## Tablebases
 
 Syzygy probing via vendored Fathom (`engine/csrc/fathom`, MIT). Set `SyzygyPath` (UCI) to a directory with
