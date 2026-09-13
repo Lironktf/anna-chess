@@ -16,11 +16,14 @@ Measured on 16 book positions to depth 13 (laptop, under load, same conditions f
 | Anna v1 | 1.86M | 476k | |
 | Anna v3b | 1.65M | 190k | fewer nodes: better eval prunes better |
 | Stash 37 (3421) | 1.73M | 785k | lean C, tiny net |
+| Stormphrax 8 (3744) | 1.80M | 222k | threat net, same speed class as our v3b (190k) |
 
-Read: our search is about as selective as Stash's, and Stash is 156 Elo weaker only because its net is weaker. So the
-evaluation is our asset and speed is our debt: Stash gets 1.65x our nodes per second from a smaller net and tighter
-code. Against Stormphrax the split is roughly: evaluation 60-90 (their nets are trained on billions of own positions
-over months), search features and tuning 40-60, speed 30. Each of those is a lever.
+Read: all four engines need about the same number of nodes for depth 13, so search selectivity is not what separates
+us from either neighbour. Stash is 156 Elo weaker with a weaker net and 1.65x our speed; Stormphrax is 167 Elo stronger
+with a threat net that runs no faster than ours. That pins the Stormphrax gap almost entirely on **evaluation quality
+per node**: their net is trained on tens of billions of self-generated positions over months, ours on four months of
+Leela data for two hours. Our v3b is +83 per node over v1; theirs is roughly +150 further. The lever is data and
+training, not search tricks and not raw speed.
 
 ## 2. What the threat-net experiment taught
 
@@ -100,6 +103,12 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 
 If 5 lands in its expected range, top 40 at blitz is a matter of 1 and 3 on top. If it lands low, 1 and 2 are the
 paths that make the threat net the blitz engine as well.
+
+The Stormphrax measurement changes the long game: past top 40, the road is the same one every top engine walked, a
+threat net trained on our own generated data for a long time. Data generation is CPU work (a 32-thread box makes
+~50M positions an hour at 5k nodes each for ~$0.15), the GPU hours are cheap on the right host (6.7M positions/s), and
+the engine-side threat path is now within reach of the reference engines' speed. That is a $10-20 programme, not a
+$1 one, and it is where the next 100 Elo lives.
 
 ## Sources
 
