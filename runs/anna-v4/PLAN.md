@@ -24,3 +24,8 @@ prediction was wrong: it assumed a multilayer output stack gains at our data sca
 positions (800 SB vs 340). Checks: engine eval matches trainer eval on the netcheck positions; mean |eval| on 40 book positions
 218/224/225 cp for v1/v3b/v4 (no scale problem); running loss 0.0219 vs v3b 0.0207 at SB 310. Follow-up: v4 vs fable-v1-340
 (same training budget) at equal nodes, 120 games, to separate "architecture" from "undertrained".
+
+Follow-up result: v4 vs fable-v1-340 at equal nodes, 120 games: **+12 +/- 33** (26-22-72). Same training budget, same strength.
+So the deficit against the shipped v1 is training length (800 vs 340 SB), not a broken net; and the multilayer stack itself
+bought nothing. The transferable lesson: v3b at 340 SB most likely has +50..+80 left in it from simply training longer
+(resume from runs/anna-v3b/checkpoints/anna-v3b-s2-30/raw.bin + optimiser_state). Box confirmation: v4 vs v1 at 8+0.08 -50 +/- 25 (300 games).
