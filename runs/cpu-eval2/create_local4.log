@@ -1,0 +1,21 @@
+{
+ "instance_api_key": "ef49000d84fbb1202538d72b19570a95fdb6579e8823392941f92c01b1faf902",
+ "new_contract": 50859195,
+ "success": true
+}
+instance 50859195 created; waiting for ssh...
+ssh -p 53868 root@154.64.230.50
+=== prepare box
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload engine source
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload nets, book, prebuilt binaries (stormphrax 8 release, stockfish 19 universal)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+         32,768   0%    0.00kB/s    0:00:00        5,505,024  12%    4.28MB/s    0:00:09        9,732,096  21%    4.09MB/s    0:00:08       15,499,264  33%    4.32MB/s    0:00:06       20,086,784  44%    4.07MB/s    0:00:06       25,952,256  56%    4.34MB/s    0:00:04       32,669,696  71%    4.86MB/s    0:00:02       38,436,864  84%    5.02MB/s    0:00:01       43,646,976  95%    5.48MB/s    0:00:00       45,641,280 100%    4.66MB/s    0:00:09 (xfr#1, to-chk=0/1)     45,641,280 100%    4.49MB/s    0:00:09 (xfr#1, to-chk=0/1)Connection to 154.64.230.50 closed by remote host.
+client_loop: send disconnect: Broken pipe
+
+rsync: connection unexpectedly closed (35 bytes received so far) [sender]
+rsync error: unexplained error (code 255) at io.c(232) [sender=3.4.4]

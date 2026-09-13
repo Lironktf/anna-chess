@@ -1,0 +1,20 @@
+=== prepare box
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload engine source
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload nets, book, prebuilt binaries (stormphrax 8 release, stockfish 19 universal)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+         32,768   0%    0.00kB/s    0:00:00        4,358,144   4%    3.28MB/s    0:00:25       13,795,328  15%    5.79MB/s    0:00:13       21,790,720  23%    6.30MB/s    0:00:10       32,538,624  35%    7.19MB/s    0:00:07       42,074,112  46%    8.82MB/s    0:00:05       50,757,632  55%    8.66MB/s    0:00:04       57,835,520  63%    8.05MB/s    0:00:04       62,029,824  67%    6.56MB/s    0:00:04       63,733,760  69%    4.73MB/s    0:00:05       66,617,344  73%    3.46MB/s    0:00:06       69,238,784  75%    2.59MB/s    0:00:08       71,598,080  78%    2.17MB/s    0:00:08       74,612,736  81%    2.51MB/s    0:00:06       77,627,392  85%    2.43MB/s    0:00:05       80,510,976  88%    2.49MB/s    0:00:04       84,967,424  93%    2.98MB/s    0:00:02       87,982,080  96%    2.98MB/s    0:00:01       91,247,168 100%    4.68MB/s    0:00:18 (xfr#1, to-chk=0/1)     91,247,168 100%    4.53MB/s    0:00:19 (xfr#1, to-chk=0/1)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+         32,768   0%    0.00kB/s    0:00:00        5,275,648   3%    4.62MB/s    0:00:32        7,110,656   4%    3.15MB/s    0:00:47       10,256,384   6%    3.07MB/s    0:00:47       15,990,784   9%    3.63MB/s    0:00:38       21,790,720  13%    3.81MB/s    0:00:35       29,786,112  18%    5.30MB/s    0:00:23       36,864,000  23%    6.16MB/s    0:00:19  Connection to 154.64.230.50 closed by remote host.
+
+rsync: [sender] write error: Broken pipe (32)
+rsync error: unexplained error (code 255) at io.c(849) [sender=3.4.4]

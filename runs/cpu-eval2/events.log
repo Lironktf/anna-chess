@@ -1,0 +1,29 @@
+2026-09-13T06:41:27Z create offer=46095225 run=cpu-eval2 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=0.80
+{
+ "instance_api_key": "bd8f983e48857ca99ec58dc62c832aa9b5f36c80feda910c40ae03cf5f7a0e5d",
+ "new_contract": 50855884,
+ "success": true
+}
+2026-09-13T07:09:12Z destroyed instance 50855884 (ssh never came up)
+2026-09-13T07:09:34Z create offer=45059202 run=cpu-eval2 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=0.80
+{
+ "instance_api_key": "4163a4990fd87c98f691a72016a8a0845532e3eda5bc2e34445b7f4265bfb16e",
+ "new_contract": 50858124,
+ "success": false
+}
+2026-09-13T07:20:52Z destroyed instance 50858124 (never reached running)
+2026-09-13T07:21:24Z create offer=25913997 run=cpu-eval2 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=0.80
+{
+ "instance_api_key": "3cc992ea08d962d0fce0dce35c3e546cd796ceff8db33a476f209b250f9882fd",
+ "new_contract": 50858985,
+ "success": true
+}
+2026-09-13T07:23:30Z destroyed instance 50858985 (container exited during upload)
+2026-09-13T07:23:47Z create offer=48453746 run=cpu-eval2 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=0.80
+{
+ "instance_api_key": "ef49000d84fbb1202538d72b19570a95fdb6579e8823392941f92c01b1faf902",
+ "new_contract": 50859195,
+ "success": true
+}
+2026-09-13T07:29:56Z run start self-destruct armed max_hours=3 cap=0.80
+2026-09-13T08:42:53Z destroyed instance 50859195

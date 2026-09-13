@@ -24,3 +24,16 @@ Budget: credit $4.29. Host offer 29761291 (Quebec, RTX 4090 + 32 threads EPYC 95
   CPU-second under load (v3: 0.43x). Validation: equal-nodes vs v1 on the laptop (running), then the permitted CPU box.
 - **Final equal-nodes vs v1 (200 games, 30k nodes/move): +77 -30 =93, +83 +/- 31** (sprt/v3bfinal_vs_v1_nodes30k.log) - the same
   per-node quality as the full-width v3 (+83 +/- 32), at half the row bytes. v3b vs v3 equal-nodes (200 games): +56 -67 =77, -19 +/- 34 (level within noise).
+
+## Validation box (2026-09-13 03:27-04:37, instance 50859195, Xeon E5-2686 v4 36 thr, 32 games in parallel, $0.27 incl. 3 failed hosts)
+Unloaded single-thread speed on the box: v1 835k nps, v3b 280k (0.34x; the laptop under load measured 0.56x - old server cores hurt more).
+| match | games | result | Elo |
+|---|---|---|---|
+| v3b vs v1, 8+0.08 | 400 | +92 -125 =183 | -29 +/- 23 |
+| v3b vs v3, 8+0.08 | 400 | +133 -96 =171 | +32 +/- 22 |
+| v3b vs Stormphrax 8, 8+0.08 | 400 | +22 -202 =176 | -168 +/- 21 (v1 on the earlier box: -167; v3: -187) |
+| **v3b vs v1, 60+0.6** | 100 | +35 -20 =45 | **+53 +/- 33** |
+| v3b vs v3, 60+0.6 | 100 | +25 -31 =44 | -21 +/- 40 |
+| v3b vs v1, 120+1.2 | 60 | +16 -12 =32 | +23 +/- 56 |
+Verdict: v3b is the best threat net (beats v3 at blitz, level at 60+0.6) and beats v1 clearly from ~1 min games up;
+at 8+0.08 it is still behind v1 by ~30 on this box. Ship v1 for the website/blitz, v3b for anything slower.

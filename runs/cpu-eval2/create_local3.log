@@ -1,0 +1,28 @@
+{
+ "instance_api_key": "3cc992ea08d962d0fce0dce35c3e546cd796ceff8db33a476f209b250f9882fd",
+ "new_contract": 50858985,
+ "success": true
+}
+instance 50858985 created; waiting for ssh...
+ssh -p 21566 root@184.191.105.145
+=== prepare box
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload engine source
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload nets, book, prebuilt binaries (stormphrax 8 release, stockfish 19 universal)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+         32,768   0%    0.00kB/s    0:00:00       12,091,392  26%   11.49MB/s    0:00:02       22,315,008  48%   10.54MB/s    0:00:02       33,554,432  73%   10.53MB/s    0:00:01       45,219,840  99%   10.65MB/s    0:00:00       45,641,280 100%   10.69MB/s    0:00:04 (xfr#1, to-chk=0/1)     45,641,280 100%   10.24MB/s    0:00:04 (xfr#1, to-chk=0/1)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+         32,768   0%    0.00kB/s    0:00:00       13,631,488  14%   12.93MB/s    0:00:05       28,344,320  31%   13.34MB/s    0:00:04       41,549,824  45%   13.08MB/s    0:00:03       54,525,952  59%   12.90MB/s    0:00:02       64,126,976  70%   11.93MB/s    0:00:02       75,923,456  83%   11.19MB/s    0:00:01       86,409,216  94%   10.54MB/s    0:00:00       91,247,168 100%   11.51MB/s    0:00:07 (xfr#1, to-chk=0/1)     91,247,168 100%   11.12MB/s    0:00:07 (xfr#1, to-chk=0/1)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Read from remote host 184.191.105.145: Connection reset by peer
+client_loop: send disconnect: Broken pipe
+rsync: [sender] write error: Broken pipe (32)
+rsync error: error in socket IO (code 10) at io.c(849) [sender=3.4.4]

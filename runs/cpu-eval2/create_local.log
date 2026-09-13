@@ -1,0 +1,8 @@
+{
+ "instance_api_key": "bd8f983e48857ca99ec58dc62c832aa9b5f36c80feda910c40ae03cf5f7a0e5d",
+ "new_contract": 50855884,
+ "success": true
+}
+instance 50855884 created; waiting for ssh...
+ssh -p 60710 root@81.17.232.196
+ssh never came up on 81.17.232.196:60710; destroy the instance and retry
