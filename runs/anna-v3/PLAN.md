@@ -73,6 +73,8 @@ Single-thread search speed measured on the box under match load: v1 974k nps, v3
 | v3 vs Stormphrax 8, 8+0.08 | 400 | +22 -219 =159 | -187 +/- 22 |
 | v3 vs Stash 37.26, 8+0.08 | 400 | +168 -29 =203 | +126 +/- 23 |
 | v1 vs Stormphrax 8, 8+0.08 | 400 | +32 -211 =157 | -167 +/- 21 (laptop earlier: -139 +/- 45) |
+| v3 vs Weiss 2.1-dev, 8+0.08 | 400 | +87 -45 =268 | +37 +/- 18 |
+| **v3 vs v1, 60+0.6** | 100 | +32 -20 =48 | **+42 +/- 41** (sign flips vs blitz: speed gap matters less with time) |
 
 ## Speed work on the v3 inference path (2026-09-12 evening, laptop, quiet)
 
