@@ -1,7 +1,7 @@
 //! SIMD kernels for the NNUE with a scalar reference. The AVX2 path is selected at compile time
 //! (`target-cpu=native`); the scalar path is always compiled and used in tests as the reference.
 
-use super::{L1, QA};
+use super::{Align64, L1, QA};
 
 // ---------------------------------------------------------------------------------------------
 // Scalar reference
@@ -13,6 +13,16 @@ pub mod scalar {
     pub fn add_feature(acc: &mut [i16; L1], w: &[i16; L1]) {
         for i in 0..L1 {
             acc[i] = acc[i].wrapping_add(w[i]);
+        }
+    }
+    /// acc += sum(rows[adds]) - sum(rows[subs]) in one pass over the accumulator.
+    #[inline]
+    pub fn apply_rows(acc: &mut [i16; L1], rows: &[Align64<[i16; L1]>], adds: &[usize], subs: &[usize]) {
+        for i in 0..L1 {
+            let mut v = acc[i];
+            for &r in adds { v = v.wrapping_add(rows[r].0[i]); }
+            for &r in subs { v = v.wrapping_sub(rows[r].0[i]); }
+            acc[i] = v;
         }
     }
     #[inline]
@@ -85,6 +95,23 @@ pub mod avx2 {
             let b = w.as_ptr() as *const __m256i;
             for i in 0..L1 / CHUNK {
                 _mm256_storeu_si256(a.add(i), _mm256_add_epi16(_mm256_loadu_si256(a.add(i)), _mm256_loadu_si256(b.add(i))));
+            }
+        }
+    }
+    /// acc += sum(rows[adds]) - sum(rows[subs]), one pass over the accumulator: each 32-byte chunk
+    /// is loaded once, every row is applied to it, and it is stored once.
+    #[inline]
+    pub fn apply_rows(acc: &mut [i16; L1], rows: &[Align64<[i16; L1]>], adds: &[usize], subs: &[usize]) {
+        // SAFETY: L1 is a multiple of CHUNK; every index in adds/subs is a feature index below
+        // rows.len() (checked here once instead of per chunk).
+        for &r in adds.iter().chain(subs) { assert!(r < rows.len()); }
+        unsafe {
+            let a = acc.as_mut_ptr() as *mut __m256i;
+            for i in 0..L1 / CHUNK {
+                let mut v = _mm256_loadu_si256(a.add(i));
+                for &r in adds { v = _mm256_add_epi16(v, _mm256_loadu_si256((rows.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
+                for &r in subs { v = _mm256_sub_epi16(v, _mm256_loadu_si256((rows.get_unchecked(r).0.as_ptr() as *const __m256i).add(i))); }
+                _mm256_storeu_si256(a.add(i), v);
             }
         }
     }

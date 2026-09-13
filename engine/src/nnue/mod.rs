@@ -404,6 +404,12 @@ struct StackEntry {
     is_null: bool,
 }
 
+/// Profiling counters for the v1 path (always compiled, updated only under `nnue_profile`).
+pub static V1_EVALS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+pub static V1_REFRESHES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+pub static V1_REFRESH_ROWS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+pub static V1_INCR: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
 #[derive(Clone, Copy)]
 struct FinnyEntry {
     acc: Align64<[i16; L1]>,
@@ -523,22 +529,30 @@ impl NnueState {
         let rk = Self::rel_king(p, ksq);
         let idx = king_bucket(rk) * 2 + (file_of(rk) > 3) as usize;
         let e = &mut finny[idx];
-        // Diff the cached piece set against the current one.
+        // Diff the cached piece set against the current one, then apply all rows in one pass.
+        let (mut adds, mut subs) = ([0usize; 32], [0usize; 32]);
+        let (mut na, mut ns) = (0usize, 0usize);
         for c in [Color::White, Color::Black] {
             for pt in PieceType::ALL {
                 let cur = pos.pieces_c(c, pt);
                 let old = e.by_color[c.idx()] & e.by_type[pt.idx()];
                 let piece = Piece::new(c, pt);
                 for s in bits(cur & !old) {
-                    let f = feature_index(p, rk, piece, s);
-                    simd::add_feature(&mut e.acc.0, &net.ft_weights[f].0);
+                    adds[na] = feature_index(p, rk, piece, s);
+                    na += 1;
                 }
                 for s in bits(old & !cur) {
-                    let f = feature_index(p, rk, piece, s);
-                    simd::sub_feature(&mut e.acc.0, &net.ft_weights[f].0);
+                    subs[ns] = feature_index(p, rk, piece, s);
+                    ns += 1;
                 }
             }
         }
+        if cfg!(feature = "nnue_profile") {
+            use std::sync::atomic::Ordering::Relaxed;
+            V1_REFRESHES.fetch_add(1, Relaxed);
+            V1_REFRESH_ROWS.fetch_add((na + ns) as u64, Relaxed);
+        }
+        simd::apply_rows(&mut e.acc.0, &net.ft_weights, &adds[..na], &subs[..ns]);
         e.by_color = [pos.colored(Color::White), pos.colored(Color::Black)];
         for pt in PieceType::ALL {
             e.by_type[pt.idx()] = pos.pieces(pt);
@@ -550,6 +564,9 @@ impl NnueState {
     /// Apply the dirty pieces of stack[i] to produce stack[i].acc[p] from stack[i-1].acc[p].
     #[inline]
     fn apply_incremental(&mut self, i: usize, p: Color, rel_ksq: Square, net: &Network) {
+        if cfg!(feature = "nnue_profile") {
+            V1_INCR.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        }
         let d = self.stack[i].dirty;
         let src = self.src_index(i - 1);
         let (prev, cur) = self.stack.split_at_mut(i);
@@ -626,6 +643,9 @@ impl NnueState {
 
     /// Evaluate the top-of-stack position from the side to move's perspective.
     pub fn evaluate(&mut self, pos: &Position, net: &Network) -> Value {
+        if cfg!(feature = "nnue_profile") {
+            V1_EVALS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        }
         self.ensure(Color::White, pos, net);
         self.ensure(Color::Black, pos, net);
         let top = self.src_index(self.len - 1);

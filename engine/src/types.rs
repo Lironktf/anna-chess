@@ -150,7 +150,9 @@ impl Piece {
     #[inline(always)]
     pub const fn piece_type(self) -> PieceType {
         debug_assert!(!self.is_none());
-        PieceType::from_idx((self as usize) % 6)
+        // SAFETY: PieceType is repr(u8) with values 0..=5 in the same order as the pieces of
+        // each colour, and (x % 6) is always in 0..=5.
+        unsafe { std::mem::transmute((self as u8) % 6) }
     }
     pub fn to_char(self) -> char {
         if self.is_none() {

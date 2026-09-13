@@ -39,6 +39,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Bitmap set-difference instead of sort+merge | ~+20% (short runs) | merged |
 | L2 layer over transposed weights (no horizontal sums) | +10-18% with bitmap diff | merged |
 | Fixed-capacity u32 diff lists | neutral | merged |
+| v1 base speed pass (2026-09-13): fused Finny refresh kernel, attack-table OnceLock fast path, piece-type decode by transmute, unchecked search-stack access | 509k vs 512k nodes/CPU-s at depth 14 (6 runs each): neutral; unchecked stack reverted, the rest kept (bench identical) | profile: v1 NNUE is 40% of time (incremental 19%, Finny refresh 12% at 0.17 refreshes per eval per perspective with 5.5 rows each: inherent to the 2-square king buckets, output 8%); the non-NNUE part alone runs at ~830k nodes/s, i.e. Stash's whole-engine speed, so the base engine is not the gap |
 | Threat-net speed overall | v3b from 0.34x of v1 (box) to ~0.6x (laptop); break-even at blitz needs ~0.75x | ongoing |
 
 ## Search features (SPRT at 8+0.08, bounds [0,5] unless noted)

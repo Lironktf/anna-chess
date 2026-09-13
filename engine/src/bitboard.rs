@@ -142,7 +142,14 @@ static TABLES: OnceLock<Tables> = OnceLock::new();
 
 #[inline(always)]
 fn tables() -> &'static Tables {
-    // Initialised once at startup via `init()`; the fast path is a relaxed load.
+    match TABLES.get() {
+        Some(t) => t,
+        None => tables_init(),
+    }
+}
+#[cold]
+#[inline(never)]
+fn tables_init() -> &'static Tables {
     TABLES.get_or_init(build_tables)
 }
 

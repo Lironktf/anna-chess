@@ -31,6 +31,12 @@ fn main() {
         let (r, i, e) = (engine::nnue::v3::w1024::REFRESHES.load(Relaxed) + engine::nnue::v3::w512::REFRESHES.load(Relaxed),
             engine::nnue::v3::w1024::INCR_APPLIES.load(Relaxed) + engine::nnue::v3::w512::INCR_APPLIES.load(Relaxed),
             engine::nnue::v3::w1024::EVALS.load(Relaxed) + engine::nnue::v3::w512::EVALS.load(Relaxed));
+        {
+            let (e1, r1, rr, i1) = (engine::nnue::V1_EVALS.load(Relaxed), engine::nnue::V1_REFRESHES.load(Relaxed), engine::nnue::V1_REFRESH_ROWS.load(Relaxed), engine::nnue::V1_INCR.load(Relaxed));
+            if e1 > 0 {
+                println!("v1 stats: evals {e1}, incremental applies {i1} ({:.2}/eval), refreshes {r1} ({:.3}/eval, one per {:.1} evals), rows per refresh {:.1}", i1 as f64 / e1 as f64, r1 as f64 / e1 as f64, e1 as f64 / r1.max(1) as f64, rr as f64 / r1.max(1) as f64);
+            }
+        }
         let tr = engine::nnue::v3::w1024::THR_REFRESHES.load(Relaxed) + engine::nnue::v3::w512::THR_REFRESHES.load(Relaxed);
         if e > 0 {
             println!("v3 stats: evals {e}, incremental applies {i} ({:.2}/eval), psq refreshes {r} ({:.3}/eval), threat rebuilds {tr} ({:.3}/eval, one per {:.0} evals)", i as f64 / e as f64, r as f64 / e as f64, tr as f64 / e as f64, e as f64 / tr.max(1) as f64);
@@ -83,8 +89,11 @@ fn main() {
         }
         let mut seen = std::collections::HashSet::new();
         for n in names {
-            if seen.insert(n.clone()) {
-                *incl_t.entry(n).or_default() += count;
+            // Inclusive time is per function: drop the line number so a function called from
+            // several lines is counted once.
+            let f = n.rsplit_once(':').map(|(a, _)| a.to_string()).unwrap_or(n);
+            if seen.insert(f.clone()) {
+                *incl_t.entry(f).or_default() += count;
             }
         }
     }
@@ -107,7 +116,7 @@ fn main() {
         }
     }
     println!("\n== inclusive (function anywhere on the stack) ==");
-    for (n, c) in iv.iter().take(30) {
+    for (n, c) in iv.iter().filter(|(n, _)| !n.contains("catch_unwind") && !n.contains("call_once") && !n.contains("thread") && !n.contains("closure") && !n.contains("backtrace")).take(60) {
         println!("{:5.1}%  {}", 100.0 * *c as f64 / total as f64, n);
     }
     let file = std::fs::File::create(&out).expect("create svg");
