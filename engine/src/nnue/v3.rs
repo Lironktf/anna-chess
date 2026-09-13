@@ -399,9 +399,9 @@ pub struct StateV3 {
 
 use super::simd::v3k::{add_i16_row, add_i8_row, apply_rows};
 
-/// Number of 64-byte lines to prefetch per applied weight row (0 disables). Two lines are enough to
-/// start the hardware prefetcher on the sequential 1 KB stream.
-pub const PREFETCH_LINES: usize = 2;
+/// Number of 64-byte lines to prefetch per applied weight row (0 disables). Measured 2026-09-12: 0, 2, 4 and
+/// 16 lines are within noise of each other on the laptop (16 slightly worse), so prefetching is off.
+pub const PREFETCH_LINES: usize = 0;
 /// Applied-row counter for benchmarking (relaxed, only read by nnuebench).
 pub static ROWS_APPLIED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 /// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, diff+prefetch, row apply].
