@@ -21,6 +21,8 @@ macro_rules! params {
 params! {
     MAT_SCALE, "MatScale", 0, 0, 1;
     CUCKOO, "Cuckoo", 1, 0, 1;
+    // Main history indexed by whether the from/to squares are attacked by the opponent (0 = plain butterfly).
+    THREAT_HIST, "ThreatHist", 0, 0, 1;
     MAT_SCALE_BASE, "MatScaleBase", 700, 400, 1024;
     MAT_SCALE_DIV, "MatScaleDiv", 16, 4, 64;
     // Time management (percent scalers)

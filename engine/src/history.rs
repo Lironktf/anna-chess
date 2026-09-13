@@ -21,7 +21,7 @@ fn gravity(entry: &mut i16, bonus: i32, max: i32) {
 pub type PieceTo = [[i16; 64]; 13];
 
 pub struct History {
-    /// Butterfly history [color][from_to].
+    /// Butterfly history [color * 4 + threat_index][from_to]; threat_index is 0 unless ThreatHist is on.
     pub main: Vec<[i16; 4096]>,
     /// Low-ply history [ply][from_to].
     pub low_ply: Vec<[i16; 4096]>,
@@ -50,7 +50,7 @@ pub struct History {
 impl History {
     pub fn new() -> Self {
         History {
-            main: vec![[0; 4096]; 2],
+            main: vec![[0; 4096]; 8],
             low_ply: vec![[0; 4096]; LOW_PLY_SIZE],
             capture: vec![[[0; 6]; 64]; 13],
             cont: vec![[[0; 64]; 13]; 2 * 2 * 13 * 64],
@@ -75,13 +75,19 @@ impl History {
         (((in_check as usize) * 2 + capture as usize) * 13 + piece.idx()) * 64 + to as usize
     }
 
+    /// 0..3: (from square attacked by the opponent) * 2 + (to square attacked). `threats` is 0 when
+    /// the ThreatHist parameter is off, which reduces to the plain butterfly table.
     #[inline(always)]
-    pub fn main_get(&self, c: Color, m: Move) -> i32 {
-        self.main[c.idx()][m.from_to()] as i32
+    pub fn threat_index(m: Move, threats: u64) -> usize {
+        (((threats >> m.from()) & 1) * 2 + ((threats >> m.to()) & 1)) as usize
     }
     #[inline(always)]
-    pub fn main_update(&mut self, c: Color, m: Move, bonus: i32) {
-        gravity(&mut self.main[c.idx()][m.from_to()], bonus, HIST_MAX);
+    pub fn main_get(&self, c: Color, m: Move, ti: usize) -> i32 {
+        self.main[c.idx() * 4 + ti][m.from_to()] as i32
+    }
+    #[inline(always)]
+    pub fn main_update(&mut self, c: Color, m: Move, ti: usize, bonus: i32) {
+        gravity(&mut self.main[c.idx() * 4 + ti][m.from_to()], bonus, HIST_MAX);
     }
     #[inline(always)]
     pub fn low_ply_get(&self, ply: usize, m: Move) -> i32 {

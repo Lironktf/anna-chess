@@ -502,6 +502,22 @@ impl Position {
             | (king_attacks(s) & self.pieces(PieceType::King))
     }
     #[inline(always)]
+    /// All squares attacked by `c` (used for threat-aware history).
+    pub fn attacked_squares(&self, c: Color) -> Bitboard {
+        let occ = self.occupied();
+        let mut a = pawn_attacks_bb(c, self.pieces_c(c, PieceType::Pawn));
+        for s in bits(self.pieces_c(c, PieceType::Knight)) {
+            a |= knight_attacks(s);
+        }
+        for s in bits(self.pieces_c2(c, PieceType::Bishop, PieceType::Queen)) {
+            a |= bishop_attacks(s, occ);
+        }
+        for s in bits(self.pieces_c2(c, PieceType::Rook, PieceType::Queen)) {
+            a |= rook_attacks(s, occ);
+        }
+        a | king_attacks(self.king_sq(c))
+    }
+
     pub fn attackers_to(&self, s: Square) -> Bitboard {
         self.attackers_to_occ(s, self.occupied())
     }

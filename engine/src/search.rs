@@ -37,6 +37,8 @@ pub struct StackEntry {
     pub is_null: bool,
     pub reduction: i32,
     pub corr_value: i32,
+    /// Squares attacked by the opponent at this node (0 unless ThreatHist is on).
+    pub threats: u64,
 }
 
 impl Default for StackEntry {
@@ -57,6 +59,7 @@ impl Default for StackEntry {
             is_null: false,
             reduction: 0,
             corr_value: 0,
+            threats: 0,
         }
     }
 }
@@ -341,7 +344,8 @@ impl<'a> Thread<'a> {
     fn update_quiet_histories(&mut self, pos: &Position, ply: usize, m: Move, bonus: i32) {
         let us = pos.side_to_move();
         let pc = pos.moved_piece(m);
-        self.hist.main_update(us, m, bonus);
+        let ti = History::threat_index(m, self.ss_at(ply).threats);
+        self.hist.main_update(us, m, ti, bonus);
         self.hist.low_ply_update(ply, m, bonus * 712 / 1024);
         self.update_cont_histories(ply, pc, m.to(), bonus);
         let pb = if bonus > 0 { bonus * 1104 / 1024 } else { bonus * 459 / 1024 };
@@ -433,6 +437,8 @@ impl<'a> Thread<'a> {
         }
 
         let in_check = pos.in_check();
+        let threats = if crate::params::THREAT_HIST.get() != 0 { pos.attacked_squares(!pos.side_to_move()) } else { 0 };
+        self.ss(ply).threats = threats;
         let excluded = self.ss_at(ply).excluded;
         {
             let s = self.ss(ply);
@@ -767,7 +773,7 @@ impl<'a> Thread<'a> {
                     if history < -4136 * depth {
                         continue;
                     }
-                    history += 2 * self.hist.main_get(us, m);
+                    history += 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
                     lmr_depth += history / 3600;
                     if !in_check && lmr_depth < 12 {
                         let fut = static_eval + crate::params::FUT_MARGIN.get() * lmr_depth + 90 * (static_eval > alpha) as i32 + 164;
@@ -856,7 +862,7 @@ impl<'a> Thread<'a> {
                 let captured = pos.captured_type(m).unwrap_or(PieceType::Pawn);
                 7 * piece_value(captured) + self.hist.capture_get(moved_piece, m.to(), captured) - 5000
             } else {
-                let mut s = 2 * self.hist.main_get(us, m);
+                let mut s = 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
                 if cont_idx[0] != usize::MAX {
                     s += self.hist.cont_get(cont_idx[0], moved_piece, m.to());
                 }
@@ -974,7 +980,8 @@ impl<'a> Thread<'a> {
                 let to = p1.current_move.to();
                 // Continuation histories of the previous position (ply-1).
                 self.update_cont_histories_at(ply - 1, piece, to, bonus * 263 / 16384);
-                self.hist.main_update(!us, p1.current_move, bonus * 215 / 32768);
+                let ti = History::threat_index(p1.current_move, p1.threats);
+                self.hist.main_update(!us, p1.current_move, ti, bonus * 215 / 32768);
             }
         }
 

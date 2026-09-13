@@ -46,6 +46,8 @@ pub struct MovePicker {
     skip_quiets: bool,
     /// Continuation history indices for plies 1,2,4,6 back (usize::MAX if unavailable).
     cont_idx: [usize; 4],
+    /// Squares attacked by the opponent (0 unless ThreatHist is on).
+    threats: u64,
 }
 
 pub const QUIET_LEFT_MARGIN: i32 = -3560;
@@ -73,6 +75,7 @@ impl MovePicker {
             threshold: 0,
             depth,
             ply,
+            threats: if crate::params::THREAT_HIST.get() != 0 { pos.attacked_squares(!pos.side_to_move()) } else { 0 },
             skip_quiets: false,
             cont_idx,
         }
@@ -100,6 +103,7 @@ impl MovePicker {
             threshold: 0,
             depth: 0,
             ply,
+            threats: 0,
             skip_quiets: true,
             cont_idx,
         }
@@ -120,6 +124,7 @@ impl MovePicker {
             threshold,
             depth: 0,
             ply: 0,
+            threats: 0,
             skip_quiets: true,
             cont_idx: [usize::MAX; 4],
         }
@@ -148,7 +153,7 @@ impl MovePicker {
             let m = self.list.moves[i].mv;
             let pc = pos.moved_piece(m);
             let to = m.to();
-            let mut s = 2 * hist.main_get(us, m);
+            let mut s = 2 * hist.main_get(us, m, History::threat_index(m, self.threats));
             s += 2 * hist.pawn_get(pos.pawn_key(), pc, to);
             for (k, &ci) in self.cont_idx.iter().enumerate() {
                 if ci != usize::MAX {
@@ -173,7 +178,7 @@ impl MovePicker {
                 let captured = pos.captured_type(m).unwrap();
                 piece_value(captured) + (1 << 28)
             } else {
-                let mut s = hist.main_get(us, m) + hist.pawn_get(pos.pawn_key(), pc, m.to());
+                let mut s = hist.main_get(us, m, History::threat_index(m, self.threats)) + hist.pawn_get(pos.pawn_key(), pc, m.to());
                 if self.cont_idx[0] != usize::MAX {
                     s += hist.cont_get(self.cont_idx[0], pc, m.to());
                 }
