@@ -49,3 +49,7 @@ then the real run. Kill: `modal app stop anna-train`. Hard cap: ANNA_HOURS (the 
   after a warm restart at LR 5e-4 (v3b ended at 1e-6): the net is mid-anneal, LR still ~3e-4 at SB 170. The verdict is the
   final checkpoint after the LR tail and the WDL stage. If it ends below v3b, the restart LR was too high: retry with LR1=1e-4
   and ~300 SB (~$4), not more of the same.
+- 18:15 train end: 430+30 SB in 2.65 h on the L40S (5.0M pos/s, 19.9 s/SB); final loss 0.02046 (stage 1) / 0.05992 (stage 2).
+  anna-v3c-s2-30 pulled (quantised + raw.bin; optimiser_state stays on the volume), `netcheck --strict` ok, engine evals match
+  the trainer (28/30, -1661/-1694, 1723/1754, -477/-449, -1433/-1447, -14/-13). Modal spend ~$6 (fetch + smoke + run).
+  Verdict match: v3c final vs v3b at equal nodes, 200 games (sprt/v3cfinal_vs_v3b_nodes30k.log).
