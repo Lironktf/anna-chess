@@ -37,11 +37,13 @@ fn main() {
         }
         Some("datagen") => {
             // engine datagen --threads N --nodes N --games N --out FILE [--seed S] [--plies P] [--hash MB]
+            let mut net_path: Option<String> = None;
             let mut cfg = engine::datagen::DatagenConfig { threads: 1, nodes: 5000, games: 100, out: "data/datagen.bin".into(), seed: 1, random_plies: 8, hash_mb: 16, dfrc: false };
             let mut i = 2;
             while i + 1 < args.len() {
                 match args[i].as_str() {
                     "--threads" => cfg.threads = args[i + 1].parse().unwrap(),
+                    "--net" => net_path = Some(args[i + 1].clone()),
                     "--nodes" => cfg.nodes = args[i + 1].parse().unwrap(),
                     "--games" => cfg.games = args[i + 1].parse().unwrap(),
                     "--out" => cfg.out = args[i + 1].clone(),
@@ -52,8 +54,12 @@ fn main() {
                 }
                 i += 2;
             }
-            let e = uci::Engine::new();
-            eprintln!("datagen: net loaded = {}, threads {} nodes {} games {} -> {}", e.net.is_some(), cfg.threads, cfg.nodes, cfg.games, cfg.out);
+            let mut e = uci::Engine::new();
+            if let Some(n) = net_path {
+                e.eval_file = n;
+                e.load_net().expect("load --net");
+            }
+            eprintln!("datagen: net loaded = {} [{}], threads {} nodes {} games {} -> {}", e.net.is_some(), e.net.as_deref().map(|n| n.arch_name()).unwrap_or("-"), cfg.threads, cfg.nodes, cfg.games, cfg.out);
             engine::datagen::run(cfg, e.net.clone());
         }
         Some("nnuebench") => {
