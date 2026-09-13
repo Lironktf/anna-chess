@@ -9,6 +9,8 @@ Hard cap: **$10.00** total on vast.ai. Every rental is recorded here before it s
 
 | 2026-09-12 21:00-22:29 | CPU box offer 50375418 -> instance 50829299 (Norway, 32 threads of an AMD EPYC 7B13, $0.14/hr) | cpu-eval: rating matches for anna-v3 vs v1 / Stormphrax 8 / Stash / Weiss / Stockfish 19 (runs/anna-v3/PLAN.md) | $0.50-0.90, cap $1.00 | **$0.20** (credit 4.49 -> 4.29) | done; instance destroyed 22:29, instances: 0 (verified 22:29); restricted key 27892172 deleted |
 
+| 2026-09-13 00:30 (planned) | RTX 4090 offer 29761291 (Quebec, EPYC 9554 32 thr, ~$0.48/hr all-in) | anna-v3b half-width threat net (runs/anna-v3b/PLAN.md), owner go 00:15 | ~$2.0-2.5, cap $3.00 | - | key 27906658 |
+
 Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$5.57** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20). Remaining: **$4.29** (credit read from the account 2026-09-12 22:29).
 
 Candidate next spend: anna-v3b half-width retrain (L1=512, ~$3.5) to cut the threat-net speed penalty. Needs owner go.
