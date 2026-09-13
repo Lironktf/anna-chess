@@ -82,4 +82,6 @@ Stockfish 17.1 8CPU 3785 (#1), Stormphrax 8.0.0 3744 (#14), Turbulence 3577 (~#7
 Stockfish 18 3649 (#1), Stormphrax 8.0.0 3634 (#9), Arasan/Renegade 3584 (#40), Motor 3572 (#49), Stash 37.0 3437 (#110), Weiss 2.0 3381 (#131).
 The scale is compressed vs blitz (Stormphrax-Stash gap 197 here vs 323 on the blitz list, factor ~0.61). Scaling our blitz
 anchors: v1 ~3532 (~#70), v3b ~3565 at slow control (~#55). Top 50 = 3572, top 40 = 3584. Caveat: this list runs 4 threads,
-so our Lazy SMP scaling must be verified (test started 2026-09-13 12:45: sprt/smp4_vs_1.log).
+so our Lazy SMP scaling must be verified. Laptop 4-vs-1-thread test (2026-09-13) discarded: 8 cores at load 9, the 4-thread
+side never had 4 cores. Moved to the rented-box script (`MATCHES=slow4`: 4 vs 1 threads at 60+0.6, then 4-thread matches vs v1,
+Stormphrax 8 and Stash at 60+0.6, the direct 40/15 anchor).
