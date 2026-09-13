@@ -55,3 +55,5 @@ then the real run. Kill: `modal app stop anna-train`. Hard cap: ANNA_HOURS (the 
   Verdict match: v3c final vs v3b at equal nodes, 200 games (sprt/v3cfinal_vs_v3b_nodes30k.log).
 - 18:38 verdict: v3c final vs v3b at equal nodes, 200 games: **+19 +/- 32** (66-55-79). Not the +40..+80 hoped for; 400 more
   games running (sprt/v3cfinal_vs_v3b_nodes30k_b.log) to resolve the sign. Reading: v3b was nearer convergence than v1@340.
+- 19:50 final: 600 games at equal nodes vs v3b: **+12 +/- 18** (+176 -155 =269). Level-to-slightly-positive. Not adopted
+  without an SPRT; queued behind the SPSA verification.
