@@ -13,8 +13,9 @@ Hard cap: **$10.00** total on vast.ai. Every rental is recorded here before it s
 
 | 2026-09-13 02:50-04:37 | validation CPU box: 3 dead hosts (50855884, 50858124, 50858985, destroyed) then offer 48453746 -> instance 50859195 (Nevada, Xeon E5-2686 v4 36 thr, $0.16/hr) | anna-v3b validation matches (runs/anna-v3b/PLAN.md), the one CPU rental the owner permitted | ~$0.3, cap $0.80 | **$0.27** (credit 3.19 -> 2.92) | done; destroyed 04:37, instances: 0 (verified 04:37); key 27919961 deleted |
 
-| 2026-09-13 11:10 (planned) | RTX 4090 offer 48580533 (Norway, EPYC 7742 32 thr, ~$0.47/hr all-in) | anna-v4 multilayer net without threat inputs (runs/anna-v4/PLAN.md), owner go 10:50 | ~$1.0-1.5, cap $2.50 | - | last paid run in the budget |
+| 2026-09-13 11:50-13:47 | RTX 4090: offer 48580533 never started (50900782, destroyed after 8 min, ~$0.05), then offer -> instance 50903665 (Texas, RTX 4090, $0.73/hr all-in), 11:54-13:47 | anna-v4 multilayer net without threat inputs (runs/anna-v4/PLAN.md), owner go 10:50 | ~$1.0-1.5, cap $2.50 | **$1.62** (credit 2.92 -> 1.30) | done; 310+30 SB; final anna-v4-s2-30 (+raw.bin, partial optimiser_state) synced, netcheck ok (only the missing-rook magnitude test outside range: -2214 vs [-2000,-100]); destroyed 13:47, instances: 0 (verified 13:47); restricted key 27959390 gone |
+| 2026-09-13 13:55 (planned) | CPU box offer 50186808 (Michigan, EPYC 7742 32 effective threads, $0.136/hr) | cpu-eval3: 40/15 anchor at 4 threads (SMP scaling, v3b vs v1 / Stormphrax 8 at 60+0.6) + anna-v4 validation, owner go 13:40 | ~$0.5, cap $1.00 | - | |
 
-Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$6.94** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20, anna-v3b $1.10, cpu-eval2 $0.27). Remaining: **$2.92** (credit read from the account 2026-09-13 04:37).
+Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$8.56** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20, anna-v3b $1.10, cpu-eval2 $0.27, anna-v4 $1.62). Remaining: **$1.30** (credit read from the account 2026-09-13 13:50).
 
 Candidate next spend: anna-v3b half-width retrain (L1=512, ~$3.5) to cut the threat-net speed penalty. Needs owner go.
