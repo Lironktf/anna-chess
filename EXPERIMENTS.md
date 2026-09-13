@@ -55,8 +55,8 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Syzygy WDL probing in tree | +9 +/- 8 after 3000 games | on by default (tables needed) |
 | ThreatHist (main history split by attacked from/to squares) | +1 +/- 8 after 2880 games | null, off |
 | SeTtmHist (Stockfish 2026 singular margins + TT-move history) | +4 +/- 9 after 4 h | unresolved, off |
-| ThreatOrder (lesser-piece threat term in quiet ordering) | running (level at 200 games) | pending |
-| SPSA of 13 search constants | queued after ThreatOrder | pending |
+| ThreatOrder (lesser-piece threat term in quiet ordering) | +3 +/- 9 after 2000 games (4 h timeout), LLR 0.23 | unresolved, off |
+| SPSA of 13 search constants with v3b (sprt/spsa_v3b, 400 iters x 8 games at 8+0.08) | started 2026-09-13 13:04 | running |
 
 ## Infrastructure lessons
 
