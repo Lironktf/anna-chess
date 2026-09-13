@@ -93,7 +93,10 @@ for o in json.load(sys.stdin)[:12]:
         scp -P "$PORT" -o StrictHostKeyChecking=no "$ROOT/scripts/vast_selfdestruct.sh" root@"$HOST":/workspace/vast_selfdestruct.sh
         # Start it unconditionally and verify through its own log + an exact argv match: `pgrep -f` would match this
         # very ssh command line and report "armed" without starting anything (that bit the cpu-eval run).
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "chmod +x /workspace/vast_selfdestruct.sh; ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' || setsid nohup /workspace/vast_selfdestruct.sh $INSTANCE_ID $(cat "$KEYFILE") $MAXH 20 /workspace/runs/$RUN/train.log >/dev/null 2>&1 </dev/null & sleep 3; ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' && grep -q 'armed:' /workspace/selfdestruct.log && { echo 'self-destruct ARMED:'; tail -n 1 /workspace/selfdestruct.log; } || { echo 'self-destruct NOT running'; exit 5; }"
+        # The arming ssh can hang after the detached process starts (the channel stays open), so it runs under a
+        # timeout; the verification is a separate ssh. Without a verified "armed:" line we refuse to train.
+        timeout 40 ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "chmod +x /workspace/vast_selfdestruct.sh; ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' || setsid nohup /workspace/vast_selfdestruct.sh $INSTANCE_ID $(cat "$KEYFILE") $MAXH 20 /workspace/runs/$RUN/train.log >/dev/null 2>&1 </dev/null &" || true
+        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' && grep -q 'armed:' /workspace/selfdestruct.log && { echo 'self-destruct ARMED:'; tail -n 1 /workspace/selfdestruct.log; }" || { echo 'self-destruct NOT running; refusing to train'; exit 5; }
         echo "$(date -u +%FT%TZ) train start superbatches=$SB self-destruct armed max_hours=$MAXH" >> "$ROOT/runs/$RUN/events.log"
         ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "tmux new-session -d -s train 'ARCH=${ARCH:-v1} L1=${L1:-1024} SB0=${SB0:-40} SB2=${SB2:-60} SAVE_RATE=${SAVE_RATE:-20} bash /workspace/chess/scripts/vast_train_remote.sh $RUN $SB'"
         echo "training started in tmux session 'train' on the box; watch with: scripts/vast_launch.sh status $RUN"
