@@ -76,3 +76,10 @@ depth for all four: the Stormphrax gap (+167) is evaluation quality, not search 
 
 Stockfish 17.1 8CPU 3785 (#1), Stormphrax 8.0.0 3744 (#14), Turbulence 3577 (~#74), ZigQueen 3559 (~#80), Weiss 2.0 8CPU 3425
 (#130), Stash 37.0 3421 (#131). Anna v1 ~3577, v3b ~3550 at blitz; +50 over v1 at 60+0.6.
+
+## CCRL 40/15 list (fetched 2026-09-13, 275 engines, entries are 4CPU)
+
+Stockfish 18 3649 (#1), Stormphrax 8.0.0 3634 (#9), Arasan/Renegade 3584 (#40), Motor 3572 (#49), Stash 37.0 3437 (#110), Weiss 2.0 3381 (#131).
+The scale is compressed vs blitz (Stormphrax-Stash gap 197 here vs 323 on the blitz list, factor ~0.61). Scaling our blitz
+anchors: v1 ~3532 (~#70), v3b ~3565 at slow control (~#55). Top 50 = 3572, top 40 = 3584. Caveat: this list runs 4 threads,
+so our Lazy SMP scaling must be verified (test started 2026-09-13 12:45: sprt/smp4_vs_1.log).
