@@ -104,8 +104,12 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 | 4 | SPSA of 13 constants with v3b (sprt/spsa_v3b), own-data labelling | +10 to +25 | 0 | running / queued |
 | 5 | anna-v4 no-threats multilayer net | +35 to +60 at every control | $1-1.5 | training now |
 | 6 | Base engine speed pass | profiled: NNUE is 40% of v1's time, the rest already runs at Stash's whole-engine speed; micro-opts neutral | 0 | done, no gain |
-| 7 | CCRL submission of the best build | an official number | 0 | after v4 |
+| 7 | CCRL submission of the best build | an official number | 0 | after v3c + SPSA freeze |
 | 8 | QAT 4-bit or compositional threat net | the threat net wins at blitz too | ~$2, next budget | research |
+| 9 | **anna-v3c: continue training v3b** (+430 SB, six months) | measured on v1: 340 -> 800 SB was worth ~+80/node | ~$5 Modal | running 2026-09-13 15:36 |
+| 10 | **Policy net for move ordering, distilled from Leela's search** (runs/FRONTIER.md section 4): Lc0 T80 raw chunks carry the full MCTS move distribution per position; a 256-wide accumulator + one dot product per move gives a static prior for ordering, LMR and root/time management; SPRT'd in stages | no number promised; Kociolek 2.2 (weak engine) reports +75..+95 | 1-2 days + ~$2 Modal | queued after v3c |
+| 11 | Auxiliary heads (WDL, moves-left) and a learned complexity output | search knows "long win" vs "win now"; margins scale with uncertainty | ~$2 Modal each | queued |
+| 12 | Own-data loop with DFRC starts (Stormphrax's recipe) | the path every top engine walked | CPU-box hours | next budget |
 
 If 5 lands in its expected range, top 40 at blitz is a matter of 1 and 3 on top. If it lands low, 1 and 2 are the
 paths that make the threat net the blitz engine as well.
