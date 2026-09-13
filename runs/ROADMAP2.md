@@ -98,12 +98,12 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 
 | # | Item | Expected | Cost | Status |
 |---|---|---|---|---|
-| 1 | Feature-usage histogram, hot/cold row layout for v3b | v3b 0.6x -> 0.7-0.8x, i.e. blitz break-even or better with +83/node | 0 | next |
-| 2 | Two-tier eval (v3b interior, v1 leaves), SPRT | +10 to +40 at blitz if it works | 0 | next |
+| 1 | Feature-usage histogram, hot/cold row layout for v3b | histogram done (top 2048 = 84%); the hot set already fits L2/L3, and reordering rows does not cut the miss count (THP test: TLB is not it) | 0 | dropped |
+| 2 | Two-tier eval (v3b interior, v1 leaves), SPRT | -41 +/- 27 at blitz | 0 | failed |
 | 3 | Ablation pass over search features | finds broken ones; +5 to +20 | 0 | queued |
-| 4 | SPSA verification, own-data labelling | +10 to +25 | 0 | running / queued |
+| 4 | SPSA of 13 constants with v3b (sprt/spsa_v3b), own-data labelling | +10 to +25 | 0 | running / queued |
 | 5 | anna-v4 no-threats multilayer net | +35 to +60 at every control | $1-1.5 | training now |
-| 6 | Base engine speed pass | +10 | 0 | queued |
+| 6 | Base engine speed pass | profiled: NNUE is 40% of v1's time, the rest already runs at Stash's whole-engine speed; micro-opts neutral | 0 | done, no gain |
 | 7 | CCRL submission of the best build | an official number | 0 | after v4 |
 | 8 | QAT 4-bit or compositional threat net | the threat net wins at blitz too | ~$2, next budget | research |
 
