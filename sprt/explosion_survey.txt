@@ -1,0 +1,2 @@
+v1: reached depth 15 in 24/24 within 12 s; total nodes 6.1M; worst depth-to-depth growth: x8@d10, x4@d14, x4@d13, x4@d14, x4@d11
+v3b: reached depth 15 in 24/24 within 12 s; total nodes 6.5M; worst depth-to-depth growth: x8@d10, x6@d12, x6@d13, x5@d11, x5@d12

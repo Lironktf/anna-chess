@@ -37,3 +37,4 @@ Unloaded single-thread speed on the box: v1 835k nps, v3b 280k (0.34x; the lapto
 | v3b vs v1, 120+1.2 | 60 | +16 -12 =32 | +23 +/- 56 |
 Verdict: v3b is the best threat net (beats v3 at blitz, level at 60+0.6) and beats v1 clearly from ~1 min games up;
 at 8+0.08 it is still behind v1 by ~30 on this box. Ship v1 for the website/blitz, v3b for anything slower.
+- Explosion survey 2026-09-13 (24 book positions to depth 15): none for v1 or v3b; the -15-pawn position is a rare outlier, parked.
