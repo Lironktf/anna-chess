@@ -508,6 +508,19 @@ pub static INCR_APPLIES: std::sync::atomic::AtomicU64 = std::sync::atomic::Atomi
 pub static EVALS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 /// Threat-part rebuilds (king crossed the mirror line): the expensive refresh.
 pub static THR_REFRESHES: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+/// Per-feature applied-row counts (only with `--features nnue_profile`), for the hot/cold layout study.
+pub static FEATURE_HITS: std::sync::OnceLock<Vec<std::sync::atomic::AtomicU32>> = std::sync::OnceLock::new();
+#[inline(always)]
+fn count_hits(lists: &[IdxList]) {
+    if PROFILE {
+        let h = FEATURE_HITS.get_or_init(|| (0..PP_FEATURES).map(|_| std::sync::atomic::AtomicU32::new(0)).collect());
+        for l in lists {
+            for &f in l.as_slice() {
+                h[f as usize].fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            }
+        }
+    }
+}
 /// Phase timers (ns) for nnuebench: [attackers+relboards, map_restricted, diff+prefetch, row apply].
 /// Only active with `--features nnue_profile`; otherwise compiled out.
 pub static PHASE_NS: [std::sync::atomic::AtomicU64; 4] = [
@@ -814,6 +827,7 @@ impl StateV3 {
             }
             cur.computed[p] = true;
             ROWS_APPLIED.fetch_add((pa.len() + ps.len() + ta.len() + ts.len()) as u64, std::sync::atomic::Ordering::Relaxed);
+            count_hits(&lists[p]);
         }
         phase(3, &mut tm);
     }

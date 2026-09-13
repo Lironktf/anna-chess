@@ -19,8 +19,10 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Experiment | Result | Verdict |
 |---|---|---|
 | Material scaling of eval (MatScale) | -11 Elo | rejected |
-| 4-bit per-row quantisation of v3b threat rows (post-training, round-to-nearest) | -24 +/- 36 at equal nodes after 160 games | too lossy without quantisation-aware training; parked |
+| 4-bit per-row quantisation of v3b threat rows (post-training, round-to-nearest) | -28 +/- 34 at equal nodes (200 games, 46.0%) | too lossy without quantisation-aware training; parked |
 | Threat-row pruning analysis | 15.7% of threat rows are empty (impossible features); the rest are dense (median max weight 96) | no free traffic reduction there |
+| Feature-usage histogram (v3b, real search, `--features engine/nnue_profile`) | 23,609 distinct features used; top 512 = 54%, top 2048 = 84%, top 4096 = 93.5%, top 8192 = 98.2% of applied rows | hot set is 2-4 MB: basis for hot/cold layouts and small-table designs |
+| Transparent huge pages for the tables (GLIBC_TUNABLES=glibc.malloc.hugetlb=1; THP is already "always" here) | no change (284/299k vs 254/294k) | TLB is not the bottleneck on this laptop |
 
 ## Engine speed (all bench-identical unless noted)
 
@@ -63,6 +65,11 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 - Wall-clock nps is useless while SPRTs run; measure nodes per CPU-second on identical searches.
 - Search explosion at depth 16 in one lost position (FEN in runs/anna-v3b/PLAN.md) with v3b: not the accumulator (pre-split
   build identical); NmpBase/RazorMult/LmrBase extremes remove it; none found on 24 book positions. Parked.
+
+## Search-efficiency comparison (16 book positions to depth 13, laptop under load, 2026-09-13)
+
+Anna v1 1.86M nodes / 476k nps; Anna v3b 1.65M / 190k; Stash 37 1.73M / 785k; Stormphrax 8 1.80M / 222k. Same nodes per
+depth for all four: the Stormphrax gap (+167) is evaluation quality, not search selectivity; the Stash gap is our net.
 
 ## Measurement anchors (CCRL Blitz list, fetched 2026-09-13)
 

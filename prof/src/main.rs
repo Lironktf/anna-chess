@@ -35,7 +35,25 @@ fn main() {
         if e > 0 {
             println!("v3 stats: evals {e}, incremental applies {i} ({:.2}/eval), psq refreshes {r} ({:.3}/eval), threat rebuilds {tr} ({:.3}/eval, one per {:.0} evals)", i as f64 / e as f64, r as f64 / e as f64, tr as f64 / e as f64, e as f64 / tr.max(1) as f64);
         }
-        println!("size_of Position = {} bytes, Entry3(1024) = {} bytes", std::mem::size_of::<engine::position::Position>(), std::mem::size_of::<engine::nnue::v3::w1024::StateV3>() );
+        for (name, hits) in [("w1024", engine::nnue::v3::w1024::FEATURE_HITS.get()), ("w512", engine::nnue::v3::w512::FEATURE_HITS.get())] {
+            if let Some(h) = hits {
+                let mut v: Vec<u64> = h.iter().map(|a| a.load(Relaxed) as u64).collect();
+                let total: u64 = v.iter().sum();
+                if total == 0 { continue; }
+                v.sort_unstable_by(|a, b| b.cmp(a));
+                let used = v.iter().filter(|&&c| c > 0).count();
+                let mut line = format!("feature usage ({name}): {total} applied rows over {used} distinct features;");
+                let mut acc = 0u64;
+                let mut next = [512usize, 1024, 2048, 4096, 8192, 16384, 32768].into_iter().peekable();
+                for (i, c) in v.iter().enumerate() {
+                    acc += c;
+                    while let Some(&k) = next.peek() {
+                        if i + 1 == k { line += &format!(" top{k}={:.1}%", 100.0 * acc as f64 / total as f64); next.next(); } else { break; }
+                    }
+                }
+                println!("{line}");
+            }
+        }
     }
     let report = guard.report().build().unwrap();
 
