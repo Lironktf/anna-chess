@@ -126,12 +126,12 @@ fn main() {
             let t = Instant::now();
             let mut v = Align64([0i16; L1]);
             for k in 0..positions.len() * 20 {
-                engine::nnue::simd::v3k::add_i8_row(&mut v.0, &net.pp_w[(k * 7919) % engine::nnue::v3::PP_FEATURES].0);
+                engine::nnue::v3::kernels::add_i8_row(&mut v.0, &net.pp_w[(k * 7919) % engine::nnue::v3::PP_FEATURES].0);
             }
             let row_us = t.elapsed().as_secs_f64() * 1e6 / (positions.len() * 20) as f64;
             let t = Instant::now();
             for k in 0..positions.len() * 20 {
-                engine::nnue::simd::v3k::add_i8_row(&mut v.0, &net.pp_w[k % 8].0);
+                engine::nnue::v3::kernels::add_i8_row(&mut v.0, &net.pp_w[k % 8].0);
             }
             let row_hot_us = t.elapsed().as_secs_f64() * 1e6 / (positions.len() * 20) as f64;
             println!("i8 row add cache-hot {:.3} us vs random {:.3} us", row_hot_us, row_us);
@@ -145,7 +145,7 @@ fn main() {
                     if pf {
                         for &f in &idxs { let p = net.pp_w[f].0.as_ptr() as *const i8; for l in 0..16 { unsafe { std::arch::x86_64::_mm_prefetch(p.add(l * 64), std::arch::x86_64::_MM_HINT_T0); } } }
                     }
-                    for &f in &idxs { engine::nnue::simd::v3k::add_i8_row(&mut v.0, &net.pp_w[f].0); }
+                    for &f in &idxs { engine::nnue::v3::kernels::add_i8_row(&mut v.0, &net.pp_w[f].0); }
                 }
                 println!("14 random rows per move, prefetch={}: {:.2} us/move (sink {})", pf, t.elapsed().as_secs_f64() * 1e6 / positions.len() as f64, v.0[5]);
             }
@@ -154,10 +154,15 @@ fn main() {
         }
         Some("randomnet-v3") => {
             // Write a deterministic random v3 network (for speed tests and pipeline checks).
-            let path = args.get(2).expect("usage: engine randomnet-v3 <out.bin>");
-            let net = engine::nnue::v3::NetworkV3::random(2026);
-            std::fs::write(path, net.to_bytes()).expect("write");
-            println!("wrote {} ({} bytes)", path, engine::nnue::v3::NET_BYTES_UNPADDED);
+            let path = args.get(2).expect("usage: engine randomnet-v3 <out.bin> [512|1024]");
+            let width: usize = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(1024);
+            let bytes = match width {
+                512 => engine::nnue::v3::w512::NetworkV3::random(2026).to_bytes(),
+                _ => engine::nnue::v3::w1024::NetworkV3::random(2026).to_bytes(),
+            };
+            let n = bytes.len();
+            std::fs::write(path, bytes).expect("write");
+            println!("wrote {} ({} bytes, L1={})", path, n, width);
         }
         Some("netcheck") => {
             // Load a network file and evaluate a few positions; exit non-zero on failure.

@@ -69,13 +69,17 @@ pub struct Align64<T>(pub T);
 /// Any supported network architecture, detected from the file size.
 pub enum AnyNet {
     V1(Network),
-    V3(v3::NetworkV3),
+    V3(v3::w1024::NetworkV3),
+    /// half-width v3 (L1 = 512)
+    V3H(v3::w512::NetworkV3),
 }
 
 impl AnyNet {
     pub fn from_bytes(bytes: &[u8]) -> Result<AnyNet, String> {
-        if bytes.len() >= v3::NET_BYTES_UNPADDED && bytes.len() <= v3::NET_BYTES_UNPADDED + 64 {
-            v3::NetworkV3::from_bytes(bytes).map(AnyNet::V3)
+        if bytes.len() >= v3::w1024::NET_BYTES_UNPADDED && bytes.len() <= v3::w1024::NET_BYTES_UNPADDED + 64 {
+            v3::w1024::NetworkV3::from_bytes(bytes).map(AnyNet::V3)
+        } else if bytes.len() >= v3::w512::NET_BYTES_UNPADDED && bytes.len() <= v3::w512::NET_BYTES_UNPADDED + 64 {
+            v3::w512::NetworkV3::from_bytes(bytes).map(AnyNet::V3H)
         } else {
             Network::from_bytes(bytes).map(AnyNet::V1)
         }
@@ -99,6 +103,7 @@ impl AnyNet {
         match self {
             AnyNet::V1(_) => "v1 (768x16hm->1024)x2->1x8",
             AnyNet::V3(_) => "v3 threats+pawnpairs (768x16hm+64368->1024)x2 pairwise ->16->32->1 x8",
+            AnyNet::V3H(_) => "v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8",
         }
     }
 }
@@ -106,13 +111,15 @@ impl AnyNet {
 /// Per-thread evaluation state for whichever architecture is loaded.
 pub enum AnyState {
     V1(NnueState),
-    V3(v3::StateV3),
+    V3(v3::w1024::StateV3),
+    V3H(v3::w512::StateV3),
 }
 
 impl AnyState {
     pub fn for_net(net: Option<&AnyNet>) -> AnyState {
         match net {
-            Some(AnyNet::V3(_)) => AnyState::V3(v3::StateV3::new()),
+            Some(AnyNet::V3(_)) => AnyState::V3(v3::w1024::StateV3::new()),
+            Some(AnyNet::V3H(_)) => AnyState::V3H(v3::w512::StateV3::new()),
             _ => AnyState::V1(NnueState::new()),
         }
     }
@@ -121,6 +128,7 @@ impl AnyState {
         match (self, net) {
             (AnyState::V1(s), AnyNet::V1(n)) => s.reset(pos, n),
             (AnyState::V3(s), AnyNet::V3(n)) => s.reset(pos, n),
+            (AnyState::V3H(s), AnyNet::V3H(n)) => s.reset(pos, n),
             _ => panic!("nnue state / network architecture mismatch"),
         }
     }
@@ -129,6 +137,7 @@ impl AnyState {
         match self {
             AnyState::V1(s) => s.push(before, m, after),
             AnyState::V3(s) => s.push(before, m, after),
+            AnyState::V3H(s) => s.push(before, m, after),
         }
     }
     #[inline]
@@ -136,6 +145,7 @@ impl AnyState {
         match self {
             AnyState::V1(s) => s.push_null(),
             AnyState::V3(s) => s.push_null(after),
+            AnyState::V3H(s) => s.push_null(after),
         }
     }
     #[inline]
@@ -143,6 +153,7 @@ impl AnyState {
         match self {
             AnyState::V1(s) => s.pop(),
             AnyState::V3(s) => s.pop(),
+            AnyState::V3H(s) => s.pop(),
         }
     }
     #[inline]
@@ -150,6 +161,7 @@ impl AnyState {
         match (self, net) {
             (AnyState::V1(s), AnyNet::V1(n)) => s.evaluate(pos, n),
             (AnyState::V3(s), AnyNet::V3(n)) => s.evaluate(n),
+            (AnyState::V3H(s), AnyNet::V3H(n)) => s.evaluate(n),
             _ => panic!("nnue state / network architecture mismatch"),
         }
     }
@@ -158,6 +170,7 @@ impl AnyState {
         match net {
             AnyNet::V1(n) => NnueState::evaluate_reference(pos, n),
             AnyNet::V3(n) => n.evaluate_reference(pos),
+            AnyNet::V3H(n) => n.evaluate_reference(pos),
         }
     }
 }
