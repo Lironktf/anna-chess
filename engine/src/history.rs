@@ -129,7 +129,6 @@ impl History {
     }
     #[inline(always)]
     /// TT-move history: Stockfish `StatsEntry<i16, 8192>` gravity update (bonus clamped to +-8192).
-    #[inline(always)]
     pub fn ttm_update(&mut self, bonus: i32) {
         let b = bonus.clamp(-8192, 8192);
         let v = self.tt_move_history;
