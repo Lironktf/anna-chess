@@ -1,0 +1,7 @@
+2026-09-13T01:04:08Z create offer=50375418 run=cpu-eval image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=1.00
+{
+ "instance_api_key": "<redacted>",
+ "new_contract": 50829299,
+ "success": true
+}
+2026-09-13T01:07:02Z run start self-destruct armed max_hours=3 cap=1.00

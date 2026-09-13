@@ -1,0 +1,38 @@
+{
+ "instance_api_key": "<redacted>",
+ "new_contract": 50770185,
+ "success": true
+}
+instance 50770185 created; waiting for ssh...
+ssh -p 42093 root@180.70.178.129
+=== prepare box (rsync is not in the CUDA image)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload repo
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== remote setup + smoke (this takes ~10-15 min)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== setup start 2026-09-12T16:52:55Z run=anna-v3 host=f111f4f90911
+Sat Sep 12 16:52:55 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:04:00.0 Off |                  Off |
+|  0%   39C    P8             29W /  450W |      15MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
++-----------------------------------------------------------------------------------------+
+network preflight: HuggingFace download 3751 B/s
+NETWORK TOO SLOW (< 3 MB/s), ABORT: destroy this instance and pick another host

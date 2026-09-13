@@ -1,0 +1,7 @@
+{
+ "instance_api_key": "<redacted>",
+ "new_contract": 50767449,
+ "success": true
+}
+instance 50767449 created; waiting for ssh...
+ssh -p 17448 root@ssh5.vast.ai

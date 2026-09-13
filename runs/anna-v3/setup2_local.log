@@ -1,0 +1,51 @@
+=== prepare box (rsync is not in the CUDA image)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload repo
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== remote setup + smoke (this takes ~10-15 min)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== setup start 2026-09-12T16:56:17Z run=anna-v3 host=f111f4f90911
+Sat Sep 12 16:56:17 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.133.07             Driver Version: 570.133.07     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:04:00.0 Off |                  Off |
+|  0%   41C    P8             30W /  450W |      15MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
++-----------------------------------------------------------------------------------------+
+network preflight: HuggingFace download 9252340 B/s
+debconf: delaying package configuration, since apt-utils is not installed
+info: downloading installer
+info: profile set to minimal
+info: default host tuple is x86_64-unknown-linux-gnu
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 3 components
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+Build cuda_12.4.r12.4/compiler.34097967_0
+=== build trainer (cuda)
+   Compiling bullet_lib v1.0.0 (https://github.com/jw1912/bullet?rev=629ee50000b2afb7b3337595401c830d3b1e0f42#629ee500)
+   Compiling trainer v0.1.0 (/workspace/chess/trainer)
+    Finished `release` profile [optimized] target(s) in 34.49s
+-rwxr-xr-x 2 root root  916728 Sep 12 16:57 target/release/inspect
+-rwxr-xr-x 2 root root 2934072 Sep 12 16:58 target/release/trainer
+=== data
+2026-09-12 16:58:02 === downloader run start, groups: train train2, pid 2429
+2026-09-12 16:58:02 START test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst group=train size=6908056676 resume_from=2249093120
+Terminated

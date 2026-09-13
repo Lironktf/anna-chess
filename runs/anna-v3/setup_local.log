@@ -1,0 +1,3 @@
+=== prepare box (rsync is not in the CUDA image)
+=== upload repo
+rsync error: received SIGINT, SIGTERM, or SIGHUP (code 20) at rsync.c(716) [sender=3.4.4]
