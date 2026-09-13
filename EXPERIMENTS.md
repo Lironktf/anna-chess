@@ -12,7 +12,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | anna-v2 (planned, skipped) | v1 arch on 4 months | - | not run: v3 subsumed it | skipped |
 | anna-v3 | threats + pawn pairs + psq, L1 1024, multilayer/pairwise, 4 months, 370 SB | $3.50 (incl. $0.35 dead host) | equal nodes +83 vs v1; blitz -20; 60+0.6 +42; 120+1.2 +29 | superseded by v3b |
 | anna-v3b | same at L1 512 (half-width rows) | $1.10 | equal nodes +83 vs v1 (same as v3); blitz -29 (box) / -14 (laptop, faster engine); 60+0.6 +53; 120+1.2 +23; vs v3 +32 blitz / level at 60+0.6 | **best net for slow time controls** |
-| anna-v4 | v1 inputs + v3 output stack, no threat rows, L1 1024 | running 2026-09-13 | - | in progress |
+| anna-v4 | v1 inputs + v3 output stack (pairwise -> 16 -> 32 -> 1), no threat rows, L1 1024, 340 SB on 4 months | $1.62 | **equal nodes -83 +/- 33 vs v1** (200 games, 38%); 40% at s1-80 already; eval scale and inference verified (matches trainer, same |cp| as v1/v3b); loss curve tracked v3b's | **failed**: the +83/node of v3/v3b came from the threat inputs, not the output stack; v1 had 2.4x the positions (800 SB vs 340). Open: v4 vs v1@340 SB (sprt/v4final_vs_v1sb340_nodes30k.log) says whether the stack is a dead end or just undertrained |
 
 ## Net-side experiments (free)
 
@@ -88,4 +88,6 @@ The scale is compressed vs blitz (Stormphrax-Stash gap 197 here vs 323 on the bl
 anchors: v1 ~3532 (~#70), v3b ~3565 at slow control (~#55). Top 50 = 3572, top 40 = 3584. Caveat: this list runs 4 threads,
 so our Lazy SMP scaling must be verified. Laptop 4-vs-1-thread test (2026-09-13) discarded: 8 cores at load 9, the 4-thread
 side never had 4 cores. Moved to the rented-box script (`MATCHES=slow4`: 4 vs 1 threads at 60+0.6, then 4-thread matches vs v1,
-Stormphrax 8 and Stash at 60+0.6, the direct 40/15 anchor).
+Stormphrax 8 and Stash at 60+0.6, the direct 40/15 anchor). **Measured on cpu-eval3 (EPYC 7742, 2026-09-13): v3b 4 threads
+vs 1 thread at 60+0.6: +89 +/- 48 (40 games, 62.5%)**: normal Lazy SMP scaling (the usual figure for 4 threads is +80 to +120), so
+the 4-CPU list conditions do not penalise us.

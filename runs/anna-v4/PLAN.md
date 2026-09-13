@@ -16,3 +16,11 @@ Expected: +35 to +60 over v1 at every time control (research estimate; multilaye
 
 ## Status
 - 12:40 local: training at 7.4M pos/s on instance 50903665 (Texas). Midway equal-nodes vs v1 at s1-80 (60 games, 30k nodes): +15 -27 =18, 40% (~-70); v3/v3b were -24/-29 at a similar point, so this run is behind the threat nets' curve. Final verdict at the end.
+
+## Result (2026-09-13 14:10 local)
+
+Final anna-v4-s2-30 vs v1 at equal nodes (30k/move, 200 games): **-83 +/- 33** (+33 -80 =87, 38.25%). Cost $1.62. The +35..+60
+prediction was wrong: it assumed a multilayer output stack gains at our data scale, and ignored that v1 was trained on 2.4x the
+positions (800 SB vs 340). Checks: engine eval matches trainer eval on the netcheck positions; mean |eval| on 40 book positions
+218/224/225 cp for v1/v3b/v4 (no scale problem); running loss 0.0219 vs v3b 0.0207 at SB 310. Follow-up: v4 vs fable-v1-340
+(same training budget) at equal nodes, 120 games, to separate "architecture" from "undertrained".
