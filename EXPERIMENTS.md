@@ -92,4 +92,7 @@ Stormphrax 8 and Stash at 60+0.6, the direct 40/15 anchor). **Measured on cpu-ev
 vs 1 thread at 60+0.6: +89 +/- 48 (40 games, 62.5%)**: normal Lazy SMP scaling (the usual figure for 4 threads is +80 to +120), so
 the 4-CPU list conditions do not penalise us. **v3b vs v1, both 4 threads, 60+0.6: +53 +/- 32 (100 games, 57.5%)**, the same
 +53 as single-threaded, so the threat net's slow-control edge carries over to the list's conditions (even at 0.45x of v1's
-speed on this EPYC box: 418k vs 926k nps).
+speed on this EPYC box: 418k vs 926k nps). **v3b vs Stormphrax 8 (3634 on the 40/15 list), both 4 threads, 60+0.6: -108 +/- 30
+(100 games, 35%)** -> v3b is about **3525 +/- 35 on the 40/15 scale (~#70)**, ~50 short of the top-50 line (3572). The earlier
+"~3565" was a scaled blitz guess and was too optimistic: the list's scale is not as compressed as assumed for this pairing.
+Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
