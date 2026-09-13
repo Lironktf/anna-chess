@@ -36,3 +36,12 @@ then the real run. Kill: `modal app stop anna-train`. Hard cap: ANNA_HOURS (the 
 - trainer builds with RESUME/LR1; `RESUME=<v3b s2-30> SB0=SB1=SB2=0` on the MockGPU loads weights + optimiser state
   ("resumed weights and optimiser state from ..."); the MockGPU cannot evaluate, so the eval comparison happens on the smoke run.
 - Schedule: SB0=0 (no warmup), stage 1 LR 5e-4 -> 1e-6 over 430 SB with WDL 0.2 -> 0.5, stage 2 30 SB pure WDL at 1e-5 -> 1e-7.
+
+## Log
+
+- 15:20-15:31 local: image built (CUDA 12.4.1, rustup 1.98.1, trainer with cuda), six months fetched into the volume
+  (9.2/8.3/10.5/14.7/10.6/~9 GB decompressed, ~5 min each), v3b optimiser_state uploaded.
+- 15:31 smoke (anna-v3c-smoke, SB 0/2/1, L40S): resumed from v3b; 4.9-5.2M pos/s (~20 s/SB); checkpoint pulled,
+  `netcheck --strict` ok; engine evals match trainer evals (38/39, -1653/-1664, 1667/1681, -374/-368, -1688/-1686, 17/17).
+- 15:36 real run launched detached: anna-v3c, SB 0/430/30, LR1 5e-4, L40S, cap 4 h (expected ~2.6 h, ~$5-6 of Modal credit).
+  Monitor polls the volume log every 10 min (runs/anna-v3c/remote_events.txt).
