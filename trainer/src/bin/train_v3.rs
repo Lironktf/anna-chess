@@ -1,7 +1,7 @@
 //! anna-v3 trainer: threat + pawn-pair + psq inputs, pairwise FT, multilayer output.
 //! Adapted from bullet examples/advanced/main.rs (rev 629ee50). The saved layout matches
 //! engine/src/nnue/v3.rs exactly (see the doc comment there). Configuration by env vars:
-//!   DATA (comma-separated SF binpacks), NET_ID, SB0/SB1/SB2 (superbatches per stage),
+//!   DATA (comma-separated SF binpacks), NET_ID, SB0/SB1/SB2 (superbatches per stage), RESUME (checkpoint dir), LR1 (stage-1 start LR),
 //!   THREADS (map threads), LOADER_THREADS, BUFFER_MB, SAVE_RATE, OUT_DIR, L1 (accumulator width: 1024 default, 512 half).
 use bullet::{
     game::{
@@ -113,6 +113,13 @@ fn main() {
     optimiser.set_params_for_weight("l0/pp/w", pp_clip);
     let l1_clip = AdamWParams { max_weight: L1_RANGE, min_weight: -L1_RANGE, ..Default::default() };
     optimiser.set_params_for_weight("l1/w", l1_clip);
+    // RESUME=<checkpoint dir with raw.bin + optimiser_state>: continue training from a saved run
+    // (weights and Adam moments). Use SB0=0 to skip the warmup stage and LR1 for the restart LR.
+    if let Ok(path) = std::env::var("RESUME") {
+        optimiser.load_from_checkpoint(&format!("{path}/optimiser_state")).expect("RESUME: cannot load optimiser_state");
+        println!("resumed weights and optimiser state from {path}");
+    }
+    let lr1_init: f32 = env_or("LR1", 1e-3);
 
     // Saved layout == engine/src/nnue/v3.rs: psq i16 | pp i8 | ft bias i16 | l1 w i8 (transposed) |
     // l1 b f32 | l2 w f32 (transposed) | l2 b f32 | l3 w f32 (transposed) | l3 b f32.
@@ -178,7 +185,7 @@ fn main() {
     run(
         1,
         sb1,
-        lr::LinearDecayLR { initial_lr: 1e-3, final_lr: 1e-6, final_superbatch: sb1 }.boxed(),
+        lr::LinearDecayLR { initial_lr: lr1_init, final_lr: 1e-6, final_superbatch: sb1 }.boxed(),
         make_inputs_mapper(params_tuple, wdl::LinearWDL { start: 0.2, end: 0.5 }),
     );
     // Stage 2: short pure-WDL fine-tune at a tiny LR.
