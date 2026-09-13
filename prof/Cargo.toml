@@ -1,0 +1,9 @@
+[package]
+name = "prof"
+version = "0.1.0"
+edition = "2021"
+description = "In-process sampling profiler for the engine's bench (no perf/ptrace needed)"
+
+[dependencies]
+engine = { path = "../engine" }
+pprof = { version = "0.14", features = ["flamegraph"] }

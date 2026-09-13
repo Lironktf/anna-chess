@@ -383,8 +383,11 @@ struct FinnyEntry {
 }
 
 /// Per-thread NNUE state: accumulator stack + refresh cache (Finny tables).
+/// The stack is allocated once and indexed by `len`: a push writes only the small metadata
+/// fields, never the 4 KB of accumulators (those are produced lazily when an evaluation needs them).
 pub struct NnueState {
     stack: Vec<StackEntry>,
+    len: usize,
     /// [perspective][bucket * 2 + mirror]
     finny: Vec<[FinnyEntry; INPUT_BUCKETS * 2]>,
 }
@@ -392,15 +395,17 @@ pub struct NnueState {
 impl NnueState {
     pub fn new() -> Self {
         let empty = FinnyEntry { acc: Align64([0; L1]), by_color: [0; 2], by_type: [0; 6] };
+        let blank = StackEntry { acc: Accumulator::new(), dirty: DirtyPiece::default(), kings: [0; 2] };
         NnueState {
-            stack: Vec::with_capacity(MAX_PLY + 8),
+            stack: vec![blank; MAX_PLY + 8],
+            len: 0,
             finny: vec![[empty; INPUT_BUCKETS * 2]; 2],
         }
     }
 
     /// Reset for a new root position. Accumulators are computed lazily.
     pub fn reset(&mut self, pos: &Position, net: &Network) {
-        self.stack.clear();
+        self.len = 0;
         // Reset finny tables to "bias only, empty board" so a refresh is a plain add of all pieces.
         for p in 0..2 {
             for e in self.finny[p].iter_mut() {
@@ -409,39 +414,45 @@ impl NnueState {
                 e.by_type = [0; 6];
             }
         }
-        let mut entry = StackEntry {
-            acc: Accumulator::new(),
-            dirty: DirtyPiece::default(),
-            kings: [pos.king_sq(Color::White), pos.king_sq(Color::Black)],
-        };
+        let entry = &mut self.stack[0];
+        entry.dirty = DirtyPiece::default();
+        entry.kings = [pos.king_sq(Color::White), pos.king_sq(Color::Black)];
+        entry.acc.computed = [false; 2];
         for p in [Color::White, Color::Black] {
             Self::refresh_perspective(&mut self.finny[p.idx()], &mut entry.acc, p, pos, net);
         }
-        self.stack.push(entry);
+        self.len = 1;
     }
 
     /// Push a new ply after `m` was played from `pos_before` giving `pos_after`.
     #[inline]
     pub fn push(&mut self, pos_before: &Position, m: Move, pos_after: &Position) {
         let dirty = DirtyPiece::from_move(pos_before, m);
-        self.stack.push(StackEntry {
-            acc: Accumulator::new(),
-            dirty,
-            kings: [pos_after.king_sq(Color::White), pos_after.king_sq(Color::Black)],
-        });
+        debug_assert!(self.len < self.stack.len());
+        let e = &mut self.stack[self.len];
+        e.dirty = dirty;
+        e.kings = [pos_after.king_sq(Color::White), pos_after.king_sq(Color::Black)];
+        e.acc.computed = [false; 2];
+        self.len += 1;
     }
 
-    /// Push a null move (no piece changes; accumulators are copied lazily).
+    /// Push a null move: no piece changes, so the entry is an empty diff (copied lazily by
+    /// `apply_incremental`'s (0, 0) case when an evaluation needs it).
     #[inline]
     pub fn push_null(&mut self) {
-        let top = *self.stack.last().unwrap();
-        self.stack.push(StackEntry { acc: top.acc, dirty: DirtyPiece::default(), kings: top.kings });
+        debug_assert!(self.len < self.stack.len());
+        let kings = self.stack[self.len - 1].kings;
+        let e = &mut self.stack[self.len];
+        e.dirty = DirtyPiece::default();
+        e.kings = kings;
+        e.acc.computed = [false; 2];
+        self.len += 1;
     }
 
     #[inline]
     pub fn pop(&mut self) {
-        self.stack.pop();
-        debug_assert!(!self.stack.is_empty());
+        self.len -= 1;
+        debug_assert!(self.len > 0);
     }
 
     fn rel_king(p: Color, ksq: Square) -> Square {
@@ -529,7 +540,7 @@ impl NnueState {
 
     /// Make sure the top-of-stack accumulator for perspective `p` is computed.
     fn ensure(&mut self, p: Color, pos: &Position, net: &Network) {
-        let top = self.stack.len() - 1;
+        let top = self.len - 1;
         if self.stack[top].acc.computed[p.idx()] {
             return;
         }
@@ -553,10 +564,9 @@ impl NnueState {
             i -= 1;
         }
         if !self.stack[i].acc.computed[p.idx()] {
-            // Need a refresh. We only hold the top position, so refresh the top directly.
-            let mut acc = self.stack[top].acc;
-            Self::refresh_perspective(&mut self.finny[p.idx()], &mut acc, p, pos, net);
-            self.stack[top].acc = acc;
+            // Need a refresh. We only hold the top position, so refresh the top directly, in place.
+            let NnueState { stack, finny, .. } = self;
+            Self::refresh_perspective(&mut finny[p.idx()], &mut stack[top].acc, p, pos, net);
             return;
         }
         let rel_ksq = Self::rel_king(p, self.stack[top].kings[p.idx()]);
@@ -569,7 +579,7 @@ impl NnueState {
     pub fn evaluate(&mut self, pos: &Position, net: &Network) -> Value {
         self.ensure(Color::White, pos, net);
         self.ensure(Color::Black, pos, net);
-        let top = self.stack.len() - 1;
+        let top = self.len - 1;
         let acc = &self.stack[top].acc;
         let us = pos.side_to_move();
         let bucket = output_bucket(pos);

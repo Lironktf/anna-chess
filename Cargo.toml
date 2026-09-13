@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["engine", "play"]
+members = ["engine", "play", "prof"]
 
 [profile.release]
 opt-level = 3
