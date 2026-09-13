@@ -165,6 +165,33 @@ def evaluate(model, rec, device, batch=4096):
     return ce / max(tot, 1), top1 / max(tot, 1), top3 / max(tot, 1)
 
 
+def _decode_worker(args):
+    path, start, idx = args
+    a = np.memmap(path, dtype=np.uint8, mode="r")
+    a = a[: (len(a) // REC) * REC].reshape(-1, REC)
+    return decode_batch(np.ascontiguousarray(a[idx]))
+
+
+def iterate_batches(paths, batch, workers, seed, hold_out, limit=0):
+    """Yield decoded batches over all files (each file loaded, permuted, decoded in worker processes). The last
+    `hold_out` records of the last file are never yielded (they are the evaluation set)."""
+    import concurrent.futures
+    rng = np.random.default_rng(seed)
+    order = list(paths)
+    rng.shuffle(order)
+    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as ex:
+        for path in order:
+            n = (np.memmap(path, dtype=np.uint8, mode="r").shape[0]) // REC
+            if limit:
+                n = min(n, limit)
+            if path == paths[-1]:
+                n -= hold_out
+            perm = rng.permutation(n)
+            jobs = [(path, 0, np.sort(perm[i : i + batch])) for i in range(0, n - batch + 1, batch)]
+            for out in ex.map(_decode_worker, jobs, chunksize=2):
+                yield out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--data", required=True)
@@ -175,27 +202,40 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--out", required=True)
     ap.add_argument("--hidden", type=int, default=H)
+    ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--dump-logits", default="", help="write reference logits for the first --dump-n eval records")
     ap.add_argument("--dump-n", type=int, default=300)
     args = ap.parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    rec = load_records(args.data.split(","), args.limit or None)
-    ev = load_records([args.eval], 200_000) if args.eval else rec[-min(100_000, len(rec) // 10) :]
-    ev_offset = 0 if args.eval else len(rec) - len(ev)  # absolute record index of ev[0] in the (concatenated) data
-    if not args.eval:
-        rec = rec[: len(rec) - len(ev)]
-    print(f"train {len(rec)} records, eval {len(ev)}, device {device}")
+    paths = args.data.split(",")
+    # Evaluation set: the tail of the last file (or --eval). Files are streamed and decoded in worker processes.
+    last = np.memmap(paths[-1], dtype=np.uint8, mode="r")
+    n_last = last.shape[0] // REC
+    total = sum(np.memmap(p, dtype=np.uint8, mode="r").shape[0] // REC for p in paths)
+    if args.limit:
+        # --limit: a smoke run over the first N records of the first file only.
+        paths = paths[:1]
+        total = min(args.limit, np.memmap(paths[0], dtype=np.uint8, mode="r").shape[0] // REC)
+        n_last = total
+    hold_out = min(100_000, max(n_last // 10, 1)) if not args.eval else 0
+    if args.eval:
+        ev = load_records([args.eval], 200_000)
+        ev_offset = 0
+    else:
+        ev_offset = n_last - hold_out
+        ev = np.ascontiguousarray(np.memmap(paths[-1], dtype=np.uint8, mode="r")[: n_last * REC].reshape(-1, REC)[ev_offset:n_last])
+    n_train = total - hold_out
+    print(f"train ~{n_train} records over {len(paths)} files, eval {len(ev)}, device {device}, workers {args.workers}", flush=True)
     model = PolicyNet(args.hidden).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=0.0)
-    steps = args.epochs * (len(rec) // args.batch)
+    steps = args.epochs * (n_train // args.batch)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=args.lr, total_steps=max(steps, 1), pct_start=0.05)
     t0 = time.time()
     step = 0
     for ep in range(args.epochs):
-        perm = np.random.permutation(len(rec))
-        for i in range(0, len(rec) - args.batch + 1, args.batch):
-            idx = np.sort(perm[i : i + args.batch])
-            feat, moves, promo, prob, n, _ = decode_batch(rec[idx])
+        for feat, moves, promo, prob, n, _ in iterate_batches(paths, args.batch, args.workers, seed=1000 + ep, hold_out=hold_out, limit=args.limit):
+            if step >= steps:
+                break
             feat_t = torch.from_numpy(feat).to(device)
             moves_t = torch.from_numpy(moves).to(device)
             promo_t = torch.from_numpy(promo).to(device)
