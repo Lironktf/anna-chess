@@ -1590,7 +1590,7 @@ mod tests {
         let limits = Limits { go: params, tm, max_depth: depth, max_nodes: 0 };
         let opts = Options { threads: 1, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        super::go(&pos, &[], &shared, None, &limits, &opts, &mut hists)
+        super::go(&pos, &[], &shared, None, None, &limits, &opts, &mut hists)
     }
 
     #[test]
@@ -1632,7 +1632,7 @@ mod tests {
         let limits = Limits { go, tm, max_depth: 10, max_nodes: 0 };
         let opts = Options { threads: 4, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        let r = super::go(&pos, &[], &shared, None, &limits, &opts, &mut hists);
+        let r = super::go(&pos, &[], &shared, None, None, &limits, &opts, &mut hists);
         assert!(!r.best_move.is_none());
         assert_eq!(hists.len(), 4);
     }
@@ -1656,7 +1656,7 @@ mod tests {
         let limits = Limits { go, tm, max_depth: 8, max_nodes: 0 };
         let opts = Options { threads: 1, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        let r = super::go(&p, &keys, &shared, None, &limits, &opts, &mut hists);
+        let r = super::go(&p, &keys, &shared, None, None, &limits, &opts, &mut hists);
         // Black is a queen up: it must not see a draw score from repetition unless forced.
         assert!(r.score > 300, "score {}", r.score);
     }
