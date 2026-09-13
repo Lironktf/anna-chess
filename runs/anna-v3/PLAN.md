@@ -70,3 +70,21 @@ Single-thread search speed measured on the box under match load: v1 974k nps, v3
 | match | games | result | Elo |
 |---|---|---|---|
 | v3 vs v1, 8+0.08 | 400 | +86 -109 =205 | -20 +/- 21 |
+
+## Speed work on the v3 inference path (2026-09-12 evening, laptop, quiet)
+
+nnuebench breakdown per move before: attackers+relboards 0.38 us, map_restricted x2 0.47, prefetch+psq rows 0.99,
+threat rows 0.95, forward 0.48; push+eval 4.63 us/move; search 235k nps (v1: 865-915k).
+Changes (all verified incremental == reference, bench unchanged 854588):
+- fused `apply_rows` kernel: child accumulator = parent + all changed rows in one pass (accumulator no longer
+  re-read/written once per row); entry stack preallocated and indexed (push writes metadata only, no 4 KB zero-fill;
+  null moves copy nothing); white-relative board cached per entry; phase timers behind `--features nnue_profile`.
+- prefetch measured at 0/2/4/16 lines per applied row: no gain (16 slightly worse) -> off.
+Result: push+eval 4.21 us/move, search 244-250k nps (+4-6%).
+Where the rest goes: ~14 random 1 KB weight-row reads per move from a 66 MB table = ~2 us on this laptop AND on
+the Zen 3 box (per-core memory-level parallelism, not bandwidth: 4 concurrent v3 searches lose 21%, v1 loses 16%).
+The search already reuses TT static evals, so there is no cheap "evaluate less" lever. Remaining CPU work
+(attackers/relboards 0.4, feature mapping 0.5, forward 0.5) could give another ~20% at most.
+Conclusion: at L1=1024 with 1 KB rows the architecture is memory-latency bound at ~3x v1's cost per node on
+current hardware; the +83 Elo/node buys roughly break-even at blitz. Options: L1=512 retrain (~$3.5, rows half
+the size, est. 330k nps) or keep v3 for longer time controls only.
