@@ -23,6 +23,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Threat-row pruning analysis | 15.7% of threat rows are empty (impossible features); the rest are dense (median max weight 96) | no free traffic reduction there |
 | Feature-usage histogram (v3b, real search, `--features engine/nnue_profile`) | 23,609 distinct features used; top 512 = 54%, top 2048 = 84%, top 4096 = 93.5%, top 8192 = 98.2% of applied rows | hot set is 2-4 MB: basis for hot/cold layouts and small-table designs |
 | Transparent huge pages for the tables (GLIBC_TUNABLES=glibc.malloc.hugetlb=1; THP is already "always" here) | no change (284/299k vs 254/294k) | TLB is not the bottleneck on this laptop |
+| Two-tier evaluation (EvalFileFast + TierDepth=4: v3b at interior nodes, v1 in quiescence/shallow nodes; v3b did ~15% of evals, 432k vs 271k nps) | -41 +/- 27 vs v1 at 8+0.08 after 240 games | fails: mixing two evaluators in one tree hurts more than the speed helps; code kept behind the option, idea parked |
 
 ## Engine speed (all bench-identical unless noted)
 

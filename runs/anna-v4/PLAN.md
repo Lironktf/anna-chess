@@ -15,3 +15,4 @@ self-destruct MAX_HOURS 6. Restricted key: see selfdestruct_key_id.txt (delete a
 Expected: +35 to +60 over v1 at every time control (research estimate; multilayer + more data), ~0.9x of v1's speed.
 
 ## Status
+- 12:40 local: training at 7.4M pos/s on instance 50903665 (Texas). Midway equal-nodes vs v1 at s1-80 (60 games, 30k nodes): +15 -27 =18, 40% (~-70); v3/v3b were -24/-29 at a similar point, so this run is behind the threat nets' curve. Final verdict at the end.
