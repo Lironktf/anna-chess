@@ -22,9 +22,13 @@ fn main() {
         println!("cargo:rerun-if-changed={}", src_dir.join(f).display());
     }
     let cc = std::env::var("CC").unwrap_or_else(|_| "cc".to_string());
+    // Release builds for other machines set FATHOM_MARCH (e.g. -march=x86-64-v3) to match the
+    // Rust target-cpu; the default follows `.cargo/config.toml`'s target-cpu=native.
+    let march = std::env::var("FATHOM_MARCH").unwrap_or_else(|_| "-march=native".to_string());
+    println!("cargo:rerun-if-env-changed=FATHOM_MARCH");
     let obj = out.join("tbprobe.o");
     let status = Command::new(&cc)
-        .args(["-O3", "-march=native", "-std=gnu11", "-fPIC", "-w", "-c"])
+        .args(["-O3", &march, "-std=gnu11", "-fPIC", "-w", "-c"])
         .arg(format!("-I{}", src_dir.display()))
         .arg(src_dir.join("tbprobe.c"))
         .arg("-o")

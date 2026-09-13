@@ -1,0 +1,68 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  # Portable release builds: AVX2 + BMI2 (Haswell / Zen 3 and later), not the runner's own CPU.
+  RUSTFLAGS: "-C target-cpu=x86-64-v3"
+  FATHOM_MARCH: "-march=x86-64-v3"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install stable --profile minimal && rustup default stable
+      - run: cargo test --release -p engine
+      - run: cargo build --release -p engine
+      - run: ./target/release/engine bench | tail -n 1
+      - run: ./target/release/engine perft 5 | tail -n 3
+
+  release:
+    needs: test
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            name: anna-linux-x86-64-v3
+            bin: engine
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
+            name: anna-windows-x86-64-v3.exe
+            bin: engine.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install stable --profile minimal && rustup default stable && rustup target add ${{ matrix.target }}
+      - name: Build
+        shell: bash
+        env:
+          CC: gcc
+        run: |
+          cargo build --release -p engine --target ${{ matrix.target }}
+          mkdir -p dist
+          cp target/${{ matrix.target }}/release/${{ matrix.bin }} dist/${{ matrix.name }}
+      - name: Smoke test
+        shell: bash
+        run: |
+          printf 'uci\nisready\nquit\n' | dist/${{ matrix.name }} | tail -n 2
+          dist/${{ matrix.name }} bench | tail -n 1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}
+          path: dist/${{ matrix.name }}
+      - name: Attach to release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 || gh release create "${GITHUB_REF_NAME}" --title "Anna ${GITHUB_REF_NAME}" --notes "Anna ${GITHUB_REF_NAME}: UCI chess engine, NNUE evaluation. Binaries need AVX2 and BMI2 (x86-64-v3)."
+          gh release upload "${GITHUB_REF_NAME}" dist/${{ matrix.name }} --clobber
