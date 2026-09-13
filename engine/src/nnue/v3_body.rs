@@ -446,13 +446,17 @@ pub struct StateV3 {
     apply_sub: Vec<usize>,
     thr_add: Vec<usize>,
     thr_sub: Vec<usize>,
+    apply_add_b: Vec<usize>,
+    apply_sub_b: Vec<usize>,
+    thr_add_b: Vec<usize>,
+    thr_sub_b: Vec<usize>,
 }
 
 use self::kernels::{add_i16_row, add_i8_row, apply_rows, sub_i16_row};
 
 /// Number of 64-byte lines to prefetch per applied weight row (0 disables). Measured 2026-09-12: 0, 2, 4 and
 /// 16 lines are within noise of each other on the laptop (16 slightly worse), so prefetching is off.
-pub const PREFETCH_LINES: usize = 0;
+pub const PREFETCH_LINES: usize = 2;
 /// Applied-row counter for benchmarking (relaxed, only read by nnuebench).
 pub static ROWS_APPLIED: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
 /// Diagnostics: from-scratch refreshes and incremental applies (relaxed counters, read by `prof`).
@@ -519,6 +523,10 @@ impl StateV3 {
             apply_sub: Vec::with_capacity(512),
             thr_add: Vec::with_capacity(512),
             thr_sub: Vec::with_capacity(512),
+            apply_add_b: Vec::with_capacity(512),
+            apply_sub_b: Vec::with_capacity(512),
+            thr_add_b: Vec::with_capacity(512),
+            thr_sub_b: Vec::with_capacity(512),
         }
     }
 
@@ -613,7 +621,7 @@ impl StateV3 {
     /// diff is computed once (both perspectives come out of one pass over the affected attackers);
     /// each accumulator is then produced in a single fused pass over all changed rows.
     fn apply_incremental(&mut self, j: usize, need: [bool; 2], refresh_psq: [bool; 2], refresh_thr: [bool; 2], net: &NetworkV3) {
-        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, .. } = self;
+        let StateV3 { stack, finny, scratch_old: ow, scratch_new: nw, scratch_old_b: ob, scratch_new_b: nb, apply_add, apply_sub, thr_add, thr_sub, apply_add_b, apply_sub_b, thr_add_b, thr_sub_b, .. } = self;
         let (before, after) = stack.split_at_mut(j);
         let prev = &mut before[j - 1];
         let cur = &mut after[0];
@@ -673,39 +681,50 @@ impl StateV3 {
         net.mapper.map_restricted(&prev.rel, att_old, changed, |f| ow.push(f), |f| ob.push(f));
         net.mapper.map_restricted(&cur.rel, att_new, changed, |f| nw.push(f), |f| nb.push(f));
         phase(1, &mut tm);
+        // Phase A: both perspectives' set differences (pairs -> king-dependent part, threats -> `thr`).
         for p in 0..2 {
             if !need[p] {
                 continue;
             }
             let (so, sn): (&mut Vec<usize>, &mut Vec<usize>) = if p == 0 { (&mut *ow, &mut *nw) } else { (&mut *ob, &mut *nb) };
+            let (pa, ps, ta, ts): (&mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>, &mut Vec<usize>) =
+                if p == 0 { (&mut *apply_add, &mut *apply_sub, &mut *thr_add, &mut *thr_sub) } else { (&mut *apply_add_b, &mut *apply_sub_b, &mut *thr_add_b, &mut *thr_sub_b) };
             so.sort_unstable();
             sn.sort_unstable();
-            // Set difference both ways: rows in old only are subtracted, rows in new only are added.
-            // Pawn pairs (index < TOTAL_PAIRS) go to the king-dependent accumulator, threats to `thr`.
-            apply_add.clear();
-            apply_sub.clear();
-            thr_add.clear();
-            thr_sub.clear();
+            pa.clear();
+            ps.clear();
+            ta.clear();
+            ts.clear();
             let (mut a, mut b) = (0, 0);
             while a < so.len() || b < sn.len() {
                 if b >= sn.len() || (a < so.len() && so[a] < sn[b]) {
-                    if so[a] < TOTAL_PAIRS { apply_sub.push(so[a]) } else { thr_sub.push(so[a]) }
+                    if so[a] < TOTAL_PAIRS { ps.push(so[a]) } else { ts.push(so[a]) }
                     a += 1;
                 } else if a >= so.len() || sn[b] < so[a] {
-                    if sn[b] < TOTAL_PAIRS { apply_add.push(sn[b]) } else { thr_add.push(sn[b]) }
+                    if sn[b] < TOTAL_PAIRS { pa.push(sn[b]) } else { ta.push(sn[b]) }
                     b += 1;
                 } else {
                     a += 1;
                     b += 1;
                 }
             }
-            if PREFETCH_LINES > 0 {
-                for &f in apply_add.iter().chain(apply_sub.iter()).chain(thr_add.iter()).chain(thr_sub.iter()) {
+        }
+        // Phase B: prefetch every row both perspectives will touch, so the misses overlap.
+        if PREFETCH_LINES > 0 {
+            for l in [&*apply_add, &*apply_sub, &*thr_add, &*thr_sub, &*apply_add_b, &*apply_sub_b, &*thr_add_b, &*thr_sub_b] {
+                for &f in l.iter() {
                     prefetch_row(&net.pp_w[f]);
                 }
             }
-            phase(2, &mut tm);
-            // Piece-square part: incremental, or rebuilt from the refresh cache when the king changed bucket.
+        }
+        phase(2, &mut tm);
+        // Phase C: apply.
+        for p in 0..2 {
+            if !need[p] {
+                continue;
+            }
+            let (pa, ps, ta, ts): (&Vec<usize>, &Vec<usize>, &Vec<usize>, &Vec<usize>) =
+                if p == 0 { (&*apply_add, &*apply_sub, &*thr_add, &*thr_sub) } else { (&*apply_add_b, &*apply_sub_b, &*thr_add_b, &*thr_sub_b) };
             if refresh_psq[p] {
                 REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 let pc = Color::from_idx(p);
@@ -715,21 +734,18 @@ impl StateV3 {
             } else {
                 let na = dirty.n_add as usize;
                 let ns = dirty.n_sub as usize;
-                apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, apply_add, apply_sub);
+                apply_rows(&prev.acc[p].0, &mut cur.acc[p].0, &net.psq_w, &psq_add[p][..na], &psq_sub[p][..ns], &net.pp_w, pa, ps);
             }
-            // Threat part: always incremental (king-independent).
-            // Threat part: incremental, except when the king crossed the mirror line (every threat index
-            // is mirrored by the king file, see FeatureMapper::map_restricted), which needs a rebuild.
             if refresh_thr[p] {
                 THR_REFRESHES.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                 net.refresh_threats(&new_pos, Color::from_idx(p), &mut cur.thr[p].0);
             } else {
-                apply_rows(&prev.thr[p].0, &mut cur.thr[p].0, &net.psq_w, &[], &[], &net.pp_w, thr_add, thr_sub);
+                apply_rows(&prev.thr[p].0, &mut cur.thr[p].0, &net.psq_w, &[], &[], &net.pp_w, ta, ts);
             }
             cur.computed[p] = true;
-            ROWS_APPLIED.fetch_add((apply_add.len() + apply_sub.len() + thr_add.len() + thr_sub.len()) as u64, std::sync::atomic::Ordering::Relaxed);
-            phase(3, &mut tm);
+            ROWS_APPLIED.fetch_add((pa.len() + ps.len() + ta.len() + ts.len()) as u64, std::sync::atomic::Ordering::Relaxed);
         }
+        phase(3, &mut tm);
     }
 
     /// Make both top-of-stack accumulators computed, sharing work between perspectives.

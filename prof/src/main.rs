@@ -48,15 +48,19 @@ fn main() {
     for (frames, &cnt) in report.data.iter() {
         let count = cnt.max(0) as usize;
         total += count;
+        // Expand each physical frame into its full inlined chain (innermost first), so callers of an
+        // inlined leaf (e.g. a memcpy inside an inlined update function) are attributed correctly.
         let names: Vec<String> = frames
             .frames
             .iter()
-            .map(|f| f.iter().map(|s| format!("{}:{}", s.name(), s.lineno.unwrap_or(0))).next().unwrap_or_else(|| "?".to_string()))
-            .map(|n| short(&n))
+            .flat_map(|f| {
+                let v: Vec<String> = f.iter().map(|s| short(&format!("{}:{}", s.name(), s.lineno.unwrap_or(0)))).collect();
+                if v.is_empty() { vec!["?".to_string()] } else { v }
+            })
             .collect();
         if let Some(leaf) = names.first() {
             *self_t.entry(leaf.clone()).or_default() += count;
-            let chain: Vec<&str> = names.iter().skip(1).take(3).map(|s| s.as_str()).collect();
+            let chain: Vec<&str> = names.iter().skip(1).take(4).map(|s| s.as_str()).collect();
             *callers.entry(leaf.clone()).or_default().entry(chain.join(" <- ")).or_default() += count;
         }
         let mut seen = std::collections::HashSet::new();
