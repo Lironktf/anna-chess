@@ -136,7 +136,7 @@ fn play_game(rng: &mut Rng, cfg: &DatagenConfig, shared: &Shared, net: Option<&A
         let go = GoParams { nodes: Some(cfg.nodes), ..Default::default() };
         let tm = TimeManager::new(&go, pos.side_to_move() == Color::White, pos.game_ply(), 0);
         let limits = Limits { go, tm, max_depth: 0, max_nodes: cfg.nodes };
-        let res = search::go(&pos, &keys, shared, net, None, &limits, &opts, hists);
+        let res = search::go(&pos, &keys, shared, net, None, None, &limits, &opts, hists);
         let m = res.best_move;
         if m.is_none() {
             return (pending, 0.5);

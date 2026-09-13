@@ -60,7 +60,7 @@ impl ListPair {
     }
 }
 
-pub struct MovePicker {
+pub struct MovePicker<'a> {
     stage: Stage,
     tt_move: Move,
     killers: [Move; 2],
@@ -79,13 +79,24 @@ pub struct MovePicker {
     threats: u64,
     /// Per piece type: squares attacked by a lesser enemy piece (all 0 unless ThreatOrder is on).
     lesser: [u64; 6],
+    /// Policy net and the side-to-move accumulator of this node (copied: the search mutates its state while the
+    /// picker lives); `None` when no net is loaded or PolicyScale is 0.
+    policy: Option<&'a crate::policy::PolicyNet>,
+    policy_acc: [i16; crate::policy::H],
+}
+
+/// What the search hands the picker when a policy net is active. The accumulator is copied by the picker, so
+/// its borrow ('b) ends when the constructor returns; only the net reference ('a) is kept.
+pub struct PolicyCtx<'a, 'b> {
+    pub net: &'a crate::policy::PolicyNet,
+    pub acc: &'b [i16; crate::policy::H],
 }
 
 pub const QUIET_LEFT_MARGIN: i32 = -3560;
 
-impl MovePicker {
+impl<'a> MovePicker<'a> {
     /// Main search picker.
-    pub fn new(pos: &Position, tt_move: Move, killers: [Move; 2], counter: Move, cont_idx: [usize; 4], depth: i32, ply: usize) -> Self {
+    pub fn new(pos: &Position, tt_move: Move, killers: [Move; 2], counter: Move, cont_idx: [usize; 4], depth: i32, ply: usize, policy: Option<PolicyCtx<'a, '_>>) -> Self {
         let tt_ok = !tt_move.is_none() && pos.is_pseudo_legal(tt_move);
         let stage = if pos.in_check() {
             if tt_ok { Stage::EvasionTT } else { Stage::GenEvasions }
@@ -107,6 +118,8 @@ impl MovePicker {
             ply,
             threats: if crate::params::THREAT_HIST.get() != 0 { pos.attacked_squares(!pos.side_to_move()) } else { 0 },
             lesser: if crate::params::THREAT_ORDER.get() != 0 { pos.threats_by_lesser(!pos.side_to_move()) } else { [0; 6] },
+            policy: policy.as_ref().map(|c| c.net),
+            policy_acc: match &policy { Some(c) => *c.acc, None => [0; crate::policy::H] },
             skip_quiets: false,
             cont_idx,
         }
@@ -135,6 +148,8 @@ impl MovePicker {
             ply,
             threats: 0,
             lesser: [0; 6],
+            policy: None,
+            policy_acc: [0; crate::policy::H],
             skip_quiets: true,
             cont_idx,
         }
@@ -156,6 +171,8 @@ impl MovePicker {
             ply: 0,
             threats: 0,
             lesser: [0; 6],
+            policy: None,
+            policy_acc: [0; crate::policy::H],
             skip_quiets: true,
             cont_idx: [usize::MAX; 4],
         }
@@ -202,6 +219,10 @@ impl MovePicker {
             if lt != 0 {
                 let v = 20 * (((lt >> m.from()) & 1) as i32 - ((lt >> to) & 1) as i32);
                 s += piece_value(pt) * v;
+            }
+            if let Some(net) = self.policy {
+                // logit_q is the logit x1024; PolicyScale is history units per logit unit.
+                s += (crate::params::POLICY_SCALE.get() * net.logit_q(&self.policy_acc, us, pt, m)) >> 10;
             }
             l.list.moves[i].score = s;
         }
@@ -412,7 +433,7 @@ impl MovePicker {
     }
 }
 
-impl Drop for MovePicker {
+impl Drop for MovePicker<'_> {
     fn drop(&mut self) {
         if let Some(b) = self.lists.take() {
             ListPair::give_back(b);

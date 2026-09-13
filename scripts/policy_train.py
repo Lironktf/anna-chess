@@ -175,10 +175,13 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--out", required=True)
     ap.add_argument("--hidden", type=int, default=H)
+    ap.add_argument("--dump-logits", default="", help="write reference logits for the first --dump-n eval records")
+    ap.add_argument("--dump-n", type=int, default=300)
     args = ap.parse_args()
     device = "cuda" if torch.cuda.is_available() else "cpu"
     rec = load_records(args.data.split(","), args.limit or None)
     ev = load_records([args.eval], 200_000) if args.eval else rec[-min(100_000, len(rec) // 10) :]
+    ev_offset = 0 if args.eval else len(rec) - len(ev)  # absolute record index of ev[0] in the (concatenated) data
     if not args.eval:
         rec = rec[: len(rec) - len(ev)]
     print(f"train {len(rec)} records, eval {len(ev)}, device {device}")
@@ -210,6 +213,23 @@ def main():
         print(f"epoch {ep}: eval CE {ce:.4f} top1 {t1:.4f} top3 {t3:.4f}", flush=True)
     export(model, args.out)
     torch.save(model.state_dict(), args.out + ".pt")
+    if args.dump_logits:
+        dump_logits(model, ev[: args.dump_n], device, args.dump_logits, ev_offset)
+
+
+def dump_logits(model, rec, device, path, offset=0):
+    """Reference logits for `engine policycheck`: one line per (absolute record index, move as engine u16, float logit)."""
+    model.eval()
+    feat, moves, promo, prob, n, _ = decode_batch(rec)
+    with torch.no_grad():
+        logit = model(torch.from_numpy(feat).to(device), torch.from_numpy(moves).to(device), torch.from_numpy(promo).to(device)).cpu().numpy()
+    ent = rec[:, 36 : 36 + MAXM * 4].reshape(len(rec), MAXM, 2, 2)
+    mv = ent[:, :, 0, :].copy().view(np.uint16).reshape(len(rec), MAXM)
+    with open(path, "w") as f:
+        for i in range(len(rec)):
+            for j in range(int(n[i])):
+                f.write(f"{offset + i} {int(mv[i, j])} {float(logit[i, j]):.5f}\n")
+    print(f"wrote {path}: {len(rec)} records")
 
 
 if __name__ == "__main__":

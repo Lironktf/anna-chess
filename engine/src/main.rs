@@ -171,6 +171,87 @@ fn main() {
             std::fs::write(path, bytes).expect("write");
             println!("wrote {} ({} bytes, variant {})", path, n, width);
         }
+        Some("policycheck") => {
+            // engine policycheck <net> <records.bin> <logits.txt> [n]: compare the engine's policy logits with the
+            // trainer's reference (scripts/policy_train.py --dump-logits) on lc0conv records.
+            let net = engine::policy::PolicyNet::load(&args[2]).unwrap_or_else(|e| {
+                eprintln!("{e}");
+                std::process::exit(1)
+            });
+            let recs = std::fs::read(&args[3]).expect("records");
+            let refs = std::fs::read_to_string(&args[4]).expect("logits");
+            let n: usize = args.get(5).and_then(|s| s.parse().ok()).unwrap_or(usize::MAX);
+            const REC: usize = 304;
+            let mut by_rec: std::collections::BTreeMap<usize, Vec<(u16, f64)>> = Default::default();
+            for line in refs.lines() {
+                let mut it = line.split_whitespace();
+                let (i, m, l) = (it.next().unwrap().parse::<usize>().unwrap(), it.next().unwrap().parse::<u16>().unwrap(), it.next().unwrap().parse::<f64>().unwrap());
+                by_rec.entry(i).or_default().push((m, l));
+            }
+            let (mut cnt, mut sum_abs, mut max_abs, mut top1_agree, mut positions) = (0usize, 0.0f64, 0.0f64, 0usize, 0usize);
+            let mut st = engine::policy::PolicyState::new();
+            for (&i, moves) in by_rec.iter().take(n) {
+                let r = &recs[i * REC..(i + 1) * REC];
+                // Rebuild the position from the record (same layout as lc0conv's dump).
+                let occ = u64::from_le_bytes(r[0..8].try_into().unwrap());
+                let mut board = [b'.'; 64];
+                let (mut k, mut bits) = (0usize, occ);
+                while bits != 0 {
+                    let sq = bits.trailing_zeros() as usize;
+                    bits &= bits - 1;
+                    let code = if k % 2 == 0 { r[8 + k / 2] & 15 } else { r[8 + k / 2] >> 4 };
+                    board[sq] = b"PNBRQKpnbrqk"[code as usize];
+                    k += 1;
+                }
+                let mut fen = String::new();
+                for rank in (0..8).rev() {
+                    let mut empty = 0;
+                    for file in 0..8 {
+                        let c = board[rank * 8 + file];
+                        if c == b'.' {
+                            empty += 1;
+                        } else {
+                            if empty > 0 {
+                                fen.push((b'0' + empty) as char);
+                                empty = 0;
+                            }
+                            fen.push(c as char);
+                        }
+                    }
+                    if empty > 0 {
+                        fen.push((b'0' + empty) as char);
+                    }
+                    if rank > 0 {
+                        fen.push('/');
+                    }
+                }
+                let stm_black = r[24] == 1;
+                let cs = [(1, 'K'), (2, 'Q'), (4, 'k'), (8, 'q')].iter().filter(|(b, _)| r[26] & b != 0).map(|(_, c)| *c).collect::<String>();
+                let ep = if r[25] == 255 { "-".to_string() } else { format!("{}{}", (b'a' + r[25]) as char, if stm_black { '3' } else { '6' }) };
+                fen = format!("{fen} {} {} {ep} {} 1", if stm_black { 'b' } else { 'w' }, if cs.is_empty() { "-".to_string() } else { cs }, r[27]);
+                let pos = engine::position::Position::from_fen(&fen).expect("fen");
+                st.reset(&pos, &net);
+                let acc = st.top(pos.side_to_move());
+                let (mut best_ref, mut best_eng) = ((0u16, f64::MIN), (0u16, i32::MIN));
+                for &(m16, l) in moves {
+                    let m = engine::types::Move(m16);
+                    let q = net.logit_q(acc, pos.side_to_move(), pos.piece_on(m.from()).piece_type(), m);
+                    let d = (q as f64 / 1024.0 - l).abs();
+                    sum_abs += d;
+                    max_abs = max_abs.max(d);
+                    cnt += 1;
+                    if l > best_ref.1 {
+                        best_ref = (m16, l);
+                    }
+                    if q > best_eng.1 {
+                        best_eng = (m16, q);
+                    }
+                }
+                positions += 1;
+                top1_agree += (best_ref.0 == best_eng.0) as usize;
+            }
+            println!("policycheck: {positions} positions, {cnt} moves; mean |diff| {:.4}, max |diff| {:.4} logits; top-1 agreement {:.2}%", sum_abs / cnt.max(1) as f64, max_abs, 100.0 * top1_agree as f64 / positions.max(1) as f64);
+        }
         Some("netcheck") => {
             // Load a network file and evaluate a few positions; exit non-zero on failure.
             let path = args.get(2).expect("usage: engine netcheck <net.bin> [--strict]");

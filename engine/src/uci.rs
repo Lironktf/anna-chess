@@ -25,6 +25,8 @@ pub struct Engine {
     pub net: Option<Arc<AnyNet>>,
     /// Optional fast second net for two-tier evaluation (UCI option EvalFileFast).
     pub net_fast: Option<Arc<AnyNet>>,
+    /// Optional move-ordering policy net (UCI option PolicyFile).
+    pub policy: Option<Arc<crate::policy::PolicyNet>>,
     pub hists: Vec<History>,
     pub hash_mb: usize,
     pub threads: usize,
@@ -51,6 +53,7 @@ impl Engine {
             chess960: false,
             eval_file: DEFAULT_NET.to_string(),
             net_fast: None,
+            policy: None,
             last_score: VALUE_INFINITE,
         };
         e.load_net_quiet();
@@ -196,17 +199,17 @@ pub fn parse_go(tokens: &[&str]) -> GoParams {
 
 /// Run a search on the engine state in a background thread; returns after the search finished.
 fn run_search(engine: &Arc<Mutex<Engine>>, go: GoParams) {
-    let (pos, keys, shared, net, net_fast, opts, limits) = {
+    let (pos, keys, shared, net, net_fast, policy, opts, limits) = {
         let e = engine.lock().unwrap();
         let tm = TimeManager::new(&go, e.pos.side_to_move() == Color::White, e.pos.game_ply(), e.move_overhead);
         let limits = Limits { go: go.clone(), tm, max_depth: go.depth.unwrap_or(0), max_nodes: go.nodes.unwrap_or(0) };
-        (e.pos, e.game_keys.clone(), e.shared.clone(), e.net.clone(), e.net_fast.clone(), e.options(), limits)
+        (e.pos, e.game_keys.clone(), e.shared.clone(), e.net.clone(), e.net_fast.clone(), e.policy.clone(), e.options(), limits)
     };
     let mut hists = {
         let mut e = engine.lock().unwrap();
         std::mem::take(&mut e.hists)
     };
-    let res = search::go(&pos, &keys, &shared, net.as_deref(), net_fast.as_deref(), &limits, &opts, &mut hists);
+    let res = search::go(&pos, &keys, &shared, net.as_deref(), net_fast.as_deref(), policy.as_deref(), &limits, &opts, &mut hists);
     {
         let mut e = engine.lock().unwrap();
         e.hists = hists;
@@ -253,6 +256,7 @@ pub fn uci_loop() {
                 println!("option name UCI_Chess960 type check default false");
                 println!("option name EvalFile type string default {}", DEFAULT_NET);
                 println!("option name EvalFileFast type string default <empty>");
+                println!("option name PolicyFile type string default <empty>");
                 println!("option name SyzygyPath type string default <empty>");
                 crate::params::print_uci_options();
                 println!("uciok");
@@ -305,6 +309,20 @@ pub fn uci_loop() {
                     "syzygypath" => {
                         let n = crate::tb::init(&value);
                         println!("info string syzygy: {} ({} men)", if n > 0 { "loaded" } else { "not loaded" }, n);
+                    }
+                    "policyfile" => {
+                        if value.is_empty() || value == "<empty>" {
+                            e.policy = None;
+                            println!("info string policy net cleared");
+                        } else {
+                            match crate::policy::PolicyNet::load(&value) {
+                                Ok(n) => {
+                                    println!("info string loaded policy net {}", value);
+                                    e.policy = Some(Arc::new(n));
+                                }
+                                Err(err) => println!("info string failed to load policy net: {}", err),
+                            }
+                        }
                     }
                     "evalfilefast" => {
                         if value.is_empty() || value == "<empty>" {
@@ -443,7 +461,7 @@ pub fn bench(e: &mut Engine, depth: i32) {
         let mut opts = e.options();
         opts.silent = true;
         let mut hists = std::mem::take(&mut e.hists);
-        let res = search::go(&e.pos, &e.game_keys, &e.shared, e.net.as_deref(), e.net_fast.as_deref(), &limits, &opts, &mut hists);
+        let res = search::go(&e.pos, &e.game_keys, &e.shared, e.net.as_deref(), e.net_fast.as_deref(), e.policy.as_deref(), &limits, &opts, &mut hists);
         e.hists = hists;
         total_nodes += res.nodes;
         eprintln!("{:<75} depth {:>2} nodes {:>10} bestmove {}", fen, res.depth, res.nodes, e.pos.move_to_uci(res.best_move));

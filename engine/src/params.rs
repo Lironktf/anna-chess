@@ -28,6 +28,8 @@ params! {
     SE_TTM, "SeTtmHist", 0, 0, 1;
     // Stockfish move ordering: +/- 20*piece_value for a quiet move escaping / entering a square attacked by a lesser piece.
     THREAT_ORDER, "ThreatOrder", 0, 0, 1;
+    // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
+    POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Two-tier evaluation: when a second net is loaded (EvalFileFast), nodes with depth < TierDepth and all quiescence
     // nodes use the fast net; interior nodes use the main net. 0 = fast net only in quiescence (if loaded at all).
     TIER_DEPTH, "TierDepth", 0, 0, 30;

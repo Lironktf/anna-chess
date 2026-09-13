@@ -110,6 +110,9 @@ pub struct Thread<'a> {
     /// Optional fast second net (two-tier evaluation), with its own accumulator state kept in sync.
     net_fast: Option<&'a AnyNet>,
     nnue_fast: AnyState,
+    /// Optional move-ordering policy net (UCI PolicyFile) and its accumulator stack.
+    policy: Option<&'a crate::policy::PolicyNet>,
+    pstate: crate::policy::PolicyState,
     /// Evaluation counters (main net, fast net) for the two-tier diagnostics.
     pub n_eval: [u64; 2],
     pub hist: History,
@@ -147,7 +150,7 @@ fn value_draw(nodes: u64) -> Value {
 }
 
 impl<'a> Thread<'a> {
-    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, net_fast: Option<&'a AnyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
+    pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, net_fast: Option<&'a AnyNet>, policy: Option<&'a crate::policy::PolicyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
         let mut reductions = [0i32; 256];
         for (i, r) in reductions.iter_mut().enumerate().skip(1) {
             *r = ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32;
@@ -159,6 +162,8 @@ impl<'a> Thread<'a> {
             nnue: AnyState::for_net(net),
             net_fast,
             nnue_fast: AnyState::for_net(net_fast),
+            policy,
+            pstate: crate::policy::PolicyState::new(),
             n_eval: [0; 2],
             hist,
             ss: vec![StackEntry::default(); MAX_PLY + SS_OFFSET + 8],
@@ -257,12 +262,18 @@ impl<'a> Thread<'a> {
         if self.net_fast.is_some() {
             self.nnue_fast.push(before, m, after);
         }
+        if let Some(pn) = self.policy {
+            self.pstate.push(before, m, pn);
+        }
     }
     #[inline(always)]
     fn nn_push_null(&mut self, after: &Position) {
         self.nnue.push_null(after);
         if self.net_fast.is_some() {
             self.nnue_fast.push_null(after);
+        }
+        if self.policy.is_some() {
+            self.pstate.push_null();
         }
     }
     #[inline(always)]
@@ -271,6 +282,18 @@ impl<'a> Thread<'a> {
         if self.net_fast.is_some() {
             self.nnue_fast.pop();
         }
+        if self.policy.is_some() {
+            self.pstate.pop();
+        }
+    }
+    /// Policy context for the move picker at the current node (None when off).
+    #[inline(always)]
+    fn policy_ctx(&self, pos: &Position) -> Option<crate::movepick::PolicyCtx<'a, '_>> {
+        let net: &'a crate::policy::PolicyNet = self.policy?;
+        if crate::params::POLICY_SCALE.get() == 0 {
+            return None;
+        }
+        Some(crate::movepick::PolicyCtx { net, acc: self.pstate.top(pos.side_to_move()) })
     }
 
     /// Draw by repetition or 50-move rule (position on top of the key stack).
@@ -746,7 +769,7 @@ impl<'a> Thread<'a> {
             Move::NONE
         };
         let killers = self.hist.killers[ply];
-        let mut mp = MovePicker::new(pos, tt_move, killers, counter, cont_idx, depth, ply);
+        let mut mp = MovePicker::new(pos, tt_move, killers, counter, cont_idx, depth, ply, self.policy_ctx(pos));
 
         let mut best_value = best_value_floor;
         let mut best_move = Move::NONE;
@@ -1270,6 +1293,9 @@ impl<'a> Thread<'a> {
         if let Some(nf) = self.net_fast {
             self.nnue_fast.reset(root, nf);
         }
+        if let Some(pn) = self.policy {
+            self.pstate.reset(root, pn);
+        }
         for s in self.ss.iter_mut() {
             *s = StackEntry::default();
         }
@@ -1507,6 +1533,7 @@ pub fn go(
     shared: &Shared,
     net: Option<&AnyNet>,
     net_fast: Option<&AnyNet>,
+    policy: Option<&crate::policy::PolicyNet>,
     limits: &Limits,
     opts: &Options,
     hists: &mut Vec<History>,
@@ -1532,7 +1559,7 @@ pub fn go(
                 std::thread::Builder::new()
                     .stack_size(64 * 1024 * 1024)
                     .spawn_scoped(s, move || {
-                        let mut t = Thread::new(id, shared, net, net_fast, limits, opts, hist);
+                        let mut t = Thread::new(id, shared, net, net_fast, policy, limits, opts, hist);
                         t.iterative_deepening(&root, &keys);
                         if id == 0 {
                             shared.stop.store(true, Ordering::Relaxed);
@@ -1590,7 +1617,7 @@ mod tests {
         let limits = Limits { go: params, tm, max_depth: depth, max_nodes: 0 };
         let opts = Options { threads: 1, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        super::go(&pos, &[], &shared, None, None, &limits, &opts, &mut hists)
+        super::go(&pos, &[], &shared, None, None, None, &limits, &opts, &mut hists)
     }
 
     #[test]
@@ -1632,7 +1659,7 @@ mod tests {
         let limits = Limits { go, tm, max_depth: 10, max_nodes: 0 };
         let opts = Options { threads: 4, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        let r = super::go(&pos, &[], &shared, None, None, &limits, &opts, &mut hists);
+        let r = super::go(&pos, &[], &shared, None, None, None, &limits, &opts, &mut hists);
         assert!(!r.best_move.is_none());
         assert_eq!(hists.len(), 4);
     }
@@ -1656,7 +1683,7 @@ mod tests {
         let limits = Limits { go, tm, max_depth: 8, max_nodes: 0 };
         let opts = Options { threads: 1, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        let r = super::go(&p, &keys, &shared, None, None, &limits, &opts, &mut hists);
+        let r = super::go(&p, &keys, &shared, None, None, None, &limits, &opts, &mut hists);
         // Black is a queen up: it must not see a draw score from repetition unless forced.
         assert!(r.score > 300, "score {}", r.score);
     }
