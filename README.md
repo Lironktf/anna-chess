@@ -73,8 +73,10 @@ tested every release. Nothing here is copied from another engine's source; the t
 - **Search**: the alpha-beta framework follows the techniques published in [Stockfish](https://github.com/official-stockfish/Stockfish)
   (principal variation search, transposition table with aging, iterative deepening with aspiration windows, null-move
   pruning, ProbCut, late-move reductions and pruning, futility and razoring margins, singular extensions, history and
-  continuation-history move ordering, correction history, Lazy SMP). Constants were tuned for this engine with SPSA
-  and SPRT; results are in `EXPERIMENTS.md`.
+  continuation-history move ordering, correction history, Lazy SMP). The code is not derived from Stockfish's source
+  (token-shingle overlap 0.3%, the same as between two unrelated engines of this family), but many of the formulas
+  use Stockfish's published tuned constants as starting values (18 of 57 unusual constants in `search.rs` are
+  Stockfish's); retuning them for Anna is ongoing with SPSA and SPRT, results in `EXPERIMENTS.md`.
 - **Evaluation**: NNUE networks trained by us with [bullet](https://github.com/jw1912/bullet) (jw1912) on public
   [Leela Chess Zero](https://lczero.org) T80 data (linrock's binpack conversions). The input design follows Stockfish's
   threat inputs (SFNNv10 onward) and the pawn-pair inputs invented by Jonathan Hallström for

@@ -14,8 +14,8 @@
 | Long soak (several thousand games, no crash/forfeit) | the SPRTs of the last days on the same code | v3c SPRT (running) counts once the hardening build is used |
 | Windows + Linux binaries from CI | tag `v1.0` -> GitHub release | CI green on every push |
 | README disclosure + attribution | section "How Anna was made" | done |
-| Similarity scan vs Stockfish / Stormphrax sources | (todo: a token-level diff of search.rs against their search files) | todo |
-| Version string | `id name Anna 1.0` in the UCI banner | todo |
+| Similarity scan vs Stockfish / Stormphrax sources | 5-token shingles of search.rs in Stockfish search.cpp 0.3%, 8-token 0.0% (baseline Stormphrax-in-Stockfish 0.1%); unusual numeric constants shared with Stockfish 18/57 (stated in the README) | done 2026-09-13 |
+| Version string | `id name Anna 1.0` in the UCI banner | 1.0-dev now; 1.0 at the tag |
 | Embedded net = the released net | v3b embedded by default (or shipped as a file next to the binary) | decide: v3b is 45 MB; embedding it makes the binary 70 MB, acceptable |
 
 ## Which build
