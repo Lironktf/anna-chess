@@ -34,7 +34,8 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Net policy-v1 (768->256 accumulator + per-move dot, PyTorch on an L4, ~$2) | epoch 0: held-out top-1 31.6%, top-3 57.1% (random ~4%) |
 | Engine `policycheck` vs trainer logits | mean diff 0.02 logits, top-1 agreement 97-98% (quantisation only) |
 | Nodes to depth 11, 30 UHO positions, v3b: PolicyScale 0 / 1000 / 2000 / 4000 / 8000 | geo-mean node ratio 1.000 / 0.845 / **0.800** / 0.824 / 0.903; CPU time lower too |
-| SPRT PolicyScale=2000 vs 0 at 8+0.08 [0,5] (sprt/policy2000.log) | running from 22:45 |
+| SPRT PolicyScale=2000 vs 0 at 8+0.08 [0,5], eager scalar implementation (sprt/policy2000.log) | **-42 +/- 27 after 200 games (44%)**, stopped: far worse than the measured 8-10% per-node cost explains (~-7); the ordering term leaks into search behaviour beyond ordering (see next rows) |
+| Lazy accumulator + AVX2 dot product (2026-09-13 22:30) | per-node CPU cost gone (equal to baseline at depth 12 on 60 positions); nodes to depth 12: 0.986 (scale 2000), 0.906 (scale 3000) |
 
 ## Engine speed (all bench-identical unless noted)
 
