@@ -20,8 +20,8 @@
 
 ## Which build
 
-Search: main + the hardening commit. Net: v3b unless the v3c SPRT passes [0,10] (then v3c). Policy net: only if its own
-SPRT passes; otherwise ship the code with `PolicyScale=0`.
+Search: main + the hardening commit. Net: v3b (the v3c SPRT stopped unresolved at +13 +/- 21). Policy net: both SPRTs
+failed (2026-09-14), shipped off (`PolicyScale=0`, `PolicyLmr=0`). Version string set to 1.0; tag `v1.0` on the owner's go.
 
 ## Announcement (draft for the owner to post; the owner's account, the owner's words)
 

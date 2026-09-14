@@ -38,7 +38,10 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Lazy accumulator + AVX2 dot product (2026-09-13 22:30) | per-node CPU cost gone (equal to baseline at depth 12 on 60 positions); nodes to depth 12: 0.986 (scale 2000), 0.906 (scale 3000) |
 | policy-v1 epoch 1 (annealed) | held-out top-1 32.5%, top-3 57.5% (epoch 0: 31.6 / 57.1); file runs/policy/policy-v1.bin |
 | SPRT PolicyScale=500 vs 0 at 8+0.08 [0,5], lazy binary (sprt/policy500.log) | -4 +/- 20 after 440 games, stopped: neutral |
-| Fixed depth 8, PolicyScale=2000 vs 0, 119 games (sprt/policy_depth8.pgn) | +18 +/- 64 (52.5%): the ordering term does not damage the tree at equal depth; the -42 at equal time was the eager implementation's per-node cost (now removed) plus noise |
+| Fixed depth 8, PolicyScale=2000 vs 0, 119 games (sprt/policy_depth8.pgn) | +18 +/- 64 (52.5%): the ordering term does not damage the tree at equal depth |
+| SPRT PolicyScale=2000 vs 0, annealed net, lazy binary, 8+0.08 [0,5] (sprt/policy2000b.log) | **-9 +/- 8 after 2520 games** (48.65%), LLR -2.02 at the 5 h cap: fail |
+| SPRT PolicyLmr=150 vs 0 (policy-guided LMR), 8+0.08 [0,5] (sprt/policylmr150.log) | **-10 +/- 8 after 2520 games** (48.53%), LLR -2.12: fail |
+| **Verdict (2026-09-14)** | A static 32%-top-1 prior neither orders nor reduces better than the engine's own histories at blitz; the fewer-nodes-to-depth signal did not convert to Elo. Shelved: code stays behind PolicyFile/PolicyScale/PolicyLmr (default off). Untested: root ordering / time management by policy confidence, slower time controls, a threat-input policy net |
 
 ## Engine speed (all bench-identical unless noted)
 

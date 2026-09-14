@@ -107,7 +107,7 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 | 7 | CCRL submission of the best build | an official number | 0 | after v3c + SPSA freeze |
 | 8 | QAT 4-bit or compositional threat net | the threat net wins at blitz too | ~$2, next budget | research |
 | 9 | **anna-v3c: continue training v3b** (+430 SB, six months) | measured on v1: 340 -> 800 SB was worth ~+80/node | ~$5 Modal | running 2026-09-13 15:36 |
-| 10 | **Policy net for move ordering, distilled from Leela's search** (runs/FRONTIER.md section 4): Lc0 T80 raw chunks carry the full MCTS move distribution per position; a 256-wide accumulator + one dot product per move gives a static prior for ordering, LMR and root/time management; SPRT'd in stages | no number promised; Kociolek 2.2 (weak engine) reports +75..+95 | 1-2 days + ~$2 Modal | queued after v3c |
+| 10 | Policy net for move ordering, distilled from Leela's search (runs/policy/PLAN.md) | built and measured: ordering -9 +/- 8, LMR -10 +/- 8 at blitz (2520 games each) | ~$3 Modal | **failed / shelved 2026-09-14**; root/time uses untested |
 | 11 | Auxiliary heads (WDL, moves-left) and a learned complexity output | search knows "long win" vs "win now"; margins scale with uncertainty | ~$2 Modal each | queued |
 | 12 | Own-data loop with DFRC starts (Stormphrax's recipe) | the path every top engine walked | CPU-box hours | next budget |
 
