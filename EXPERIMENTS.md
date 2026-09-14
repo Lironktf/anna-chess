@@ -37,7 +37,8 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | SPRT PolicyScale=2000 vs 0 at 8+0.08 [0,5], eager scalar implementation (sprt/policy2000.log) | **-42 +/- 27 after 200 games (44%)**, stopped: far worse than the measured 8-10% per-node cost explains (~-7); the ordering term leaks into search behaviour beyond ordering (see next rows) |
 | Lazy accumulator + AVX2 dot product (2026-09-13 22:30) | per-node CPU cost gone (equal to baseline at depth 12 on 60 positions); nodes to depth 12: 0.986 (scale 2000), 0.906 (scale 3000) |
 | policy-v1 epoch 1 (annealed) | held-out top-1 32.5%, top-3 57.5% (epoch 0: 31.6 / 57.1); file runs/policy/policy-v1.bin |
-| SPRT PolicyScale=500 vs 0 at 8+0.08 [0,5], lazy binary (sprt/policy500.log) | -4 +/- 20 after 440 games, stopped: neutral. Ordering-only use of the policy is not a gain at either weight |
+| SPRT PolicyScale=500 vs 0 at 8+0.08 [0,5], lazy binary (sprt/policy500.log) | -4 +/- 20 after 440 games, stopped: neutral |
+| Fixed depth 8, PolicyScale=2000 vs 0, 119 games (sprt/policy_depth8.pgn) | +18 +/- 64 (52.5%): the ordering term does not damage the tree at equal depth; the -42 at equal time was the eager implementation's per-node cost (now removed) plus noise |
 
 ## Engine speed (all bench-identical unless noted)
 
