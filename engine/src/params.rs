@@ -32,6 +32,8 @@ params! {
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).
     POLICY_LMR, "PolicyLmr", 0, 0, 2000;
+    // Lazy SMP: pick the final move by weighted vote over all threads (Stockfish scheme) instead of thread 0's.
+    THREAD_VOTE, "ThreadVote", 1, 0, 1;
     // Two-tier evaluation: when a second net is loaded (EvalFileFast), nodes with depth < TierDepth and all quiescence
     // nodes use the fast net; interior nodes use the main net. 0 = fast net only in quiescence (if loaded at all).
     TIER_DEPTH, "TierDepth", 0, 0, 30;

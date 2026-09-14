@@ -1606,18 +1606,42 @@ pub fn go(
         }
         handles.into_iter().map(|h| h.join().unwrap()).collect()
     });
-    let mut out = None;
+    let mut all: Vec<SearchResult> = Vec::with_capacity(results.len());
     let mut total_nodes = 0;
     for (id, (res, hist)) in results.into_iter().enumerate() {
         total_nodes += res.nodes;
         hists.insert(id, hist);
-        if id == 0 {
-            out = Some(res);
-        }
+        all.push(res);
     }
-    let mut res = out.unwrap();
+    let chosen = if crate::params::THREAD_VOTE.get() != 0 { vote(&all) } else { 0 };
+    let mut res = all.swap_remove(chosen);
     res.nodes = total_nodes;
     res
+}
+
+/// Index of the thread whose result to play. Threads that completed at least one iteration vote for their best
+/// move with weight (score - min_score + 10) * depth; the move with the most votes wins, reported by the deepest
+/// thread (then the highest score) that chose it. A thread with a mate score wins outright with the shortest mate.
+/// With one thread this is always thread 0.
+fn vote(all: &[SearchResult]) -> usize {
+    let voters: Vec<usize> = (0..all.len()).filter(|&i| all[i].depth > 0 && !all[i].best_move.is_none()).collect();
+    if voters.len() <= 1 {
+        return voters.first().copied().unwrap_or(0);
+    }
+    if let Some(&m) = voters.iter().filter(|&&i| all[i].score >= VALUE_MATE_IN_MAX_PLY).max_by_key(|&&i| all[i].score) {
+        return m;
+    }
+    let min_score = voters.iter().map(|&i| all[i].score).min().unwrap();
+    let mut votes: Vec<(Move, i64)> = Vec::new();
+    for &i in &voters {
+        let w = (all[i].score - min_score + 10) as i64 * all[i].depth as i64;
+        match votes.iter_mut().find(|(m, _)| *m == all[i].best_move) {
+            Some(e) => e.1 += w,
+            None => votes.push((all[i].best_move, w)),
+        }
+    }
+    let best_move = votes.iter().max_by_key(|(_, v)| *v).unwrap().0;
+    voters.iter().copied().filter(|&i| all[i].best_move == best_move).max_by_key(|&i| (all[i].depth, all[i].score)).unwrap_or(0)
 }
 
 impl Shared {
