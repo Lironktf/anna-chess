@@ -16,3 +16,8 @@ Run: Modal L40S, owner go 2026-09-14 09:40; same schedule as v3b (SB 30/310/30, 
 - 13:20 train end: 370 SB in ~2.2 h on the L40S (~5.0M pos/s; ~$4.3 Modal). Final anna-v3q-s2-30 pulled (22,838,336 B);
   engine evals match the trainer (24/26, -2072/-2059, 1753/1753, -287/-302, -1416/-1414, 59/60); strict netcheck flags only
   the missing-rook magnitude (-2072 vs -2000 bound, as v4 did). Verdict match: 200 games at 30k nodes vs anna-v3b-s2-30.
+
+## Result (2026-09-14 14:45)
+
+anna-v3q-s2-30 vs anna-v3b-s2-30 at equal nodes (30k, 200 games): **-74 +/- 34** (40-82-78). Failed. The 1024->512 step was
+free per node; 512->256 is not. No blitz SPRT (the +23% speed is worth ~+14, far short). v3b remains the net; width stays 512.

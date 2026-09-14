@@ -110,6 +110,9 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 | 10 | Policy net for move ordering, distilled from Leela's search (runs/policy/PLAN.md) | built and measured: ordering -9 +/- 8, LMR -10 +/- 8 at blitz (2520 games each) | ~$3 Modal | **failed / shelved 2026-09-14**; root/time uses untested |
 | 11 | Auxiliary heads (WDL, moves-left) and a learned complexity output | search knows "long win" vs "win now"; margins scale with uncertainty | ~$2 Modal each | queued |
 | 12 | Own-data loop with DFRC starts (Stormphrax's recipe) | the path every top engine walked | CPU-box hours | next budget |
+| 13 | L1 = 256 threat net (anna-v3q) | -74 per node vs v3b for +23% speed | $4.3 Modal | **failed 2026-09-14**; 512 is the floor |
+| 14 | Thread voting for Lazy SMP (ThreadVote) | non-regression SPRT at 4 threads (sprt/vote4t_b.log) | 0 | running |
+| 15 | Mixed data: Leela + Stockfish binpacks, 800 SB (runs/anna-v5/PLAN.md) | attacks the actual gap (eval quality); new data source, not more of the same | ~$9 Modal | needs owner go |
 
 If 5 lands in its expected range, top 40 at blitz is a matter of 1 and 3 on top. If it lands low, 1 and 2 are the
 paths that make the threat net the blitz engine as well.
