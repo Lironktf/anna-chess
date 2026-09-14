@@ -165,31 +165,44 @@ def evaluate(model, rec, device, batch=4096):
     return ce / max(tot, 1), top1 / max(tot, 1), top3 / max(tot, 1)
 
 
-def _decode_worker(args):
-    path, start, idx = args
-    a = np.memmap(path, dtype=np.uint8, mode="r")
-    a = a[: (len(a) // REC) * REC].reshape(-1, REC)
-    return decode_batch(np.ascontiguousarray(a[idx]))
+class RecordStream(torch.utils.data.IterableDataset):
+    """Streams decoded batches; each DataLoader worker handles a disjoint subset of the batches of every file, so
+    batches arrive through shared memory instead of being pickled. The last `hold_out` records of the last file are
+    never yielded (evaluation set)."""
+
+    def __init__(self, paths, batch, seed, hold_out, limit=0):
+        self.paths, self.batch, self.seed, self.hold_out, self.limit = list(paths), batch, seed, hold_out, limit
+
+    def __iter__(self):
+        info = torch.utils.data.get_worker_info()
+        wid, nw = (info.id, info.num_workers) if info else (0, 1)
+        rng = np.random.default_rng(self.seed)
+        order = list(self.paths)
+        rng.shuffle(order)
+        for path in order:
+            a = np.memmap(path, dtype=np.uint8, mode="r")
+            n = a.shape[0] // REC
+            if self.limit:
+                n = min(n, self.limit)
+            if path == self.paths[-1]:
+                n -= self.hold_out
+            a = a[: n * REC].reshape(-1, REC)
+            perm = rng.permutation(n)
+            starts = list(range(0, n - self.batch + 1, self.batch))
+            for k, i in enumerate(starts):
+                if k % nw != wid:
+                    continue
+                idx = np.sort(perm[i : i + self.batch])
+                feat, moves, promo, prob, nm, _ = decode_batch(np.ascontiguousarray(a[idx]))
+                yield (torch.from_numpy(feat.astype(np.int16)), torch.from_numpy(moves.astype(np.int8)),
+                       torch.from_numpy(promo.astype(np.int8)), torch.from_numpy(prob))
 
 
 def iterate_batches(paths, batch, workers, seed, hold_out, limit=0):
-    """Yield decoded batches over all files (each file loaded, permuted, decoded in worker processes). The last
-    `hold_out` records of the last file are never yielded (they are the evaluation set)."""
-    import concurrent.futures
-    rng = np.random.default_rng(seed)
-    order = list(paths)
-    rng.shuffle(order)
-    with concurrent.futures.ProcessPoolExecutor(max_workers=workers) as ex:
-        for path in order:
-            n = (np.memmap(path, dtype=np.uint8, mode="r").shape[0]) // REC
-            if limit:
-                n = min(n, limit)
-            if path == paths[-1]:
-                n -= hold_out
-            perm = rng.permutation(n)
-            jobs = [(path, 0, np.sort(perm[i : i + batch])) for i in range(0, n - batch + 1, batch)]
-            for out in ex.map(_decode_worker, jobs, chunksize=2):
-                yield out
+    ds = RecordStream(paths, batch, seed, hold_out, limit)
+    dl = torch.utils.data.DataLoader(ds, batch_size=None, num_workers=workers, prefetch_factor=4 if workers else None, persistent_workers=False)
+    for feat, moves, promo, prob in dl:
+        yield feat, moves, promo, prob
 
 
 def main():
@@ -233,13 +246,13 @@ def main():
     t0 = time.time()
     step = 0
     for ep in range(args.epochs):
-        for feat, moves, promo, prob, n, _ in iterate_batches(paths, args.batch, args.workers, seed=1000 + ep, hold_out=hold_out, limit=args.limit):
+        for feat, moves, promo, prob in iterate_batches(paths, args.batch, args.workers, seed=1000 + ep, hold_out=hold_out, limit=args.limit):
             if step >= steps:
                 break
-            feat_t = torch.from_numpy(feat).to(device)
-            moves_t = torch.from_numpy(moves).to(device)
-            promo_t = torch.from_numpy(promo).to(device)
-            prob_t = torch.from_numpy(prob).to(device)
+            feat_t = feat.to(device, non_blocking=True).long()
+            moves_t = moves.to(device, non_blocking=True).long()
+            promo_t = promo.to(device, non_blocking=True).long()
+            prob_t = prob.to(device, non_blocking=True)
             logit = model(feat_t, moves_t, promo_t)
             loss = -(prob_t * F.log_softmax(logit, dim=-1)).sum(-1).mean()
             opt.zero_grad(set_to_none=True)
@@ -250,7 +263,10 @@ def main():
             if step % 200 == 0:
                 print(f"ep {ep} step {step}/{steps} loss {loss.item():.4f} lr {sched.get_last_lr()[0]:.2e} {time.time() - t0:.0f}s", flush=True)
         ce, t1, t3 = evaluate(model, ev, device)
-        print(f"epoch {ep}: eval CE {ce:.4f} top1 {t1:.4f} top3 {t3:.4f}", flush=True)
+        print(f"epoch {ep}: eval CE {ce:.4f} top1 {t1:.4f} top3 {t3:.4f} ({time.time() - t0:.0f}s)", flush=True)
+        # Export after every epoch so a wall-clock cap never loses the run.
+        export(model, args.out)
+        torch.save(model.state_dict(), args.out + ".pt")
     export(model, args.out)
     torch.save(model.state_dict(), args.out + ".pt")
     if args.dump_logits:
