@@ -57,7 +57,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | ThreatHist (main history split by attacked from/to squares) | +1 +/- 8 after 2880 games | null, off |
 | SeTtmHist (Stockfish 2026 singular margins + TT-move history) | +4 +/- 9 after 4 h | unresolved, off |
 | ThreatOrder (lesser-piece threat term in quiet ordering) | +3 +/- 9 after 2000 games (4 h timeout), LLR 0.23 | unresolved, off |
-| SPSA of 13 search constants with v3b (sprt/spsa_v3b, 400 iters x 8 games at 8+0.08) | started 2026-09-13 13:04 | running |
+| SPSA of 13 search constants with v3b (sprt/spsa_v3b, 400 iters x 8 games at 8+0.08, 3200 games) | every parameter within 1% of its default (LmrBase 982->986, RfpMult 45->46, TmOptPct 100->97, SeMargin 59->60, LmrCutNode 3000->2960) | no signal at this size: 3200 games is ~1/30 of a real SPSA run; not worth an SPRT. Either the v1-era constants are already near a local optimum for v3b or the run was far too short. A proper tune needs a CPU box (100k games ~ $3.5) |
 
 ## Infrastructure lessons
 
