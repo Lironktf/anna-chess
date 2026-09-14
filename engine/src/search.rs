@@ -271,8 +271,8 @@ impl<'a> Thread<'a> {
         if self.net_fast.is_some() {
             self.nnue_fast.push(before, m, after);
         }
-        if let Some(pn) = self.policy {
-            self.pstate.push(before, m, pn);
+        if self.policy.is_some() {
+            self.pstate.push(before, m);
         }
     }
     #[inline(always)]
@@ -297,12 +297,13 @@ impl<'a> Thread<'a> {
     }
     /// Policy context for the move picker at the current node (None when off).
     #[inline(always)]
-    fn policy_ctx(&self, pos: &Position) -> Option<crate::movepick::PolicyCtx<'a, '_>> {
+    fn policy_ctx(&mut self, pos: &Position) -> Option<crate::movepick::PolicyCtx<'a, '_>> {
         let net: &'a crate::policy::PolicyNet = self.policy?;
         if crate::params::POLICY_SCALE.get() == 0 {
             return None;
         }
-        Some(crate::movepick::PolicyCtx { net, acc: self.pstate.top(pos.side_to_move()) })
+        self.pstate.ensure(net);
+        Some(crate::movepick::PolicyCtx { net, acc: self.pstate.acc(pos.side_to_move()) })
     }
 
     /// Draw by repetition or 50-move rule (position on top of the key stack).

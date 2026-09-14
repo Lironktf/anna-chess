@@ -231,7 +231,7 @@ fn main() {
                 fen = format!("{fen} {} {} {ep} {} 1", if stm_black { 'b' } else { 'w' }, if cs.is_empty() { "-".to_string() } else { cs }, r[27]);
                 let pos = engine::position::Position::from_fen(&fen).expect("fen");
                 st.reset(&pos, &net);
-                let acc = st.top(pos.side_to_move());
+                let acc = st.acc(pos.side_to_move());
                 let (mut best_ref, mut best_eng) = ((0u16, f64::MIN), (0u16, i32::MIN));
                 for &(m16, l) in moves {
                     let m = engine::types::Move(m16);
