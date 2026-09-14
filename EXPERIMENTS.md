@@ -12,7 +12,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | anna-v2 (planned, skipped) | v1 arch on 4 months | - | not run: v3 subsumed it | skipped |
 | anna-v3 | threats + pawn pairs + psq, L1 1024, multilayer/pairwise, 4 months, 370 SB | $3.50 (incl. $0.35 dead host) | equal nodes +83 vs v1; blitz -20; 60+0.6 +42; 120+1.2 +29 | superseded by v3b |
 | anna-v3b | same at L1 512 (half-width rows) | $1.10 | equal nodes +83 vs v1 (same as v3); blitz -29 (box) / -14 (laptop, faster engine); 60+0.6 +53; 120+1.2 +23; vs v3 +32 blitz / level at 60+0.6 | **best net for slow time controls** |
-| anna-v3c | v3b resumed (weights + Adam state) for 430 SB on six months (Apr, Jun added) + 30 SB WDL, restart LR 5e-4, L40S on Modal | ~$6 Modal credit | **equal nodes vs v3b: +12 +/- 18** (600 games: +176 -155 =269, 51.75%); midway s1-170 was -78 (mid-anneal) | SPRT [0,10] at 8+0.08 stopped unresolved at 400 games (+10 +/- 22, LLR 0.38) to free the cores for the policy net; not adopted. Lesson: v3b was closer to converged than v1@340 (threat inputs learn faster), so "train longer" is worth far less here than on v1; a gentler restart (1e-4) is the only variant worth $4 more |
+| anna-v3c | v3b resumed (weights + Adam state) for 430 SB on six months (Apr, Jun added) + 30 SB WDL, restart LR 5e-4, L40S on Modal | ~$6 Modal credit | **equal nodes vs v3b: +12 +/- 18** (600 games: +176 -155 =269, 51.75%); midway s1-170 was -78 (mid-anneal) | SPRT [0,10] at 8+0.08 stopped unresolved at 440 games (+13 +/- 21) to free the cores for the policy net; not adopted. Lesson: v3b was closer to converged than v1@340 (threat inputs learn faster), so "train longer" is worth far less here than on v1; a gentler restart (1e-4) is the only variant worth $4 more |
 | anna-v4 | v1 inputs + v3 output stack (pairwise -> 16 -> 32 -> 1), no threat rows, L1 1024, 340 SB on 4 months | $1.62 | **equal nodes -83 +/- 33 vs v1** (200 games, 38%); equal time 8+0.08 on the box -50 +/- 25 (300 games); 40% at s1-80 already; eval scale and inference verified (matches trainer, same |cp| as v1/v3b); loss curve tracked v3b's | **failed**: the +83/node of v3/v3b came from the threat inputs, not the output stack; v1 had 2.4x the positions (800 SB vs 340). **v4 vs v1@340 SB (same training budget) at equal nodes: +12 +/- 33 (120 games)**: the output stack adds nothing measurable at our scale, and v1's extra 460 SB are worth ~+80. Lesson: more superbatches on the same data is worth a lot; v3b (340 SB) has the same headroom |
 
 ## Net-side experiments (free)
@@ -88,8 +88,9 @@ checked twice); v1 remains available as `nets/fable-v1-800.bin` via EvalFile.
 
 ## Infrastructure lessons
 
-- `pgrep -f` / `pkill -f` match the shell that runs them: killed my own shell three times (last: 2026-09-13, a `pkill -f "ssh ... chmod"`
-  inside a command line containing that string). Select by exact argv fields with awk, never by substring.
+- `pgrep -f` / `pkill -f` / `awk '$0 ~ /pattern/'` over `ps` output match the shell that runs them (the pattern text is in that
+  shell's own argv): killed my own shell four times (last: 2026-09-13 22:45). Rule: first list candidates read-only
+  (`ps -eo pid,args | grep ...`), then kill the printed PIDs explicitly, never pattern-kill in one command.
 - The ssh that starts the detached on-box self-destruct can hang after arming (vast_launch.sh and cpu_eval.sh, 2026-09-13): bound it
   with `timeout` and verify arming in a separate ssh.
 - vast.ai unverified CPU-only hosts failed 3 of 4 times (ssh never up, never running, container exited); verified hosts with GPUs worked.
