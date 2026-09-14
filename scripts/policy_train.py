@@ -180,13 +180,14 @@ class RecordStream(torch.utils.data.IterableDataset):
         order = list(self.paths)
         rng.shuffle(order)
         for path in order:
-            a = np.memmap(path, dtype=np.uint8, mode="r")
-            n = a.shape[0] // REC
+            # Sequential read of the whole file (random 304-byte reads through a memmap are very slow on a
+            # network-backed volume); the permutation then happens in RAM.
+            n = np.memmap(path, dtype=np.uint8, mode="r").shape[0] // REC
             if self.limit:
                 n = min(n, self.limit)
             if path == self.paths[-1]:
                 n -= self.hold_out
-            a = a[: n * REC].reshape(-1, REC)
+            a = np.fromfile(path, dtype=np.uint8, count=n * REC).reshape(-1, REC)
             perm = rng.permutation(n)
             starts = list(range(0, n - self.batch + 1, self.batch))
             for k, i in enumerate(starts):
@@ -215,7 +216,7 @@ def main():
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--out", required=True)
     ap.add_argument("--hidden", type=int, default=H)
-    ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--workers", type=int, default=7)
     ap.add_argument("--dump-logits", default="", help="write reference logits for the first --dump-n eval records")
     ap.add_argument("--dump-n", type=int, default=300)
     args = ap.parse_args()
