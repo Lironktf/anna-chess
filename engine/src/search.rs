@@ -959,6 +959,14 @@ impl<'a> Thread<'a> {
             };
             self.ss(ply).stat_score = stat_score;
             r -= stat_score * 1287 / crate::params::LMR_HIST_DIV.get();
+            if !capture && crate::params::POLICY_LMR.get() != 0 {
+                if let Some(net) = self.policy {
+                    // The top of the policy stack is this node (children push and pop symmetrically).
+                    self.pstate.ensure(net);
+                    let lg = net.logit_q(self.pstate.acc(us), us, moved_piece.piece_type(), m);
+                    r -= crate::params::POLICY_LMR.get() * lg / 1024;
+                }
+            }
 
             let mut value;
             if depth >= 2 && move_count > 1 {
