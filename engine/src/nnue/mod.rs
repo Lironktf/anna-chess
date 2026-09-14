@@ -72,6 +72,7 @@ pub enum AnyNet {
     V3(v3::w1024::NetworkV3),
     /// half-width v3 (L1 = 512)
     V3H(v3::w512::NetworkV3),
+    V3Q(v3::w256::NetworkV3),
     /// v4: v3's output stack on piece-square inputs only (no threat rows)
     V4(v3::w1024nt::NetworkV3),
 }
@@ -82,6 +83,8 @@ impl AnyNet {
             v3::w1024::NetworkV3::from_bytes(bytes).map(AnyNet::V3)
         } else if bytes.len() >= v3::w512::NET_BYTES_UNPADDED && bytes.len() <= v3::w512::NET_BYTES_UNPADDED + 64 {
             v3::w512::NetworkV3::from_bytes(bytes).map(AnyNet::V3H)
+        } else if bytes.len() >= v3::w256::NET_BYTES_UNPADDED && bytes.len() <= v3::w256::NET_BYTES_UNPADDED + 64 {
+            v3::w256::NetworkV3::from_bytes(bytes).map(AnyNet::V3Q)
         } else if bytes.len() >= v3::w1024nt::NET_BYTES_UNPADDED && bytes.len() <= v3::w1024nt::NET_BYTES_UNPADDED + 64 {
             v3::w1024nt::NetworkV3::from_bytes(bytes).map(AnyNet::V4)
         } else {
@@ -108,6 +111,7 @@ impl AnyNet {
             AnyNet::V1(_) => "v1 (768x16hm->1024)x2->1x8",
             AnyNet::V3(_) => "v3 threats+pawnpairs (768x16hm+64368->1024)x2 pairwise ->16->32->1 x8",
             AnyNet::V3H(_) => "v3 half width threats+pawnpairs (768x16hm+64368->512)x2 pairwise ->16->32->1 x8",
+            AnyNet::V3Q(_) => "v3 quarter width threats+pawnpairs (768x16hm+64368->256)x2 pairwise ->16->32->1 x8",
             AnyNet::V4(_) => "v4 piece-square only (768x16hm->1024)x2 pairwise ->16->32->1 x8",
         }
     }
@@ -118,6 +122,7 @@ pub enum AnyState {
     V1(NnueState),
     V3(v3::w1024::StateV3),
     V3H(v3::w512::StateV3),
+    V3Q(v3::w256::StateV3),
     V4(v3::w1024nt::StateV3),
 }
 
@@ -126,6 +131,7 @@ impl AnyState {
         match net {
             Some(AnyNet::V3(_)) => AnyState::V3(v3::w1024::StateV3::new()),
             Some(AnyNet::V3H(_)) => AnyState::V3H(v3::w512::StateV3::new()),
+            Some(AnyNet::V3Q(_)) => AnyState::V3Q(v3::w256::StateV3::new()),
             Some(AnyNet::V4(_)) => AnyState::V4(v3::w1024nt::StateV3::new()),
             _ => AnyState::V1(NnueState::new()),
         }
@@ -136,6 +142,7 @@ impl AnyState {
             (AnyState::V1(s), AnyNet::V1(n)) => s.reset(pos, n),
             (AnyState::V3(s), AnyNet::V3(n)) => s.reset(pos, n),
             (AnyState::V3H(s), AnyNet::V3H(n)) => s.reset(pos, n),
+            (AnyState::V3Q(s), AnyNet::V3Q(n)) => s.reset(pos, n),
             (AnyState::V4(s), AnyNet::V4(n)) => s.reset(pos, n),
             _ => panic!("nnue state / network architecture mismatch"),
         }
@@ -146,6 +153,7 @@ impl AnyState {
             AnyState::V1(s) => s.push(before, m, after),
             AnyState::V3(s) => s.push(before, m, after),
             AnyState::V3H(s) => s.push(before, m, after),
+            AnyState::V3Q(s) => s.push(before, m, after),
             AnyState::V4(s) => s.push(before, m, after),
         }
     }
@@ -155,6 +163,7 @@ impl AnyState {
             AnyState::V1(s) => s.push_null(),
             AnyState::V3(s) => s.push_null(after),
             AnyState::V3H(s) => s.push_null(after),
+            AnyState::V3Q(s) => s.push_null(after),
             AnyState::V4(s) => s.push_null(after),
         }
     }
@@ -164,6 +173,7 @@ impl AnyState {
             AnyState::V1(s) => s.pop(),
             AnyState::V3(s) => s.pop(),
             AnyState::V3H(s) => s.pop(),
+            AnyState::V3Q(s) => s.pop(),
             AnyState::V4(s) => s.pop(),
         }
     }
@@ -173,6 +183,7 @@ impl AnyState {
             (AnyState::V1(s), AnyNet::V1(n)) => s.evaluate(pos, n),
             (AnyState::V3(s), AnyNet::V3(n)) => s.evaluate(n),
             (AnyState::V3H(s), AnyNet::V3H(n)) => s.evaluate(n),
+            (AnyState::V3Q(s), AnyNet::V3Q(n)) => s.evaluate(n),
             (AnyState::V4(s), AnyNet::V4(n)) => s.evaluate(n),
             _ => panic!("nnue state / network architecture mismatch"),
         }
@@ -183,6 +194,7 @@ impl AnyState {
             AnyNet::V1(n) => NnueState::evaluate_reference(pos, n),
             AnyNet::V3(n) => n.evaluate_reference(pos),
             AnyNet::V3H(n) => n.evaluate_reference(pos),
+            AnyNet::V3Q(n) => n.evaluate_reference(pos),
             AnyNet::V4(n) => n.evaluate_reference(pos),
         }
     }

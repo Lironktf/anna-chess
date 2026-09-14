@@ -160,10 +160,11 @@ fn main() {
         }
         Some("randomnet-v3") => {
             // Write a deterministic random v3 network (for speed tests and pipeline checks).
-            let path = args.get(2).expect("usage: engine randomnet-v3 <out.bin> [512|1024|nt]");
+            let path = args.get(2).expect("usage: engine randomnet-v3 <out.bin> [256|512|1024|nt]");
             let width = args.get(3).map(|s| s.as_str()).unwrap_or("1024");
             let bytes = match width {
                 "512" => engine::nnue::v3::w512::NetworkV3::random(2026).to_bytes(),
+                "256" => engine::nnue::v3::w256::NetworkV3::random(2026).to_bytes(),
                 "nt" => engine::nnue::v3::w1024nt::NetworkV3::random(2026).to_bytes(),
                 _ => engine::nnue::v3::w1024::NetworkV3::random(2026).to_bytes(),
             };

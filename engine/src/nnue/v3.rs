@@ -26,6 +26,12 @@ pub mod w512 {
     pub const HAS_THREATS: bool = true;
     include!("v3_body.rs");
 }
+/// Quarter width (anna-v5 experiment): 256 B threat rows; v3 (1024) and v3b (512) were equal per node.
+pub mod w256 {
+    pub const L1: usize = 256;
+    pub const HAS_THREATS: bool = true;
+    include!("v3_body.rs");
+}
 /// anna-v4: the same multilayer/pairwise net WITHOUT threat or pawn-pair inputs (piece-square only),
 /// i.e. v1's inputs with v3's output stack. No threat rows to fetch, so it runs at ~v1 speed.
 pub mod w1024nt {
