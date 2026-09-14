@@ -10,7 +10,7 @@
 | Net check of the shipped net | `engine netcheck <net> --strict` | v3b ok |
 | Moves-to-go time control (40/15-style) | 40/20 soak under load, hand-checked allocation | 20 games, 0 forfeits (after the 2026-09-13 fixes) |
 | Hyper-blitz soak (time losses, illegal moves, crashes) | 3+0.03 x 40 | 0 forfeits |
-| 4 threads + 256 MB hash, moves-to-go | 40/60 x 6, Threads=4 | running |
+| 4 threads + 256 MB hash, moves-to-go | 40/60 x 6, Threads=4 | 6 games, 0 forfeits, 0 warnings |
 | Long soak (several thousand games, no crash/forfeit) | the SPRTs of the last days on the same code | v3c SPRT (running) counts once the hardening build is used |
 | Windows + Linux binaries from CI | tag `v1.0` -> GitHub release | CI green on every push |
 | README disclosure + attribution | section "How Anna was made" | done |
