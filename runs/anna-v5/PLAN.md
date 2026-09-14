@@ -27,3 +27,8 @@ Owner go for the run and for the v1.0 tag. Data validation on the first 200 MB o
 Loader note: bullet's concat loader reads files in the given order every epoch, so the run interleaves sources:
 `01,02,sfdfrc,03,04,sfuho,05,06`. Schedule SB 30/740/30 (800 SB), L1 512, LR 1e-3 -> 1e-6, L40S, cap 5.5 h (~$9).
 Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
+
+## Log
+- 16:05 smoke (SB 2/2/1, mixed list): checkpoint round-trips (45,641,280 B), netcheck ok, evals near zero as expected.
+- 16:20 real run launched: net anna-v5, months 01,02,sfdfrc,03,04,sfuho,05,06, SB 30/740/30, L1 512, LR1 1e-3, L40S,
+  cap 5.5 h. Expected end ~21:00 local. Monitor polls the volume every 15 min.
