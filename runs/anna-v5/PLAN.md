@@ -16,3 +16,14 @@ dfrc_n5000 + nodes5000pv2_UHO (~78 GB more; ~$0.5 to fetch), 800 SB instead of 3
 ~$8-9 of the ~$14 Modal credit that remains after anna-v3q. Smoke first as always. Verification: equal nodes vs v3b, then
 4 threads 60+0.6 vs v1 and Stormphrax.
 Needs the owner's go (Modal credit) and a decision on width after anna-v3q.
+
+## Go and validation (2026-09-14 15:05)
+
+Owner go for the run and for the v1.0 tag. Data validation on the first 200 MB of each Stockfish file (`inspect stats`):
+- dfrc_n5000: 2.0M entries read, 73.2% kept by the filter, ~64M entries/47M kept per 200 MB slice (~12B entries in the
+  file), score bins wide but symmetric, results 397k/670k/396k (L/D/W), feature cross-checks 1463/1463 passed, sample
+  FENs are valid DFRC positions.
+- nodes5000pv2_UHO: 73.6% kept, results 377k/717k/377k, feature cross-checks 1471/1471, valid FENs.
+Loader note: bullet's concat loader reads files in the given order every epoch, so the run interleaves sources:
+`01,02,sfdfrc,03,04,sfuho,05,06`. Schedule SB 30/740/30 (800 SB), L1 512, LR 1e-3 -> 1e-6, L40S, cap 5.5 h (~$9).
+Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
