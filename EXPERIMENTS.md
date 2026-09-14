@@ -12,7 +12,7 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | anna-v2 (planned, skipped) | v1 arch on 4 months | - | not run: v3 subsumed it | skipped |
 | anna-v3 | threats + pawn pairs + psq, L1 1024, multilayer/pairwise, 4 months, 370 SB | $3.50 (incl. $0.35 dead host) | equal nodes +83 vs v1; blitz -20; 60+0.6 +42; 120+1.2 +29 | superseded by v3b |
 | anna-v3b | same at L1 512 (half-width rows) | $1.10 | equal nodes +83 vs v1 (same as v3); blitz -29 (box) / -14 (laptop, faster engine); 60+0.6 +53; 120+1.2 +23; vs v3 +32 blitz / level at 60+0.6 | **best net for slow time controls** |
-| anna-v3c | v3b resumed (weights + Adam state) for 430 SB on six months (Apr, Jun added) + 30 SB WDL, restart LR 5e-4, L40S on Modal | ~$6 Modal credit | **equal nodes vs v3b: +12 +/- 18** (600 games: +176 -155 =269, 51.75%); midway s1-170 was -78 (mid-anneal) | level-to-slightly-positive; not adopted yet (an SPRT [0,10] decides when the laptop is free). Lesson: v3b was closer to converged than v1@340 (threat inputs learn faster), so "train longer" is worth far less here than on v1; a gentler restart (1e-4) is the only variant worth $4 more |
+| anna-v3c | v3b resumed (weights + Adam state) for 430 SB on six months (Apr, Jun added) + 30 SB WDL, restart LR 5e-4, L40S on Modal | ~$6 Modal credit | **equal nodes vs v3b: +12 +/- 18** (600 games: +176 -155 =269, 51.75%); midway s1-170 was -78 (mid-anneal) | SPRT [0,10] at 8+0.08 stopped unresolved at 400 games (+10 +/- 22, LLR 0.38) to free the cores for the policy net; not adopted. Lesson: v3b was closer to converged than v1@340 (threat inputs learn faster), so "train longer" is worth far less here than on v1; a gentler restart (1e-4) is the only variant worth $4 more |
 | anna-v4 | v1 inputs + v3 output stack (pairwise -> 16 -> 32 -> 1), no threat rows, L1 1024, 340 SB on 4 months | $1.62 | **equal nodes -83 +/- 33 vs v1** (200 games, 38%); equal time 8+0.08 on the box -50 +/- 25 (300 games); 40% at s1-80 already; eval scale and inference verified (matches trainer, same |cp| as v1/v3b); loss curve tracked v3b's | **failed**: the +83/node of v3/v3b came from the threat inputs, not the output stack; v1 had 2.4x the positions (800 SB vs 340). **v4 vs v1@340 SB (same training budget) at equal nodes: +12 +/- 33 (120 games)**: the output stack adds nothing measurable at our scale, and v1's extra 460 SB are worth ~+80. Lesson: more superbatches on the same data is worth a lot; v3b (340 SB) has the same headroom |
 
 ## Net-side experiments (free)
@@ -25,6 +25,16 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | Feature-usage histogram (v3b, real search, `--features engine/nnue_profile`) | 23,609 distinct features used; top 512 = 54%, top 2048 = 84%, top 4096 = 93.5%, top 8192 = 98.2% of applied rows | hot set is 2-4 MB: basis for hot/cold layouts and small-table designs |
 | Transparent huge pages for the tables (GLIBC_TUNABLES=glibc.malloc.hugetlb=1; THP is already "always" here) | no change (284/299k vs 254/294k) | TLB is not the bottleneck on this laptop |
 | Two-tier evaluation (EvalFileFast + TierDepth=4: v3b at interior nodes, v1 in quiescence/shallow nodes; v3b did ~15% of evals, 432k vs 271k nps) | -41 +/- 27 vs v1 at 8+0.08 after 240 games | fails: mixing two evaluators in one tree hurts more than the speed helps; code kept behind the option, idea parked |
+
+## Policy net for move ordering (Leela-search distillation, 2026-09-13; runs/policy/PLAN.md)
+
+| Step | Result |
+|---|---|
+| Data: 25 Lc0 T80 tars (Aug 2025) through `lc0conv`, every policy/best/played move verified legal | 118.6M positions, 99.995% kept |
+| Net policy-v1 (768->256 accumulator + per-move dot, PyTorch on an L4, ~$2) | epoch 0: held-out top-1 31.6%, top-3 57.1% (random ~4%) |
+| Engine `policycheck` vs trainer logits | mean diff 0.02 logits, top-1 agreement 97-98% (quantisation only) |
+| Nodes to depth 11, 30 UHO positions, v3b: PolicyScale 0 / 1000 / 2000 / 4000 / 8000 | geo-mean node ratio 1.000 / 0.845 / **0.800** / 0.824 / 0.903; CPU time lower too |
+| SPRT PolicyScale=2000 vs 0 at 8+0.08 [0,5] (sprt/policy2000.log) | running from 22:45 |
 
 ## Engine speed (all bench-identical unless noted)
 
