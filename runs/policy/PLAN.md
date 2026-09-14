@@ -55,3 +55,5 @@ Trainer: PyTorch on Modal (L4/L40S), a few epochs over 100M positions: ~1 h.
   param `PolicyScale` (history units per logit, 0 = off; bench 854588 unchanged), `engine policycheck` reproduces the
   trainer's logits (mean |diff| 0.02, top-1 agreement 97-98%: quantisation only).
 - Next: Modal training on ~110M records (2 epochs, L4), then fixed-depth node counts and SPRT of PolicyScale.
+- 22:35: policy-v1 epoch 0 (118.6M positions, L4, 1.5 h/epoch): held-out CE 2.521, **top-1 31.6%, top-3 57.1%** (random ~4%).
+  Net pulled (500 KB), loads in the engine. Epoch 1 (annealed) lands ~23:50. Fixed-depth node counts and SPRT next.
