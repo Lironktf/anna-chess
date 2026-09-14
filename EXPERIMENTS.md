@@ -59,6 +59,20 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | ThreatOrder (lesser-piece threat term in quiet ordering) | +3 +/- 9 after 2000 games (4 h timeout), LLR 0.23 | unresolved, off |
 | SPSA of 13 search constants with v3b (sprt/spsa_v3b, 400 iters x 8 games at 8+0.08, 3200 games) | every parameter within 1% of its default (LmrBase 982->986, RfpMult 45->46, TmOptPct 100->97, SeMargin 59->60, LmrCutNode 3000->2960) | no signal at this size: 3200 games is ~1/30 of a real SPSA run; not worth an SPRT. Either the v1-era constants are already near a local optimum for v3b or the run was far too short. A proper tune needs a CPU box (100k games ~ $3.5) |
 
+## Release hardening (2026-09-13 evening, for the rating-list build)
+
+| Check | Before | After |
+|---|---|---|
+| Repeating control 40 moves / 20 s (CCRL-style moves-to-go), laptop at load 9 | 1 time forfeit in 6 games (1 ms overrun); fastchess "sign mismatch in mate scores" warnings | 0 forfeits, 0 warnings, 0 illegal moves in 20 games |
+| 3+0.03 hyper-blitz soak under the same load | (earlier 8+0.08 SPRTs: 9 forfeits in 2037 games, 0.4%) | 0 forfeits, 0 warnings in 40 games |
+| Dedicated CPU box, 60+0.6, 4 threads | 0 forfeits in 200 games | - |
+
+Fixes (bench 854588 unchanged, 42 tests): (1) an iteration aborted before its first root move completes no longer prints the
+sentinel score, which formatted as "mate 1"; (2) the hash move is put first in the root list so such an abort plays the best
+guess instead of the first generated move; (3) the clock is checked every 64 nodes (instead of 1024) within 40 ms of the hard
+limit; (4) default Move Overhead 10 -> 20 ms. Moves-to-go allocation checked by hand: 15.4 s per move at 40/15 min from the
+start, ~2.5 s of 3 s on the last move of a period.
+
 ## Infrastructure lessons
 
 - `pgrep -f` / `pkill -f` match the shell that runs them: killed my own shell three times (last: 2026-09-13, a `pkill -f "ssh ... chmod"`
