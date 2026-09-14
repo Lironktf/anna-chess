@@ -11,3 +11,5 @@ Run: Modal L40S, owner go 2026-09-14 09:40; same schedule as v3b (SB 30/310/30, 
 ## Log
 - 10:35 local: s0-30 pulled, netcheck ok (all evals in range), loss 0.01152 at SB 30 (v3b 0.01099), 5.0M pos/s.
 - Speed (architecture only, s0-30 net): 227k nodes/CPU-s vs v3b 185k (+23%), v1 458k; depth 11, 30 UHO positions, laptop under load.
+- 11:50 midway: v3q s1-90 vs v3b s1-100, equal nodes 30k, 100 games: **-53 +/- 42** (25-40-35). Warning sign; the +23% speed
+  is worth ~+14 at blitz, so a per-node loss beyond ~15 makes 256 a net loss. Final: 200 games vs v3b s2-30, then a blitz SPRT.
