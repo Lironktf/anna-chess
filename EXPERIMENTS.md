@@ -73,6 +73,9 @@ guess instead of the first generated move; (3) the clock is checked every 64 nod
 limit; (4) default Move Overhead 10 -> 20 ms. Moves-to-go allocation checked by hand: 15.4 s per move at 40/15 min from the
 start, ~2.5 s of 3 s on the last move of a period.
 
+Embedded default net switched from v1 to v3b for the release build (2026-09-13 22:10): **bench 854588 -> 630353** (deterministic,
+checked twice); v1 remains available as `nets/fable-v1-800.bin` via EvalFile.
+
 ## Infrastructure lessons
 
 - `pgrep -f` / `pkill -f` match the shell that runs them: killed my own shell three times (last: 2026-09-13, a `pkill -f "ssh ... chmod"`

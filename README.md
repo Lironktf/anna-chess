@@ -98,7 +98,7 @@ validated end-to-end locally first, and docs are never trusted over source.
 ## Status (2026-09-13)
 
 Engine complete and tested (perft incl. Chess960, NNUE incremental/SIMD equivalence, deterministic bench, 42 unit tests).
-Networks: v1 (default, embedded), v3b (threat + pawn-pair net, +53 Elo over v1 at 60+0.6 and at 4 threads), v3c and v4
-(experiments, see `EXPERIMENTS.md`). Measured under CCRL 40/15 conditions (4 threads, 60+0.6): v3b is 108 +/- 30 Elo
+Networks: v3b (default, embedded since 2026-09-13: threat + pawn-pair net, +53 Elo over v1 at 60+0.6 and at 4 threads),
+v1 (`nets/fable-v1-800.bin`, the faster piece-square net), v3c and v4 (experiments, see `EXPERIMENTS.md`). Measured under CCRL 40/15 conditions (4 threads, 60+0.6): v3b is 108 +/- 30 Elo
 below Stormphrax 8 (3634 on that list), i.e. about 3525 on the 40/15 scale. Current work: the move-ordering policy net,
 SPSA-tuned constants, and the first release build for rating lists (`runs/ROADMAP2.md`).
