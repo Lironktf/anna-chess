@@ -21,7 +21,11 @@
 ## Which build
 
 Search: main + the hardening commit. Net: v3b (the v3c SPRT stopped unresolved at +13 +/- 21). Policy net: both SPRTs
-failed (2026-09-14), shipped off (`PolicyScale=0`, `PolicyLmr=0`). Version string set to 1.0; tag `v1.0` on the owner's go.
+failed (2026-09-14), shipped off (`PolicyScale=0`, `PolicyLmr=0`).
+
+**Released 2026-09-14 15:40 (owner go):** tag `v1.0` at 504b938, https://github.com/Lironktf/anna-chess/releases/tag/v1.0 with
+`anna-linux-x86-64-v3` and `anna-windows-x86-64-v3.exe` (46.8 MB each, v3b embedded). The first tag push failed on
+release creation (token lacked contents:write); fixed in the workflow and the tag moved. Posting to rating lists is the owner's.
 
 ## Announcement (draft for the owner to post; the owner's account, the owner's words)
 
