@@ -12,3 +12,4 @@
  "success": true
 }
 2026-09-13T16:02:58Z train start superbatches=310 (SB0=30 SB2=30, v4) self-destruct armed max_hours=6 (log verified); tmux started manually (launcher's train step stops after arming)
+2026-09-13T17:41:15Z destroyed instance 50903665
