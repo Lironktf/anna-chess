@@ -110,6 +110,8 @@ pub struct Thread<'a> {
     /// Optional fast second net (two-tier evaluation), with its own accumulator state kept in sync.
     net_fast: Option<&'a AnyNet>,
     nnue_fast: AnyState,
+    /// Node-count mask between clock checks: 1023 normally, 63 within 40 ms of the hard limit (main thread).
+    time_check_mask: u64,
     /// Optional move-ordering policy net (UCI PolicyFile) and its accumulator stack.
     policy: Option<&'a crate::policy::PolicyNet>,
     pstate: crate::policy::PolicyState,
@@ -162,6 +164,7 @@ impl<'a> Thread<'a> {
             nnue: AnyState::for_net(net),
             net_fast,
             nnue_fast: AnyState::for_net(net_fast),
+            time_check_mask: 1023,
             policy,
             pstate: crate::policy::PolicyState::new(),
             n_eval: [0; 2],
@@ -228,8 +231,14 @@ impl<'a> Thread<'a> {
             return;
         }
         let tm = self.limits.tm;
-        if tm.use_time && tm.elapsed_ms() >= tm.maximum {
-            self.shared.stop.store(true, Ordering::Relaxed);
+        if tm.use_time {
+            let elapsed = tm.elapsed_ms();
+            if elapsed >= tm.maximum {
+                self.shared.stop.store(true, Ordering::Relaxed);
+            }
+            // Close to the hard limit, look at the clock every 64 nodes so a slow node rate (heavy load, deep
+            // quiescence) cannot overshoot it by more than a fraction of a millisecond of search.
+            self.time_check_mask = if tm.maximum - elapsed < 40.0 { 63 } else { 1023 };
         }
         if self.limits.max_nodes > 0 && self.total_nodes() >= self.limits.max_nodes {
             self.shared.stop.store(true, Ordering::Relaxed);
@@ -464,7 +473,7 @@ impl<'a> Thread<'a> {
         depth = depth.min(MAX_PLY as i32 - 1);
         self.pv_len[ply] = 0;
 
-        if self.nodes & 1023 == 0 {
+        if self.nodes & self.time_check_mask == 0 {
             self.check_time();
         }
         if self.should_stop() {
@@ -1111,7 +1120,7 @@ impl<'a> Thread<'a> {
     // -----------------------------------------------------------------------------------------
     pub fn qsearch(&mut self, pos: &Position, pv_node: bool, mut alpha: Value, beta: Value, ply: usize) -> Value {
         self.pv_len[ply] = 0;
-        if self.nodes & 1023 == 0 {
+        if self.nodes & self.time_check_mask == 0 {
             self.check_time();
         }
         if self.should_stop() {
@@ -1315,6 +1324,14 @@ impl<'a> Thread<'a> {
         if self.root_moves.is_empty() {
             return;
         }
+        // Put the hash move first: if the first iteration is cut off before any root move completes, the move
+        // played is root_moves[0], which must be the best guess rather than the first generated move.
+        let (tt_hit, tt_data, _) = self.shared.tt.probe(root.key());
+        if tt_hit && !tt_data.mv.is_none() {
+            if let Some(i) = self.root_moves.iter().position(|rm| rm.mv == tt_data.mv) {
+                self.root_moves.swap(0, i);
+            }
+        }
         // Syzygy root filtering: keep only moves that preserve the best tablebase result.
         if crate::tb::largest() > 0 && self.is_main() || crate::tb::largest() > 0 {
             if let Some(res) = crate::tb::probe_root(root) {
@@ -1473,7 +1490,9 @@ impl<'a> Thread<'a> {
         let hashfull = self.shared.tt.hashfull();
         for i in 0..=pv_idx.min(self.root_moves.len() - 1) {
             let rm = &self.root_moves[i];
-            if rm.score == -VALUE_INFINITE && i > 0 {
+            // An iteration aborted before its first root move completes leaves the sentinel score; printing it
+            // would show as "mate 1" (seen as fastchess sign-mismatch warnings). Print nothing for that line.
+            if rm.score == -VALUE_INFINITE {
                 continue;
             }
             let v = rm.score;

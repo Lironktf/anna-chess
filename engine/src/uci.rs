@@ -49,7 +49,7 @@ impl Engine {
             hash_mb: 16,
             threads: 1,
             multi_pv: 1,
-            move_overhead: 10,
+            move_overhead: 20,
             chess960: false,
             eval_file: DEFAULT_NET.to_string(),
             net_fast: None,
@@ -252,7 +252,7 @@ pub fn uci_loop() {
                 println!("option name Hash type spin default 16 min 1 max 33554432");
                 println!("option name Threads type spin default 1 min 1 max 1024");
                 println!("option name MultiPV type spin default 1 min 1 max 256");
-                println!("option name Move Overhead type spin default 10 min 0 max 5000");
+                println!("option name Move Overhead type spin default 20 min 0 max 5000");
                 println!("option name UCI_Chess960 type check default false");
                 println!("option name EvalFile type string default {}", DEFAULT_NET);
                 println!("option name EvalFileFast type string default <empty>");
@@ -300,7 +300,7 @@ pub fn uci_loop() {
                         e.resize();
                     }
                     "multipv" => e.multi_pv = value.parse::<usize>().unwrap_or(1).max(1),
-                    "move overhead" => e.move_overhead = value.parse().unwrap_or(10),
+                    "move overhead" => e.move_overhead = value.parse().unwrap_or(20),
                     "uci_chess960" => {
                         e.chess960 = value == "true";
                         let fen = e.pos.to_fen();
