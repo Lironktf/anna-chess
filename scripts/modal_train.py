@@ -34,7 +34,11 @@ MONTH_FILES = {
     "04": "test80-2024-04-apr-2tb7p.min-v2.v6.binpack",
     "05": "test80-2024-05-may-2tb7p.min-v2.v6.binpack",
     "06": "test80-2024-06-jun-2tb7p.min-v2.v6.binpack",
+    # Stockfish's published binpacks (official-stockfish/master-binpacks): plain .binpack, no zstd.
+    "sfdfrc": "dfrc_n5000.binpack",
+    "sfuho": "nodes5000pv2_UHO.binpack",
 }
+SF_HF = "https://huggingface.co/datasets/official-stockfish/master-binpacks/resolve/main"
 
 app = modal.App("anna-train")
 vol = modal.Volume.from_name("anna-data", create_if_missing=True)
@@ -126,7 +130,7 @@ def policy_data(tars: list[str]) -> str:
     return "\n".join(out)
 
 
-@app.function(image=image, volumes={"/data": vol}, cpu=8, memory=16384, timeout=4 * 3600)
+@app.function(image=image, volumes={"/data": vol}, cpu=8, memory=16384, timeout=6 * 3600)
 def fetch(months: list[str]) -> list[str]:
     """Download and decompress the requested months into the volume (idempotent)."""
     out = []
@@ -139,7 +143,10 @@ def fetch(months: list[str]) -> list[str]:
             out.append(dst)
             continue
         t = time.time()
-        cmd = f"curl -sSL --retry 5 '{HF}/{name}.zst' | zstd -d -T4 -o '{dst}.part' && mv '{dst}.part' '{dst}'"
+        if m.startswith("sf"):
+            cmd = f"curl -sSL --retry 5 -o '{dst}.part' '{SF_HF}/{name}' && mv '{dst}.part' '{dst}'"
+        else:
+            cmd = f"curl -sSL --retry 5 '{HF}/{name}.zst' | zstd -d -T4 -o '{dst}.part' && mv '{dst}.part' '{dst}'"
         print(f"fetch {name} ...")
         subprocess.run(["bash", "-c", cmd], check=True)
         vol.commit()
