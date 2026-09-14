@@ -32,3 +32,6 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 16:05 smoke (SB 2/2/1, mixed list): checkpoint round-trips (45,641,280 B), netcheck ok, evals near zero as expected.
 - 16:20 real run launched: net anna-v5, months 01,02,sfdfrc,03,04,sfuho,05,06, SB 30/740/30, L1 512, LR1 1e-3, L40S,
   cap 5.5 h. Expected end ~21:00 local. Monitor polls the volume every 15 min.
+- 18:05 midway: anna-v5 s1-190 vs anna-v3b s1-200 at equal nodes (30k, 100 games): **+17 +/- 44** (29-24-47). No disaster from
+  the DFRC/UHO data; v5's checkpoint is less annealed (LR still ~7.5e-4 at SB 190 of 740 vs v3b's ~3.5e-4 at 200 of 310).
+  Final verdict at s2-30 vs anna-v3b-s2-30, 200 games.
