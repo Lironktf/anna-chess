@@ -54,3 +54,6 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 2026-09-15 (owner go "finish v5"): anna-v5f = RESUME from anna-v5-s1-670 (weights + Adam state), SB 0/70/30, LR 9.5e-5 -> 1e-6
   then WDL-1.0 stage at 1e-5 -> 1e-7, same interleaved data, L40S, cap 1.5 h (~$1.7). Verdicts: equal nodes vs v3b and vs
   v5-s1-670, then 60+0.6.
+- 09:05 anna-v5f done (resumed from s1-670, 70 SB tail + 30 SB WDL, ~55 min, ~$1.8). Final anna-v5f-s2-30: netcheck ok, engine
+  evals match the trainer (28/29, -1449/-1454, 1901/1930, -505/-509, -2055/-2064, 10/16). Verdicts running: equal nodes vs
+  v3b and vs v5-s1-670, 200 games each.
