@@ -58,3 +58,4 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   evals match the trainer (28/29, -1449/-1454, 1901/1930, -505/-509, -2055/-2064, 10/16). Verdicts running: equal nodes vs
   v3b and vs v5-s1-670, 200 games each.
 - 10:35 anna-v5f vs anna-v5-s1-670 at equal nodes, 200 games: **+31 +/- 30** (73-55-72). The tail + WDL stage were worth ~30/node.
+- 10:50 **anna-v5f vs anna-v3b-s2-30 at equal nodes, 200 games: +78 +/- 30** (70-26-104). Embedded as main's default net.
