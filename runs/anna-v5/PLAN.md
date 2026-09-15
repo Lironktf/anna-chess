@@ -47,3 +47,7 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 2026-09-15 03:55 4-thread 60+0.6 vs v3b, 60 games (laptop): **-41 +/- 42** (7-14-39). Contradicts blitz; small sample.
   Next: 1-thread 60+0.6 x 200 (sprt/v5_slow1t.log). Hypothesis: the missing annealing tail + WDL stage costs most at slow
   controls; finishing the run is the cheapest test of that.
+- 07:15 1-thread 60+0.6 x 200 vs v3b: **+5 +/- 28** (51-48-101). Slow control combined (260 games incl. the 4-thread 60):
+  ~-5 +/- 22 -> level. Blitz +26, per node +54. Reading: the advantage decays with depth. Two candidate causes, both
+  fixable: (1) the schedule was cut (no LR tail to 1e-6, no WDL-1.0 stage), (2) 5000-node Stockfish labels are shallow
+  relative to Leela's; a finished run and, later, a higher-node label source (or rescoring) are the levers.
