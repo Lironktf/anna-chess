@@ -57,3 +57,4 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 09:05 anna-v5f done (resumed from s1-670, 70 SB tail + 30 SB WDL, ~55 min, ~$1.8). Final anna-v5f-s2-30: netcheck ok, engine
   evals match the trainer (28/29, -1449/-1454, 1901/1930, -505/-509, -2055/-2064, 10/16). Verdicts running: equal nodes vs
   v3b and vs v5-s1-670, 200 games each.
+- 10:35 anna-v5f vs anna-v5-s1-670 at equal nodes, 200 games: **+31 +/- 30** (73-55-72). The tail + WDL stage were worth ~30/node.
