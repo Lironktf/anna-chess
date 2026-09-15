@@ -59,3 +59,6 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   v3b and vs v5-s1-670, 200 games each.
 - 10:35 anna-v5f vs anna-v5-s1-670 at equal nodes, 200 games: **+31 +/- 30** (73-55-72). The tail + WDL stage were worth ~30/node.
 - 10:50 **anna-v5f vs anna-v3b-s2-30 at equal nodes, 200 games: +78 +/- 30** (70-26-104). Embedded as main's default net.
+- 18:35 **anna-v5f vs v3b at 60+0.6 (1 thread), 200 games: +42 +/- 25** (62-38-100). The finished net keeps its gain at slow
+  control (the cut checkpoint was +5). Estimate ~3565 on the 40/15 scale. Next: blitz SPRT, 4-thread 60+0.6 x 60 (laptop),
+  then the 4-thread anchor vs Stormphrax 8 on a box (owner go needed; ~$0.5, the remaining vast credit).
