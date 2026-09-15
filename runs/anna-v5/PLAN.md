@@ -35,3 +35,8 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 18:05 midway: anna-v5 s1-190 vs anna-v3b s1-200 at equal nodes (30k, 100 games): **+17 +/- 44** (29-24-47). No disaster from
   the DFRC/UHO data; v5's checkpoint is less annealed (LR still ~7.5e-4 at SB 190 of 740 vs v3b's ~3.5e-4 at 200 of 310).
   Final verdict at s2-30 vs anna-v3b-s2-30, 200 games.
+- 22:00 **wall-clock cap hit at s1-670 of 740** (trainer killed, exit -9). Throughput on the mixed list was 3.59M pos/s
+  (27.9 s/SB) against 5.0M pos/s on the Leela-only list: the loader streams the two large Stockfish files slower, and my
+  5.5 h cap assumed 20 s/SB. Cost ~5.5 h x $1.95 = ~$10.7 (estimate was $9). Last checkpoint s1-670 (LR ~9.5e-5 of the
+  1e-3 -> 1e-6 decay), no WDL stage. Being evaluated as is (200 games at equal nodes vs anna-v3b-s2-30). Finishing it
+  (RESUME from s1-670, LR1 9.5e-5, SB 0/70/30, ~50 min, ~$1.7) needs the owner's go: Modal credit left ~$1.5.
