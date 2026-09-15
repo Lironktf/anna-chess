@@ -51,3 +51,6 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   ~-5 +/- 22 -> level. Blitz +26, per node +54. Reading: the advantage decays with depth. Two candidate causes, both
   fixable: (1) the schedule was cut (no LR tail to 1e-6, no WDL-1.0 stage), (2) 5000-node Stockfish labels are shallow
   relative to Leela's; a finished run and, later, a higher-node label source (or rescoring) are the levers.
+- 2026-09-15 (owner go "finish v5"): anna-v5f = RESUME from anna-v5-s1-670 (weights + Adam state), SB 0/70/30, LR 9.5e-5 -> 1e-6
+  then WDL-1.0 stage at 1e-5 -> 1e-7, same interleaved data, L40S, cap 1.5 h (~$1.7). Verdicts: equal nodes vs v3b and vs
+  v5-s1-670, then 60+0.6.
