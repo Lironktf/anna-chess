@@ -44,3 +44,6 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   v3b. Next: blitz SPRT at 8+0.08 [0,10] (sprt/v5_670_blitz.log); owner decision on finishing the last 70 SB + WDL stage.
 - 23:52 **blitz SPRT PASSED: v5 s1-670 vs v3b at 8+0.08, +26 +/- 13 after 976 games, LLR 2.99 [0,10].** 0 time losses.
   Adopted as default net on main (nets/default.bin = anna-v5-s1-670, version 1.1-dev). 4-thread 60+0.6 check running overnight.
+- 2026-09-15 03:55 4-thread 60+0.6 vs v3b, 60 games (laptop): **-41 +/- 42** (7-14-39). Contradicts blitz; small sample.
+  Next: 1-thread 60+0.6 x 200 (sprt/v5_slow1t.log). Hypothesis: the missing annealing tail + WDL stage costs most at slow
+  controls; finishing the run is the cheapest test of that.
