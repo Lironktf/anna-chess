@@ -96,6 +96,9 @@ start, ~2.5 s of 3 s on the last move of a period.
 Embedded default net switched from v1 to v3b for the release build (2026-09-13 22:10): **bench 854588 -> 630353** (deterministic,
 checked twice); v1 remains available as `nets/fable-v1-800.bin` via EvalFile.
 
+Embedded default net switched from v3b to anna-v5-s1-670 on main (2026-09-14 23:55, version 1.1-dev): bench 630353 -> see the
+commit; the v1.0 release assets keep v3b.
+
 ## Infrastructure lessons
 
 - `pgrep -f` / `pkill -f` / `awk '$0 ~ /pattern/'` over `ps` output match the shell that runs them (the pattern text is in that
