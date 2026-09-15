@@ -42,3 +42,5 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   (RESUME from s1-670, LR1 9.5e-5, SB 0/70/30, ~50 min, ~$1.7) needs the owner's go: Modal credit left ~$1.5.
 - 23:25 **verdict: anna-v5 s1-670 vs anna-v3b-s2-30 at equal nodes, 200 games: +54 +/- 30** (66-35-99). Same width/speed as
   v3b. Next: blitz SPRT at 8+0.08 [0,10] (sprt/v5_670_blitz.log); owner decision on finishing the last 70 SB + WDL stage.
+- 23:52 **blitz SPRT PASSED: v5 s1-670 vs v3b at 8+0.08, +26 +/- 13 after 976 games, LLR 2.99 [0,10].** 0 time losses.
+  Adopted as default net on main (nets/default.bin = anna-v5-s1-670, version 1.1-dev). 4-thread 60+0.6 check running overnight.
