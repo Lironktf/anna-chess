@@ -118,6 +118,8 @@ Embedded default net switched from v3b to anna-v5-s1-670 on main (2026-09-14 23:
   (`ps -eo pid,args | grep ...`), then kill the printed PIDs explicitly, never pattern-kill in one command.
 - The ssh that starts the detached on-box self-destruct can hang after arming (vast_launch.sh and cpu_eval.sh, 2026-09-13): bound it
   with `timeout` and verify arming in a separate ssh.
+- bullet at rev 629ee50 links `cuFuncLoad` (CUDA 12.4 driver API): a host with NVIDIA driver 535 (CUDA 12.2) fails to link
+  (2026-09-16, instance 51236656, ~$0.20 lost). Filter vast offers with `driver_version>=550`.
 - vast.ai unverified CPU-only hosts failed 3 of 4 times (ssh never up, never running, container exited); verified hosts with GPUs worked.
 - Some hosts drop long rsyncs: `rsync --bwlimit=6000 --partial` per file succeeds where a plain rsync gets "Broken pipe".
 - Stormphrax 8 release binary needs GLIBCXX_3.4.31 (toolchain PPA libstdc++6); Weiss needs gcc-13.
