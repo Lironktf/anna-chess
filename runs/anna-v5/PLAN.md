@@ -62,3 +62,5 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 18:35 **anna-v5f vs v3b at 60+0.6 (1 thread), 200 games: +42 +/- 25** (62-38-100). The finished net keeps its gain at slow
   control (the cut checkpoint was +5). Estimate ~3565 on the 40/15 scale. Next: blitz SPRT, 4-thread 60+0.6 x 60 (laptop),
   then the 4-thread anchor vs Stormphrax 8 on a box (owner go needed; ~$0.5, the remaining vast credit).
+- 2026-09-16 00:45 chain: **blitz SPRT vs v3b PASSED +53 +/- 18 (446 games)**; **4-thread 60+0.6 x 80: +35 +/- 33** (24-16-40).
+  v5f is a gain at every condition. Release 1.1 candidate; anchor vs Stormphrax pending owner go.

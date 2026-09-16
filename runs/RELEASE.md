@@ -50,3 +50,11 @@ Board: kirill-kryukov.com/chess/discussion-board, forum "CCRL Public". Also Talk
 
 - Answer questions on the thread the same day; testers often ask about hash/threads/book handling.
 - Keep 1.0 frozen; put improvements into 1.1 with its own SPRTs and a new release, never overwrite a released binary.
+
+## 1.1 (candidate, 2026-09-16, not tagged)
+
+Changes since 1.0: default net anna-v5f (v3b architecture trained on Leela T80 Jan-Jun 2024 plus Stockfish's dfrc_n5000 and
+nodes5000pv2_UHO binpacks, 800 SB); Lazy SMP thread voting (ThreadVote, +5.5 +/- 8 at 4 threads, non-regression); the
+policy-net code shipped off. Measured vs 1.0's net (v3b): +78 +/- 30 per node, +53 +/- 18 at 8+0.08 (SPRT), +42 +/- 25 at
+60+0.6, +35 +/- 33 at 4 threads 60+0.6. Bench 650059. Soaks: 526 games across those matches with 0 forfeits; the 1.0
+hardening code is unchanged. Tag `v1.1` on the owner's go (CI attaches the binaries); the owner posts.
