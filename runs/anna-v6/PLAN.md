@@ -30,3 +30,11 @@ game results whose sign matches the file score:
 Verdict: both new sets are at least as consistent as the sets that produced v5's gain; pv-2 is the cleanest of all five.
 farseer's lower result agreement matches its Leela-game origin (Leela's own set is 84.8%). The Leela labels agree least
 with our search even for the net trained on them, which explains the size of the Stockfish-data gain.
+
+## Launch plan (owner go 2026-09-16 13:20, cap $5)
+
+vast RTX 4090, offer 39099119 (Japan, EPYC 7542 16 cores, 94 GB RAM, 347 GB disk, 783 Mbps, $0.39/h). Data groups
+train + train2 + train3 (Leela Jan-Jun 2024, 52 GB zst -> 61 GB) + sf (4 Stockfish binpacks, 156 GB); 269 GB on disk.
+`DATA_ORDER` interleaves: jan, dfrc, feb, uho, mar, farseer, apr, pv2, may, jun. ARCH=v3, L1=512, SB 30/940/30 (1000 SB),
+SAVE_RATE 10. Estimate: download ~45 min + smoke + ~5 h training = ~$2.5-3.5; cap $5.00 = guard $5.00, self-destruct
+MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one paid instance at a time).

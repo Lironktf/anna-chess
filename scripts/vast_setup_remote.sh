@@ -45,6 +45,12 @@ for z in data/downloads/*.zst; do
     out="data/$(basename "${z%.zst}")"
     [[ -f "$out" ]] || { echo "decompressing $z"; zstd -d -T8 -q "$z" -o "$out"; }
 done
+# Plain (non-zstd) binpacks, e.g. Stockfish's published sets: link the verified downloads into data/.
+for b in data/downloads/*.binpack; do
+    [[ -f "$b" ]] || continue
+    [[ -f "$b.ok" ]] || { echo "unverified $b, abort"; exit 1; }
+    [[ -e "data/$(basename "$b")" ]] || ln -s "$(realpath "$b")" "data/$(basename "$b")"
+done
 ls -la data/*.binpack
 DATA_LIST=$(ls -1 "$REPO"/data/*.binpack | paste -sd, -)
 echo "DATA=$DATA_LIST" > "$WORK/runs/$RUN_NAME/data.env"

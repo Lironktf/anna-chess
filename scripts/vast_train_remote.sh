@@ -5,6 +5,15 @@ RUN_NAME="${1:?run}"; SB="${2:?superbatches}"
 WORK=/workspace; REPO=$WORK/chess
 # shellcheck disable=SC1090
 source "$WORK/runs/$RUN_NAME/data.env"
+# DATA_ORDER=comma-separated basenames overrides the alphabetical data list (bullet reads files in order every epoch,
+# so interleaving sources matters).
+if [[ -n "${DATA_ORDER:-}" ]]; then
+    DATA=""
+    for n in ${DATA_ORDER//,/ }; do
+        [[ -f "$REPO/data/$n" ]] || { echo "DATA_ORDER: missing $REPO/data/$n"; exit 1; }
+        DATA="${DATA:+$DATA,}$REPO/data/$n"
+    done
+fi
 # shellcheck disable=SC1091
 source "$HOME/.cargo/env"
 cd "$REPO/trainer"
