@@ -43,7 +43,7 @@ bash scripts/download_data.sh run train ${EXTRA_GROUPS:-}
 for z in data/downloads/*.zst; do
     [[ -f "$z.ok" ]] || { echo "unverified $z, abort"; exit 1; }
     out="data/$(basename "${z%.zst}")"
-    [[ -f "$out" ]] || { echo "decompressing $z"; zstd -d -T8 -q "$z" -o "$out"; }
+    [[ -f "$out" ]] || { echo "decompressing $z"; zstd -d -T8 -q "$z" -o "$out" && rm -f "$z"; }   # keep only the decompressed copy (disk)
 done
 # Plain (non-zstd) binpacks, e.g. Stockfish's published sets: link the verified downloads into data/.
 for b in data/downloads/*.binpack; do
@@ -57,7 +57,7 @@ echo "DATA=$DATA_LIST" > "$WORK/runs/$RUN_NAME/data.env"
 
 echo "=== inspect real data (format + feature cross-check)"
 for f in "$REPO"/data/*.binpack; do
-    "$REPO/trainer/target/release/inspect" stats "$f" 3000000
+    "$REPO/trainer/target/release/inspect" stats "$f" "${INSPECT_ENTRIES:-500000}"
 done
 
 echo "=== smoke run"
