@@ -44,3 +44,7 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
 - 14:12 offer 51224273 already taken (no_such_ask, nothing created).
 - 14:14 offer 44637528 -> instance 51236656 running (Texas, EPYC 7402P 12 cores, 768 GB, 929 Mbps), billed ~$0.56/h with
   storage; guard $5.00 armed. Cap arithmetic: 8.8 h total -> setup ~1 h + train MAX_HOURS 7; schedule trimmed to 900 SB (30/840/30).
+- 15:45 offer 39184690 -> instance 51237763 (Hong Kong, EPYC 7542, driver 570, ~$0.49/h billed). Download measured at
+  ~12 MB/s (12.3 GB in 17 min), i.e. ~6 h for 269 GB: over the cap. **farseerT75 dropped** (row blanked in place in the
+  box's manifest before the downloader reached it): v6 data = 6 Leela months + dfrc + UHO + pv-2 (222 GB). Schedule to be
+  trimmed at train time to fit: cap $5 total, hours = (5 - spent)/0.49 minus margin.
