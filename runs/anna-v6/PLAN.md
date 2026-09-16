@@ -85,3 +85,16 @@ labels; the core of Stockfish's current threat-net recipe), adamtwiss/t91-binpac
 must drop score 32002), xushawn/test80-bt4-relabel Jan+Feb 2024 (17.7 GB, replaces our 2024-01/02), linrock_relabel_1 T80
 2022 (~63 GB), T60T70wIsRightFarseer (in sf2). Caveats: BT4-relabelled files carry net labels, not search labels (label-check
 them first); never stack duplicate copies of T80 2023; budget bandwidth and storage into the cap.
+
+## Final data plan and pricing (2026-09-16 17:15)
+
+Label checks of the survey's recommended sets (1500 positions, depth 6): linrock_relabel_2 June 2023 (BT4 labels) corr 0.876 /
+result 82.7%, filter keeps 48%; adamtwiss t91 Jan 2026 corr 0.863 / 99.4%, keeps 53%, no 32002 sentinels after the filter;
+xushawn bt4 Jan 2024 corr 0.858 / 82.4%. All usable (Leela-like agreement, below the Stockfish self-play sets).
+
+Full plan = Leela 2024 Jan-Jun (61 GB) + sf (156) + sf2 (131) + relabel2 (142) + t91 (12.6) = **~503 GB on disk** (zst deleted
+after decompression), DISK=560. Reduced plan (Stockfish self-play sets + relabel2 + t91, no Leela-derived rescores) ~360 GB,
+DISK=420. Cost formula per CLAUDE.md item 8: hours*(dph + DISK*storage/730) + GB*inet_down_cost; setup ~3.5 h + train ~5.5 h.
+At 17:15 the only clean hosts (driver>=550, bw<=0.002/GB, disk>=600) cost $0.60-0.73/h: full plan ~$7.0-7.9, above the
+$6.52 credit. Cheaper clean hosts ($0.44-0.47/h, bw ~0.001) appear intermittently; a poller watches for one (est. ~$5.0-5.5).
+No rental without the owner's number.
