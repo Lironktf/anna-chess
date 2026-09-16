@@ -48,7 +48,24 @@ A GPU run costs real money from a $10 budget and cannot be redone casually. Trea
       `vastai destroy instance <ID>` immediately, then investigate.
    After every run, `BUDGET.md` gets the actual cost and the line "instances: 0 (verified <time>)".
    Never rely on a single layer; never start training with fewer than layers 1 and 2 armed.
-8. **Ask before renting. This is absolute.** Never start, resume, or bid on a paid instance without the human explicitly saying go for that
+8. **Pre-rent checklist (mandatory, every rental, written into the run's PLAN.md before `create`).** Added 2026-09-16 after
+   $3.68 was lost on three failed hosts in one afternoon (never booted; driver too old to link the trainer; a 120 GB
+   container disk for 269 GB of data on a host that also billed internet transfer per GB). Each item is a fact read from
+   the offer or the account, not an assumption:
+   1. **Total cost, not hourly cost:** `hours * dph_total + data_GB * inet_down_cost + disk_GB * storage_cost`. The hourly
+      cost guard sees only `dph_total`; bandwidth and storage charges are invisible to it. Refuse any offer with
+      `inet_down_cost > $0.002/GB` (the launcher enforces this; do not bypass it).
+   2. **Disk:** the offer's `disk_space` is the host's free space, not the container's. Pass `DISK=` explicitly, sized for
+      compressed + decompressed data + 20%. The launcher's default is 120 GB and is wrong for any training run.
+   3. **Driver:** `driver_version >= 550` (bullet's pinned rev links CUDA 12.4 driver symbols). The launcher enforces this.
+   4. **Host quality:** `verified=true`, `reliability2 >= 0.97`, and `inet_down >= 400` Mbps; measure the real transfer rate
+      in the first minutes and abort the rental if it is below 30 MB/s rather than paying hours for a slow link.
+   5. **One paid instance at a time**, always; a second rental starts only after `vastai show instances` prints none.
+   6. **Reconcile the account after every destroy:** read the credit before and after; if the drop exceeds the guard's
+      estimate by more than 20%, stop and find out why before renting anything else.
+   7. **Cap first, then go:** state the cap in dollars including bandwidth and disk, get the owner's go for that number,
+      and treat a failed host's cost as part of that cap. When the cap is consumed, stop and ask; never "one more try".
+9. **Ask before renting. This is absolute.** Never start, resume, or bid on a paid instance without the human explicitly saying go for that
    specific run. Present the plan, the expected cost, and the local validation evidence first.
 
 ## Never assume docs
