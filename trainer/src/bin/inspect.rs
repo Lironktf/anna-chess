@@ -1,5 +1,6 @@
 //! Data inspection and cross-checks that can run without a GPU:
 //!   inspect stats <binpack> [max_entries]  - filter statistics, score/result/ply distributions, sample FENs
+//!   inspect dump <binpack> <n> [stride]     - "fen | score | result" lines for label checks (scripts/label_check.py)
 //!   inspect features <binpack> [n]         - verify bullet's feature indices == engine's for n positions
 //!   inspect roundtrip                      - engine bulletformat writer == bulletformat crate for test FENs
 use bullet::game::inputs::{ChessBucketsMirrored, SparseInputType};
@@ -138,6 +139,26 @@ fn main() {
             println!("feature cross-checks passed: {}", checks);
             for s in samples {
                 println!("sample: {}", s);
+            }
+        }
+        Some("dump") => {
+            // inspect dump <binpack> <n> [stride]: "fen | score | result" (side to move's view) for every stride-th
+            // kept entry, n lines; feeds scripts/label_check.py.
+            let path = &args[2];
+            let n: u64 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(2000);
+            let stride: u64 = args.get(4).and_then(|s| s.parse().ok()).unwrap_or(50);
+            let mut reader = CompressedTrainingDataEntryReader::new(File::open(path).unwrap()).unwrap();
+            let (mut kept, mut printed) = (0u64, 0u64);
+            while reader.has_next() && printed < n {
+                let e = reader.next();
+                if !filter(&e) {
+                    continue;
+                }
+                kept += 1;
+                if kept % stride == 0 {
+                    println!("{} | {} | {}", e.pos.fen().unwrap(), e.score, e.result);
+                    printed += 1;
+                }
             }
         }
         Some("features") => {

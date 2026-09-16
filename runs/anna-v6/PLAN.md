@@ -13,3 +13,20 @@ Schedule 1200 SB (30/1140/30), sources interleaved in the file order.
 
 Both parse (BINP), decode to legal positions, and match the engine's feature indices. Next check: label quality =
 agreement between each set's scores and anna-v5f's evaluation on a sample of positions (inspect dump -> engine eval).
+
+## Label quality (scripts/label_check.py, 1500 positions per set, engine at depth 6, 2026-09-16 13:00)
+
+Correlation between the file's score and the engine's score (both side-to-move, clamped +/-2000), and the share of decisive
+game results whose sign matches the file score:
+
+| Set | corr vs v5f | corr vs v3b (Leela-only net) | sign agree (|score|>=100) | result agree |
+|---|---|---|---|---|
+| Leela T80 Feb 2024 (used) | 0.855 | 0.819 | 96% | 84.8% |
+| dfrc_n5000 (used) | 0.961 | 0.957 | 97% | 93.6% |
+| nodes5000pv2_UHO (used) | 0.945 | 0.935 | 98% | 96.1% |
+| farseerT75 (new) | 0.916 | 0.914 | 97% | 80.6% |
+| data_pv-2_diff-100 (new) | 0.968 | 0.964 | 98% | 96.6% |
+
+Verdict: both new sets are at least as consistent as the sets that produced v5's gain; pv-2 is the cleanest of all five.
+farseer's lower result agreement matches its Leela-game origin (Leela's own set is 84.8%). The Leela labels agree least
+with our search even for the net trained on them, which explains the size of the Stockfish-data gain.

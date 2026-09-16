@@ -18,6 +18,12 @@ Details live in `runs/*/PLAN.md`, `sprt/verdicts.txt`, `sprt/*.log`.
 | anna-v5f | anna-v5 finished (resume from s1-670: 70 SB LR tail to 1e-6 + 30 SB WDL-1.0) | ~$1.8 Modal (owner go 2026-09-15) | **vs v5-s1-670 at equal nodes: +31 +/- 30**; **vs v3b at equal nodes: +78 +/- 30** (70-26-104, 61%); **vs v3b at 60+0.6, 1 thread, 200 games: +42 +/- 25** (62-38-100); **blitz SPRT 8+0.08 [0,10]: PASSED +53 +/- 18 (446 games, LLR 2.95)**; **4 threads 60+0.6, 80 games: +35 +/- 33** (24-16-40); 0 forfeits in all 526 games | the cut schedule was costing ~30 per node and all of the slow-control gain; v5f is the strongest net at every control; default on main. Scaled: ~3565 +/- 40 on the 40/15 list (top 50 = 3572); the 4-thread Stormphrax anchor with v5f is the measurement that decides |
 | anna-v4 | v1 inputs + v3 output stack (pairwise -> 16 -> 32 -> 1), no threat rows, L1 1024, 340 SB on 4 months | $1.62 | **equal nodes -83 +/- 33 vs v1** (200 games, 38%); equal time 8+0.08 on the box -50 +/- 25 (300 games); 40% at s1-80 already; eval scale and inference verified (matches trainer, same |cp| as v1/v3b); loss curve tracked v3b's | **failed**: the +83/node of v3/v3b came from the threat inputs, not the output stack; v1 had 2.4x the positions (800 SB vs 340). **v4 vs v1@340 SB (same training budget) at equal nodes: +12 +/- 33 (120 games)**: the output stack adds nothing measurable at our scale, and v1's extra 460 SB are worth ~+80. Lesson: more superbatches on the same data is worth a lot; v3b (340 SB) has the same headroom |
 
+## Data quality (label checks, 2026-09-16; runs/anna-v6/PLAN.md)
+
+Score agreement with our engine (depth 6, 1500 positions per set), correlation / decisive-result agreement: Leela T80 0.86 /
+85%; Stockfish dfrc_n5000 0.96 / 94%; nodes5000pv2_UHO 0.95 / 96%; farseerT75 0.92 / 81%; data_pv-2_diff-100 0.97 / 97%.
+The Stockfish-labelled sets agree far better with our search than the Leela set does, which is why they helped so much.
+
 ## Net-side experiments (free)
 
 | Experiment | Result | Verdict |
