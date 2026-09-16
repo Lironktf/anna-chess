@@ -48,3 +48,7 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
   ~12 MB/s (12.3 GB in 17 min), i.e. ~6 h for 269 GB: over the cap. **farseerT75 dropped** (row blanked in place in the
   box's manifest before the downloader reached it): v6 data = 6 Leela months + dfrc + UHO + pv-2 (222 GB). Schedule to be
   trimmed at train time to fit: cap $5 total, hours = (5 - spent)/0.49 minus margin.
+- 16:00 diagnosis: the box link does >140 MB/s (parallel test stream) while the sequential downloader's stream ran at 13 MB/s.
+  Downloader stopped; the four Stockfish files (farseer restored) + the June Leela file fetched in parallel with plain curl
+  (resumable); the idempotent setup step is re-run afterwards (sha256 verification of every file, decompress, inspect, smoke).
+  v6 data back to the full plan: 6 Leela months + dfrc + UHO + farseer + pv-2 (269 GB).
