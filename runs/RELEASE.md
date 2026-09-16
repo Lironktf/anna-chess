@@ -57,5 +57,5 @@ Changes since 1.0: default net anna-v5f (v3b architecture trained on Leela T80 J
 nodes5000pv2_UHO binpacks, 800 SB); Lazy SMP thread voting (ThreadVote, +5.5 +/- 8 at 4 threads, non-regression); the
 policy-net code shipped off. Measured vs 1.0's net (v3b): +78 +/- 30 per node, +53 +/- 18 at 8+0.08 (SPRT), +42 +/- 25 at
 60+0.6, +35 +/- 33 at 4 threads 60+0.6. Bench 650059. Soaks: 526 games across those matches with 0 forfeits; the 1.0
-hardening code is unchanged. **Released 2026-09-16 01:10 (owner go):** https://github.com/Lironktf/anna-chess/releases/tag/v1.1 with both binaries
+hardening code is unchanged. **Released 2026-09-16 11:20 (owner go):** https://github.com/Lironktf/anna-chess/releases/tag/v1.1 with both binaries
 (46.8 MB each, v5f embedded). The 4-thread Stormphrax anchor (cpu-eval4) is running; its number goes into these notes.
