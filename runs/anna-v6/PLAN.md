@@ -60,3 +60,18 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
   and ~70 GB). Spent on v6 attempts: $3.68 of the $5 cap, nothing trained. Re-renting needs the owner's decision (~$3.5-4 more:
   offers with inet_down_cost ~$0.001/GB exist, e.g. 51184092 Poland $0.44/h drv 580, 48857240 Japan $0.47/h drv 595; DISK=480;
   400 GB of data ~ $0.5 of bandwidth there). Pre-rent checklist now: driver >= 550, DISK big enough, inet_down_cost, storage_cost.
+
+## Additional Stockfish sets (label checks 2026-09-16 16:30, 1500 positions each, engine depth 6)
+
+| Set | GB | corr vs engine | result agree | origin |
+|---|---|---|---|---|
+| multinet_pv-2_diff-100_nodes-5000 | 27.6 | 0.950 | 96.9% | Stockfish self-play, quiet filter |
+| wrongIsRight_nodes5000pv2 | 7.3 | 0.941 | 96.9% | Stockfish self-play |
+| farseerT74 | 20.1 | 0.907 | 81.0% | Leela T74 rescored by Stockfish |
+| training_data_pylon | 14.4 | 0.898 | 80.1% | Leela-derived, rescored |
+| test80-2022-08-aug-16tb7p.v6-dd.min | 10.8 | 0.898 | 87.2% | Leela T80 2022, rescored |
+| T60T70wIsRightFarseer | 33.0 | 0.852 | 82.0% | Leela T60/T70 rescored |
+| farseerT76, fishpack32, wrongNNUE_02_d9 | 6.1 / 5.6 / 5.8 | (checked below) | | |
+
+All pass (>= the Leela set's 0.855 correlation). Manifest group `sf2` (131 GB) holds all nine; with `sf` and the six Leela
+months the full v6 set is ~400 GB on disk (DISK=480).
