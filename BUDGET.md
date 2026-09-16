@@ -17,6 +17,10 @@ Hard cap: **$10.00** total on vast.ai. Every rental is recorded here before it s
 | 2026-09-13 13:44-17:57 | CPU box offer 50186808 -> instance 50918711 (Michigan, EPYC 7742 32 effective threads, $0.17/hr billed) | cpu-eval3: 40/15 anchor at 4 threads (SMP scaling, v3b vs v1 / Stormphrax 8 at 60+0.6) + anna-v4 blitz validation, owner go 13:40 | ~$0.5, cap $1.00 then $1.15 | **$0.71** (credit 1.30 -> 0.59) | done; SMP +89, v3b vs v1 +53, v3b vs Stormphrax 8 -108 (all 4 threads, 60+0.6), v4 -50 blitz; destroyed 17:57, instances: 0 (verified 17:58); restricted key deleted |
 | 2026-09-16 11:15 | CPU box offer 51223888 -> instance 51224017 (Japan, i9-13900K 32 threads, $0.134/hr) | cpu-eval4: 4-thread 60+0.6 anchor, anna-v5f vs Stormphrax 8, 100 games, owner go 11:10 | ~$0.35-0.45, cap $0.55 (credit $0.58) | - | running; self-destruct armed 3 h |
 
-Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$9.27** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20, anna-v3b $1.10, cpu-eval2 $0.27, anna-v4 $1.62, cpu-eval3 $0.71). Remaining: **$0.59** (credit read from the account 2026-09-13 17:58). Modal (separate, owner's $30/month credit): anna-v3c ~$6, policy data + training ~$5, anna-v3q $4.3 (failed), anna-v5 ~$10.7 (hit its 5.5 h cap at SB 670/740) + anna-v5f finish ~$1.8 (2026-09-15, owner go); Modal credit now ~exhausted.
+Account credit on 2026-09-10: **$9.86** (vast.ai, liron account). Spent so far: **$9.27** (fable-v1 $1.87, anna-v3 $3.50, cpu-eval $0.20, anna-v3b $1.10, cpu-eval2 $0.27, anna-v4 $1.62, cpu-eval3 $0.71) plus cpu-eval4 (running, cap $0.55).
+
+**Top-up 2026-09-16 12:10: credit is now $10.45** (owner). Rule, restated by the owner ("extra strict not to go over"): every run
+gets an explicit per-run cap agreed before launch, enforced by the on-box self-destruct and the laptop cost guard, and no run
+starts without the owner's go for that specific run. The running cpu-eval4 keeps its $0.55 cap. Spent since the top-up: $0. Modal (separate, owner's $30/month credit): anna-v3c ~$6, policy data + training ~$5, anna-v3q $4.3 (failed), anna-v5 ~$10.7 (hit its 5.5 h cap at SB 670/740) + anna-v5f finish ~$1.8 (2026-09-15, owner go); Modal credit now ~exhausted.
 
 Candidate next spend: anna-v3b half-width retrain (L1=512, ~$3.5) to cut the threat-net speed penalty. Needs owner go.
