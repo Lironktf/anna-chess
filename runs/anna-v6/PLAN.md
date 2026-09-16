@@ -38,3 +38,9 @@ train + train2 + train3 (Leela Jan-Jun 2024, 52 GB zst -> 61 GB) + sf (4 Stockfi
 `DATA_ORDER` interleaves: jan, dfrc, feb, uho, mar, farseer, apr, pv2, may, jun. ARCH=v3, L1=512, SB 30/940/30 (1000 SB),
 SAVE_RATE 10. Estimate: download ~45 min + smoke + ~5 h training = ~$2.5-3.5; cap $5.00 = guard $5.00, self-destruct
 MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one paid instance at a time).
+
+## Launch log
+- 14:05 offer 39099119 -> instance 51235738 never left "loading"; destroyed after 15 min (~$0.01).
+- 14:12 offer 51224273 already taken (no_such_ask, nothing created).
+- 14:14 offer 44637528 -> instance 51236656 running (Texas, EPYC 7402P 12 cores, 768 GB, 929 Mbps), billed ~$0.56/h with
+  storage; guard $5.00 armed. Cap arithmetic: 8.8 h total -> setup ~1 h + train MAX_HOURS 7; schedule trimmed to 900 SB (30/840/30).
