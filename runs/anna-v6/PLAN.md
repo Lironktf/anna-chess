@@ -52,3 +52,7 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
   Downloader stopped; the four Stockfish files (farseer restored) + the June Leela file fetched in parallel with plain curl
   (resumable); the idempotent setup step is re-run afterwards (sha256 verification of every file, decompress, inspect, smoke).
   v6 data back to the full plan: 6 Leela months + dfrc + UHO + farseer + pv-2 (269 GB).
+- 16:10 **instance 51237763 destroyed: its container disk was 120 GB** (the launcher's default `DISK=120`; the offer's 591 GB
+  is the host's, not the container's). 269+ GB of data cannot fit. ~$0.75 lost. Re-renting with DISK=480 (driver >= 550,
+  disk_space >= 520). Lesson recorded. The extra Stockfish sets (T60T70wIsRightFarseer, multinet, farseerT74, pylon,
+  test80-2022-08, wrongIsRight, farseerT76, fishpack32, wrongNNUE) are being label-checked on the laptop for inclusion.
