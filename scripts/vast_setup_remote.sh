@@ -37,6 +37,17 @@ cd "$REPO/trainer"
 cargo build --release --features cuda 2>&1 | tail -3
 ls -la target/release/trainer target/release/inspect
 
+echo "=== early GPU smoke (1 GB validate set): proves the trainer runs on this GPU/driver before the big download"
+cd "$REPO"
+bash scripts/download_data.sh run validate
+VDATA=$(ls -1 "$REPO"/data/downloads/*.high-simple-eval-1k*.binpack 2>/dev/null | paste -sd, -)
+[[ -n "$VDATA" ]] || { echo "validate set missing, abort"; exit 1; }
+( cd "$REPO/trainer" && DATA="$VDATA" NET_ID=gpusmoke SB0=1 SB1=1 SB2=1 BATCHES_PER_SB=20 SAVE_RATE=1 THREADS=4 L1="${L1:-1024}" \
+    LOADER_THREADS=4 BUFFER_MB=512 OUT_DIR="$WORK/checkpoints" timeout 600 "./target/release/train_${ARCH:-v1}" 2>&1 | tail -8 ) \
+    || { echo "EARLY GPU SMOKE FAILED: this host cannot run the trainer; destroy it"; exit 1; }
+ls "$WORK/checkpoints"/gpusmoke-*/quantised.bin >/dev/null 2>&1 || { echo "EARLY GPU SMOKE produced no checkpoint; destroy the host"; exit 1; }
+echo "=== early GPU smoke ok"
+
 echo "=== data"
 cd "$REPO"
 bash scripts/download_data.sh run train ${EXTRA_GROUPS:-}
