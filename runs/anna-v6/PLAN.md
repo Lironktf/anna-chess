@@ -71,7 +71,17 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
 | training_data_pylon | 14.4 | 0.898 | 80.1% | Leela-derived, rescored |
 | test80-2022-08-aug-16tb7p.v6-dd.min | 10.8 | 0.898 | 87.2% | Leela T80 2022, rescored |
 | T60T70wIsRightFarseer | 33.0 | 0.852 | 82.0% | Leela T60/T70 rescored |
-| farseerT76, fishpack32, wrongNNUE_02_d9 | 6.1 / 5.6 / 5.8 | (checked below) | | |
+| farseerT76 | 6.1 | 0.915 | 81.2% | Leela T76 rescored |
+| fishpack32 | 5.6 | 0.831 | 99.2% | fishtest LTC positions |
+| wrongNNUE_02_d9 | 5.8 | 0.885 | 95.0% | Stockfish depth-9 from misjudged positions |
 
 All pass (>= the Leela set's 0.855 correlation). Manifest group `sf2` (131 GB) holds all nine; with `sf` and the six Leela
 months the full v6 set is ~400 GB on disk (DISK=480).
+
+## Research agent survey (2026-09-16, runs/DATA_SOURCES.md)
+
+Recommended additions beyond master-binpacks, in order: vondele/linrock_relabel_2 (T80 2023, 12 files, ~142 GB, BT4-net
+labels; the core of Stockfish's current threat-net recipe), adamtwiss/t91-binpacks-filtered (12.6 GB, T91 Jan-May 2026,
+must drop score 32002), xushawn/test80-bt4-relabel Jan+Feb 2024 (17.7 GB, replaces our 2024-01/02), linrock_relabel_1 T80
+2022 (~63 GB), T60T70wIsRightFarseer (in sf2). Caveats: BT4-relabelled files carry net labels, not search labels (label-check
+them first); never stack duplicate copies of T80 2023; budget bandwidth and storage into the cap.
