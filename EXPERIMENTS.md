@@ -24,6 +24,12 @@ Score agreement with our engine (depth 6, 1500 positions per set), correlation /
 85%; Stockfish dfrc_n5000 0.96 / 94%; nodes5000pv2_UHO 0.95 / 96%; farseerT75 0.92 / 81%; data_pv-2_diff-100 0.97 / 97%.
 The Stockfish-labelled sets agree far better with our search than the Leela set does, which is why they helped so much.
 
+## Transfer test (2026-09-16 14:20, laptop, free): does the internal gain show against an external engine?
+
+Round robin at 60+0.6, 1 thread, UHO: anna-v5f, anna-v3b, Stormphrax 8, 200 games per pairing, same hardware and session
+(sprt/transfer.log). The two 100-game anchors on different boxes gave -111 +/- 34 (v5f) and -108 +/- 30 (v3b): a difference of
+~0 +/- 45, which neither confirms nor rules out the internal +35..+42. This paired test is the honest measurement.
+
 ## Net-side experiments (free)
 
 | Experiment | Result | Verdict |
