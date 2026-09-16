@@ -64,3 +64,5 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   then the 4-thread anchor vs Stormphrax 8 on a box (owner go needed; ~$0.5, the remaining vast credit).
 - 2026-09-16 00:45 chain: **blitz SPRT vs v3b PASSED +53 +/- 18 (446 games)**; **4-thread 60+0.6 x 80: +35 +/- 33** (24-16-40).
   v5f is a gain at every condition. Release 1.1 candidate; anchor vs Stormphrax pending owner go.
+- 2026-09-16 13:57 **anchor (cpu-eval4, i9-13900K, 4 threads, 60+0.6, 100 games): v5f vs Stormphrax 8 -111 +/- 34** (9-40-51),
+  the same as v3b (-108). The +35 over v3b at these settings did not transfer. Placement unchanged (~3525 on 40/15).

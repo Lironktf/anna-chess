@@ -58,4 +58,5 @@ nodes5000pv2_UHO binpacks, 800 SB); Lazy SMP thread voting (ThreadVote, +5.5 +/-
 policy-net code shipped off. Measured vs 1.0's net (v3b): +78 +/- 30 per node, +53 +/- 18 at 8+0.08 (SPRT), +42 +/- 25 at
 60+0.6, +35 +/- 33 at 4 threads 60+0.6. Bench 650059. Soaks: 526 games across those matches with 0 forfeits; the 1.0
 hardening code is unchanged. **Released 2026-09-16 11:20 (owner go):** https://github.com/Lironktf/anna-chess/releases/tag/v1.1 with both binaries
-(46.8 MB each, v5f embedded). The 4-thread Stormphrax anchor (cpu-eval4) is running; its number goes into these notes.
+(46.8 MB each, v5f embedded). Anchor (2026-09-16, i9-13900K, 4 threads, 60+0.6, 100 games): **-111 +/- 34 vs Stormphrax 8**, the same as 1.0's net; the
+internal +35 did not transfer to the external opponent.

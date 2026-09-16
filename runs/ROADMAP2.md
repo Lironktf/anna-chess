@@ -112,7 +112,7 @@ Ordered by expected Elo per dollar; items 1-4 are free.
 | 12 | Own-data loop with DFRC starts (Stormphrax's recipe) | the path every top engine walked | CPU-box hours | next budget |
 | 13 | L1 = 256 threat net (anna-v3q) | -74 per node vs v3b for +23% speed | $4.3 Modal | **failed 2026-09-14**; 512 is the floor |
 | 14 | Thread voting for Lazy SMP (ThreadVote) | non-regression SPRT at 4 threads (sprt/vote4t_b.log) | 0 | running |
-| 15 | Mixed data: Leela + Stockfish binpacks, 800 SB (runs/anna-v5/PLAN.md) | **+54 +/- 30 per node over v3b at SB 670 (cap hit before the end)** | ~$10.7 Modal | **the lever that works: v5-670 blitz +26 +/- 13 (976 games); finished v5f +78/node, +53 blitz (SPRT), +42 at 60+0.6, +35 at 4 threads over v3b**; 1.1 candidate; ~3565 on the 40/15 scale; anchor run next |
+| 15 | Mixed data: Leela + Stockfish binpacks, 800 SB (runs/anna-v5/PLAN.md) | **+54 +/- 30 per node over v3b at SB 670 (cap hit before the end)** | ~$10.7 Modal | **the lever that works: v5-670 blitz +26 +/- 13 (976 games); finished v5f +78/node, +53 blitz (SPRT), +42 at 60+0.6, +35 at 4 threads over v3b**; 1.1 released; **anchor vs Stormphrax -111 +/- 34, same as v3b: internal gains did not transfer**; placement ~3525 |
 
 If 5 lands in its expected range, top 40 at blitz is a matter of 1 and 3 on top. If it lands low, 1 and 2 are the
 paths that make the threat net the blitz engine as well.

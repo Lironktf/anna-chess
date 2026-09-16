@@ -18,11 +18,12 @@ All numbers below are this project's own measurements with fastchess and the UHO
 |---|---|---|---|
 | 1.1 | anna-v5f | Anna 1.0's net (v3b), 8+0.08 | +53 ± 18 (SPRT, 446 games) |
 | 1.1 | anna-v5f | Anna 1.0's net (v3b), 60+0.6, 4 threads | +35 ± 33 (80 games) |
+| 1.1 | anna-v5f | Stormphrax 8.0.0 (3634 on CCRL 40/15), 60+0.6, 4 threads | -111 ± 34 (100 games) |
 | 1.0 | anna-v3b | Stormphrax 8.0.0 (3634 on CCRL 40/15), 60+0.6, 4 threads | -108 ± 30 (100 games) |
 | 1.0 | anna-v3b | Anna's first net (v1), 60+0.6, 4 threads | +53 ± 32 (100 games) |
 
-On the CCRL 40/15 scale that puts 1.0 at roughly 3525 and 1.1 in the region of 3560; the direct anchor of 1.1 against
-Stormphrax is in progress and will replace the estimate. Anna is not yet listed by any rating list.
+On the CCRL 40/15 scale both versions measure at roughly 3525 against Stormphrax; 1.1's gains over 1.0's net in
+head-to-head play did not carry over to that opponent. Anna is not yet listed by any rating list.
 
 ## Download
 
