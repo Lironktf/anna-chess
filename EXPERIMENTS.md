@@ -122,6 +122,9 @@ Embedded default net switched from v3b to anna-v5-s1-670 on main (2026-09-14 23:
   (2026-09-16, instance 51236656, ~$0.20 lost). Filter vast offers with `driver_version>=550`.
 - vast.ai's `disk_space` in an offer is the host's free disk; the container gets `--disk N` at creation (launcher default 120 GB).
   A 269 GB dataset needs DISK=480 (2026-09-16, ~$0.75 lost on a 120 GB container).
+- **vast.ai hosts bill internet transfer per GB** (`inet_down_cost`, $0.001-0.04/GB) and storage per GB-month, on top of
+  `dph_total`; the hourly cost guard cannot see it. The Hong Kong 4090 host (2026-09-16) charged ~$2.7 for ~70 GB of
+  downloads on top of ~$0.8 of hourly time. Rule: filter offers by `inet_down_cost <= 0.002` and add data_GB * rate to the cap.
 - vast.ai unverified CPU-only hosts failed 3 of 4 times (ssh never up, never running, container exited); verified hosts with GPUs worked.
 - Some hosts drop long rsyncs: `rsync --bwlimit=6000 --partial` per file succeeds where a plain rsync gets "Broken pipe".
 - Stormphrax 8 release binary needs GLIBCXX_3.4.31 (toolchain PPA libstdc++6); Weiss needs gcc-13.

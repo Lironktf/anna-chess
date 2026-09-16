@@ -52,6 +52,16 @@ for o in json.load(sys.stdin)[:12]:
         OFFER="${1:?offer id}"; RUN="${2:?run name}"
         mkdir -p "$ROOT/runs/$RUN"
         echo "$(date -u +%FT%TZ) create offer=$OFFER run=$RUN image=$IMAGE disk=$DISK" >> "$ROOT/runs/$RUN/events.log"
+        # Refuse hosts that bill internet transfer (2026-09-16: ~$2.7 of bandwidth charges on one host) or run an old driver.
+        vastai search offers "id=$OFFER" --raw 2>/dev/null | python3 -c "
+import sys, json
+o = json.load(sys.stdin)
+if not o: print('offer not found'); sys.exit(1)
+o = o[0]; bw = float(o.get('inet_down_cost') or 0); drv = str(o.get('driver_version') or '0').split('.')[0]
+print(f\"offer {o['id']}: dph {o['dph_total']:.3f} inet_down_cost/GB {bw:.4f} storage/GB-mo {o.get('storage_cost')} driver {o.get('driver_version')} disk_space {o.get('disk_space')}\")
+if bw > float('${MAX_BW_COST:-0.002}'): print('REFUSING: inet_down_cost above MAX_BW_COST'); sys.exit(2)
+if not drv.isdigit() or int(drv) < 550: print('REFUSING: driver older than 550 (bullet needs CUDA 12.4 driver API)'); sys.exit(3)
+" || exit 4
         out=$(vastai create instance "$OFFER" --image "$IMAGE" --disk "$DISK" --ssh --direct --raw 2>/dev/null)
         echo "$out" | tee -a "$ROOT/runs/$RUN/events.log"
         ID=$(echo "$out" | python3 -c "import sys,json; print(json.load(sys.stdin)['new_contract'])")

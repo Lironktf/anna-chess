@@ -56,3 +56,7 @@ MAX_HOURS 12 (12 h x $0.39 = $4.7). Starts after cpu-eval4 is destroyed (one pai
   is the host's, not the container's). 269+ GB of data cannot fit. ~$0.75 lost. Re-renting with DISK=480 (driver >= 550,
   disk_space >= 520). Lesson recorded. The extra Stockfish sets (T60T70wIsRightFarseer, multinet, farseerT74, pylon,
   test80-2022-08, wrongIsRight, farseerT76, fishpack32, wrongNNUE) are being label-checked on the laptop for inclusion.
+- 16:25 **STOPPED, no instance running.** The Hong Kong host billed per-GB bandwidth: credit 10.08 -> 6.53 ($3.55 for 1.6 h
+  and ~70 GB). Spent on v6 attempts: $3.68 of the $5 cap, nothing trained. Re-renting needs the owner's decision (~$3.5-4 more:
+  offers with inet_down_cost ~$0.001/GB exist, e.g. 51184092 Poland $0.44/h drv 580, 48857240 Japan $0.47/h drv 595; DISK=480;
+  400 GB of data ~ $0.5 of bandwidth there). Pre-rent checklist now: driver >= 550, DISK big enough, inet_down_cost, storage_cost.
