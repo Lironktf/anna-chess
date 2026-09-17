@@ -145,3 +145,11 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
   the annealing tail (LR 0.35e-3 -> 1e-6 over the last 240 SB, then the WDL stage) has to deliver the rest. Next: s1-700.
 - 05:50 trend: v6-s1-700 (SB 730/830, LR 0.09e-3) vs v5f, 300 games: 45.2% (~-34 +/- 22). Trend -104 -> -83 -> -34; stage 2
   (WDL 1.0, 30 SB) running, train end ~05:58.
+- 05:55 (09:55Z) training finished: anna-v6-s2-30 saved (quantised 45,641,280 B, raw 157,291,040 B), trainer printed "done".
+  The "=== train end" line never appeared (the tmux session closed without the trailing echo), so the train-end waiter did not
+  fire and the box idled ~40 min ($0.36) until I checked by hand. Lesson: detect the end by "final checkpoint dir exists AND no
+  trainer process", not by a log line. Final net had already been synced by the loop at 05:58 (netcheck ok; the strict range
+  check flags the rook-up test position at 2040 vs the 2000 bound, v5f gives 1930 there, so the net is sane).
+- 06:41 raw.bin + train log pulled (sha256-verified), instance destroyed, instances 0 verified, key 28298898 deleted, credit
+  $0.99 -> cost $5.53 (cap $6.00). Verdict matches: v6 vs v5f blitz 8+0.08 500 games running (sprt/v6_final_blitz.log); then
+  equal-nodes; the external anchor needs a top-up (~$0.25).
