@@ -173,3 +173,5 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **2026-09-17 03:18 anna-v6 mid-run trend (blitz 8+0.08, 300 games each):** v6-s1-230 (SB 260/830, LR 0.7e-3): -104 +/- 27 vs v5f, -31 +/- 24 vs v3b final. Calibration: v3b's own same-fraction checkpoint was -90 +/- 27 vs v3b final. Projection: v6 final about level with v5f (+/- ~40). Full verdict after the run + external anchor.
 **04:12:** v6-s1-500 (SB 530/830, LR 0.35e-3) vs v5f: -83 +/- 23 (300 games at 8+0.08); trend -104 -> -83.
 **05:50:** v6-s1-700 (SB 730/830, LR 0.09e-3) vs v5f: 45.2% (~-34 +/- 22, 300 games); trend -104 -> -83 -> -34.
+
+**2026-09-17 07:07 anna-v6 verdict (final anna-v6-s2-30 vs v5f):** equal nodes 30k, 300 games: +65 -87 =148, 46.3% (Elo: -25.52 +/- 22.94, nElo: -43.96 +/-); blitz 8+0.08 at 263 games +9 +/- 28 (500-game match running). Cost $5.53. Verdict so far: no improvement over v5f; the 36-file mixed set (494 GB, 830 SB) did not beat the 8-file v5 set (222 GB, 800 SB) at this net size.

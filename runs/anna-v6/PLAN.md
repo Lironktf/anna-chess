@@ -153,3 +153,5 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
 - 06:41 raw.bin + train log pulled (sha256-verified), instance destroyed, instances 0 verified, key 28298898 deleted, credit
   $0.99 -> cost $5.53 (cap $6.00). Verdict matches: v6 vs v5f blitz 8+0.08 500 games running (sprt/v6_final_blitz.log); then
   equal-nodes; the external anchor needs a top-up (~$0.25).
+- 07:07 verdict, equal nodes (30k/move, 300 games): v6 vs v5f +65 -87 =148, 46.3% (Elo: -25.52 +/- 22.94, nElo: -43.96 +/- ). Blitz 8+0.08 at 263 games: +9 +/- 28
+  (500-game match still running). No per-node improvement over v5f from 2.2x the data with the mixed sources.
