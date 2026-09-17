@@ -32,16 +32,16 @@ params! {
     // G1: hindsight depth adjust, in-check static eval, NMP/RFP/razoring/depth-reduction/fail-high formulas.
     SF_PRUNE, "SfPrune", 0, 0, 1;
     // G2: history bonus/malus formulas, eval-difference ordering bonus, previous-move maluses, continuation weights.
-    SF_HIST, "SfHist", 0, 0, 1;
+    SF_HIST, "SfHist", 1, 0, 1;
     // G3: LMR terms and constants, reductions table, LMR-depth divisor table, singular/negative-extension rules.
-    SF_LMR, "SfLmr", 0, 0, 1;
+    SF_LMR, "SfLmr", 1, 0, 1;
     // G4: Stockfish master correction history (tables, weights, update rule, multi-cut update; no major-piece table).
-    SF_CORR, "SfCorr", 0, 0, 1;
+    SF_CORR, "SfCorr", 1, 0, 1;
     // G5: Stockfish master move picker: no killer/counter stages, quiet scoring weights, check/threat terms,
     // capture threshold, sort limit, good/bad quiet split.
-    SF_PICK, "SfPick", 0, 0, 1;
+    SF_PICK, "SfPick", 1, 0, 1;
     // G6: Stockfish master quiescence: SEE threshold, stand-pat blends, decisive TT guard, stalemate case.
-    SF_QS, "SfQs", 0, 0, 1;
+    SF_QS, "SfQs", 1, 0, 1;
     // G7: Stockfish master time management and root aspiration loop (falling eval, stability, effort, search-again,
     // fail-high recovery, single-move cap, mate stop; timeman constants, time advantage).
     SF_TM, "SfTm", 0, 0, 1;
