@@ -141,3 +141,5 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
 - 03:18 calibration (8+0.08, 300 games each): v3b's same-fraction checkpoint (s1-100 of 310) vs v3b final: -90 +/- 27;
   v6-s1-230 vs v3b final: -31 +/- 24 (and -104 +/- 27 vs v5f). If v6 gains what v3b gained from annealing (~90), the
   projection is v6 final ~ v3b +60 ~ v5f +5, i.e. about level with v5f (+/- ~40). Next trend point: s1-500 vs v5f.
+- 04:12 trend: v6-s1-500 (SB 530/830, LR 0.35e-3) vs v5f at 8+0.08, 300 games: -83 +/- 23 (s1-230 was -104). Closing slowly;
+  the annealing tail (LR 0.35e-3 -> 1e-6 over the last 240 SB, then the WDL stage) has to deliver the rest. Next: s1-700.
