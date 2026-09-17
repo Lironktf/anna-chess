@@ -1,0 +1,35 @@
+# Search sync campaign (free, laptop) — started 2026-09-17 09:30
+
+Goal: close part of the ~100 Elo gap to Stormphrax-class engines on the search side, which transfers fully to external
+ratings (net gains transfer at ~1/3). Method: Anna's search is a port of an older Stockfish; Stockfish master
+(tools/refs/Stockfish, commit 031dfeb, 2026-09-13) has moved on in many places. Each difference group goes behind a
+UCI param (default off, bench unchanged with everything off), is SPRT-tested at 8+0.08 [0,5] on one binary
+(scripts/sprt.sh -N "option.X=1" -B "option.X=0", 7 games at a time), and becomes the default when it passes (bench change
+noted). Baseline binary: sprt/bin/anna_sync0 (HEAD at start, bench 650059, v5f net). Speed is NOT the gap: on this
+laptop Anna does 375-447k nps vs Stormphrax 408-537k with similar nodes-to-depth-16 (5 positions, 2026-09-17 08:50).
+
+Groups (Stockfish master line numbers refer to search.cpp / movepick.cpp at the commit above):
+- G1 SfPrune: hindsight depth adjust from (ss-1)->reduction (874-878); in-check static eval = (ss-2) (838); improving |=
+  staticEval >= beta after NMP (1061); NMP condition/R with priorNMPFailHigh (1019-1058); RFP depth<19 and blended return
+  (1004-1016); razoring returns qsearch directly (997-1000); depth -= 3 on alpha improvement for 3<depth<12 (1550);
+  fail-high blend (1574); TT depth+6 when no moves (1641).
+- G2 SfHist: eval-diff quiet ordering bonus (986-994); TT-cutoff malus for early quiet moves of the previous ply (894-896);
+  prior-capture fail-low capture-history bonus (1618-1624); fail-low bonusScale extra term + scaledBonus formula (1593-1616);
+  update_all_stats new bonus/malus formulas incl. non-PV scaling and prevSq single-move malus (2000-2030); continuation
+  history weights over plies 1-6 with positiveCount multipliers and +73 (2032-2050); pawn-history weight rule (2060-2070).
+- G3 SfLmr: reductions table 2872/128*ln(i) (720); ttPv +929 (1176); all LMR terms (1330-1374); d clamp newDepth+2 (1384);
+  doDeeper 53 / doShallower 8 (1396-1399); post-LMR flat 1334 (1405); full-depth reductions (1413-1418); PV re-search TT
+  qsearch-dive extension (1432-1435); cutoffCnt rule (1544); singular: is_shuffling guard, multi-cut correction update,
+  negative extension only -3 (1261-1318); seekMate handling.
+- G4 SfCorr: correction value weights and (ss-2)/(ss-4) continuation correction (85-104); to_corrected v + cv/131072;
+  update formula (1644-1653) and per-table weights (109-130); drop major correction.
+- G5 SfPick: drop killers/countermove stages; quiet scoring weights (1,1,1,1,1 over plies 1,2,3,4,6), check bonus 16384 with
+  see_ge(-75), lesser-piece threat term, low-ply 8/(1+ply); good-capture threshold -value/18; partial sort -3560*depth;
+  good/bad quiet split at -14000; evasion scoring.
+- G6 SfQs: SEE threshold alpha - futilityBase with bestValue floor (1822-1826); skip non-captures (1829-1831); stand-pat
+  blends (1763, 1887); decisive guard on ttValue as eval (1748); stalemate special case (1878-1883).
+- G7 SfTm: fallingEval / timeReduction / instability / effort formulas (580-599); single-legal-move 0.5 s cap (601-603);
+  mate stop (610); timeman timeAdvantage, mtg for time<1 s, maximum formula (timeman.cpp).
+- G8 SfTtVerify: TT cutoff verified against the position after the TT move at depth >= 7 (903-917).
+
+Ledger of results below (also mirrored in EXPERIMENTS.md and sprt/verdicts.txt).
