@@ -14,7 +14,8 @@ log() { printf '%s %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "$*" | tee -a "$LOG"; }
 log "sync loop start run=$RUN host=$HOST port=$PORT interval=$INTERVAL"
 while true; do
     # Only pull the small files we need: the quantised net and the training log. Optimiser state is large.
-    if nice -n 19 rsync -az --partial --timeout=60 -e "ssh -p $PORT -o StrictHostKeyChecking=no -o ConnectTimeout=20" \
+    # no -z: checkpoints are incompressible and zlib at nice 19 on a busy laptop made pulls 10x slower than the link
+    if rsync -a --partial --timeout=120 -e "ssh -p $PORT -o StrictHostKeyChecking=no -o ConnectTimeout=20" \
         --include='*/' --include='quantised.bin' --include='*.log' --include='*.txt' --exclude='*' \
         "root@$HOST:/workspace/checkpoints/" "$DEST/" >> "$LOG" 2>&1; then
         for q in "$DEST"/*/quantised.bin; do
