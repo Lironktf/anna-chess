@@ -40,6 +40,8 @@ params! {
     // G5: Stockfish master move picker: no killer/counter stages, quiet scoring weights, check/threat terms,
     // capture threshold, sort limit, good/bad quiet split.
     SF_PICK, "SfPick", 0, 0, 1;
+    // G6: Stockfish master quiescence: SEE threshold, stand-pat blends, decisive TT guard, stalemate case.
+    SF_QS, "SfQs", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

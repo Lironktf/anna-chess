@@ -1494,7 +1494,8 @@ impl<'a> Thread<'a> {
                 unadjusted_eval = if is_valid(tt.eval) { tt.eval } else { self.evaluate(pos, true) };
                 best_value = self.corrected_eval(unadjusted_eval, cv);
                 self.ss(ply).static_eval = best_value;
-                if is_valid(tt_value) && (if tt_value > best_value { tt.bound.has_lower() } else { tt.bound.has_upper() }) {
+                let sf6 = crate::params::SF_QS.get() != 0;
+                if is_valid(tt_value) && !(sf6 && is_decisive(tt_value)) && (if tt_value > best_value { tt.bound.has_lower() } else { tt.bound.has_upper() }) {
                     best_value = tt_value;
                 }
             } else {
@@ -1504,7 +1505,7 @@ impl<'a> Thread<'a> {
             }
             if best_value >= beta {
                 if !is_decisive(best_value) {
-                    best_value = (best_value + beta) / 2;
+                    best_value = if crate::params::SF_QS.get() != 0 { (441 * best_value + 583 * beta) / 1024 } else { (best_value + beta) / 2 };
                 }
                 if !tt_hit {
                     self.shared.tt.save(&writer, key, value_to_tt(best_value, ply), false, Bound::Lower, DEPTH_UNSEARCHED, Move::NONE, unadjusted_eval);
@@ -1542,6 +1543,7 @@ impl<'a> Thread<'a> {
             move_count += 1;
 
             if !is_loss(best_value) {
+                let sf6 = crate::params::SF_QS.get() != 0;
                 if !gives_check && m.to() != prev_sq && !is_loss(futility_base) && !m.is_promo() {
                     if move_count > 2 {
                         continue;
@@ -1552,10 +1554,19 @@ impl<'a> Thread<'a> {
                         best_value = best_value.max(fut);
                         continue;
                     }
-                    if futility_base <= alpha && !pos.see_ge(m, 1) {
+                    if sf6 {
+                        // Stockfish master: prune when the exchange cannot lift the futility base above alpha.
+                        if !pos.see_ge(m, alpha - futility_base) {
+                            best_value = best_value.max(alpha.min(futility_base));
+                            continue;
+                        }
+                    } else if futility_base <= alpha && !pos.see_ge(m, 1) {
                         best_value = best_value.max(futility_base);
                         continue;
                     }
+                }
+                if sf6 && !capture {
+                    continue;
                 }
                 if !pos.see_ge(m, -74) {
                     continue;
@@ -1601,8 +1612,20 @@ impl<'a> Thread<'a> {
         if in_check && best_value == -VALUE_INFINITE {
             return mated_in(ply);
         }
+        let sf6 = crate::params::SF_QS.get() != 0;
+        if sf6 && move_count == 0 && !in_check {
+            // Stockfish master: stalemate check only when the side to move has no pawn pushes, no pieces,
+            // and the previous move captured a piece (the cheap conditions under which stalemate is plausible).
+            let us = pos.side_to_move();
+            let pawns = pos.pieces_c(us, PieceType::Pawn);
+            let pushes = if us == Color::White { pawns << 8 } else { pawns >> 8 } & !pos.occupied();
+            let prev_captured = if ply >= 1 { self.ss_prev(ply, 1).captured } else { None };
+            if pushes == 0 && !pos.has_non_pawn_material(us) && matches!(prev_captured, Some(pt) if pt != PieceType::Pawn) && legal_moves(pos).is_empty() {
+                best_value = VALUE_DRAW;
+            }
+        }
         if !is_decisive(best_value) && best_value > beta {
-            best_value = (best_value + beta) / 2;
+            best_value = if sf6 { (462 * best_value + 562 * beta) / 1024 } else { (best_value + beta) / 2 };
         }
         let bound = if best_value >= beta { Bound::Lower } else { Bound::Upper };
         self.shared.tt.save(&writer, key, value_to_tt(best_value, ply), pv_hit, bound, DEPTH_QS, best_move, unadjusted_eval);
