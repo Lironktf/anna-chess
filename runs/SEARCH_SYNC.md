@@ -33,3 +33,14 @@ Groups (Stockfish master line numbers refer to search.cpp / movepick.cpp at the 
 - G8 SfTtVerify: TT cutoff verified against the position after the TT move at depth >= 7 (903-917).
 
 Ledger of results below (also mirrored in EXPERIMENTS.md and sprt/verdicts.txt).
+
+## Implementation notes (2026-09-17 10:40-12:30)
+All eight groups are implemented behind params SfPrune, SfHist, SfLmr, SfCorr, SfPick, SfQs, SfTm, SfTtVerify (bench
+650059 unchanged with all off; 245454 with all on). Binaries sprt/bin/anna_sync1..8 (each contains all groups implemented up
+to its number). Queue: scripts/sync_queue.sh, 5+0.05, 7 concurrent, 7 h cap per test, verdicts in sprt/verdicts.txt and
+sprt/sync_queue.log. Throughput on this laptop: ~450 games/h.
+Known deviations from Stockfish master: G1 applies the hindsight depth adjustment after the TT cutoff (Stockfish before it,
+because it evaluates before the cutoff); G7 uses the previous search's best score where Stockfish uses the best move's
+average score, counts best-move changes of the main thread only, and has no ponder handling; G3 skips the multi-cut
+correction update (it is in G4) and has no followPV bookkeeping (IIR unchanged); G5 keeps the killer/counter tables updated
+but never picks from them.
