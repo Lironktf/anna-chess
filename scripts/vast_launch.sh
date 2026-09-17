@@ -53,7 +53,9 @@ for o in json.load(sys.stdin)[:12]:
         mkdir -p "$ROOT/runs/$RUN"
         echo "$(date -u +%FT%TZ) create offer=$OFFER run=$RUN image=$IMAGE disk=$DISK" >> "$ROOT/runs/$RUN/events.log"
         # Refuse hosts that bill internet transfer (2026-09-16: ~$2.7 of bandwidth charges on one host) or run an old driver.
-        vastai search offers "id=$OFFER" --raw 2>/dev/null | python3 -c "
+        # PRECHECKED=1: the caller already validated this offer's driver/bandwidth/storage/disk from the same search
+        # results (avoids a second lookup during which popular offers vanish).
+        [[ "${PRECHECKED:-0}" == "1" ]] || vastai search offers "id=$OFFER" --raw 2>/dev/null | python3 -c "
 import sys, json
 o = json.load(sys.stdin)
 if not o: print('offer not found'); sys.exit(1)
