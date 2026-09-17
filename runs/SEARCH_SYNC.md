@@ -54,3 +54,5 @@ but never picks from them.
   time allocation constants (timeman.rs) vs the iterative-deepening changes (aspiration rules, search-again, effort factor
   that always scales the optimum by <= 0.838, which our optimum constants were not tuned for).
 - **G1 SfPrune STOPPED** (laptop, 7 h cap): +0.9 +/- 4.4 after 10080 games (50.1%). Neutral; stays off.
+- **G2 SfHist PASS** (laptop): +49 +/- 13 after 1008 games (57.0%), LLR crossed in 42 minutes. The history rework is the
+  largest gain of all.
