@@ -22,11 +22,13 @@ destroy() {
     done
     log "all destroy attempts failed"
 }
-log "armed: id=$ID max_hours=$MAX_HOURS grace_min=$GRACE_MIN log=$TRAIN_LOG"
+MAX_SECS=$(awk "BEGIN{print int($MAX_HOURS*3600)}")   # fractional hours allowed; bash (( )) cannot parse 7.5
+[[ "$MAX_SECS" =~ ^[0-9]+$ && "$MAX_SECS" -gt 0 ]] || { echo "bad MAX_HOURS=$MAX_HOURS" >&2; exit 2; }
+log "armed: id=$ID max_hours=$MAX_HOURS (${MAX_SECS}s) grace_min=$GRACE_MIN log=$TRAIN_LOG"
 while true; do
     now=$(date +%s)
     elapsed_h=$(( (now - START) / 3600 ))
-    if (( now - START >= MAX_HOURS * 3600 )); then
+    if (( now - START >= MAX_SECS )); then
         destroy "hard wall-clock limit ${MAX_HOURS}h reached"
     fi
     if grep -q "=== train end" "$TRAIN_LOG" 2>/dev/null; then
