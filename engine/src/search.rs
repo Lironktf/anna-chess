@@ -2064,6 +2064,13 @@ mod tests {
     use super::*;
     use crate::position::START_FEN;
 
+    /// The embedded network when the binary carries one (the search heuristics are tuned for a real evaluation; with
+    /// the material-only fallback the pruning can hide short mates at low depth), else no network.
+    fn test_net() -> Option<&'static AnyNet> {
+        static NET: std::sync::OnceLock<Option<AnyNet>> = std::sync::OnceLock::new();
+        NET.get_or_init(AnyNet::embedded).as_ref()
+    }
+
     fn run(fen: &str, depth: i32) -> SearchResult {
         crate::init();
         let pos = Position::from_fen(fen).unwrap();
@@ -2073,7 +2080,7 @@ mod tests {
         let limits = Limits { go: params, tm, max_depth: depth, max_nodes: 0 };
         let opts = Options { threads: 1, multi_pv: 1, move_overhead: 0, chess960: false, silent: true, prev_score: VALUE_INFINITE };
         let mut hists = Vec::new();
-        super::go(&pos, &[], &shared, None, None, None, &limits, &opts, &mut hists)
+        super::go(&pos, &[], &shared, test_net(), None, None, &limits, &opts, &mut hists)
     }
 
     #[test]
