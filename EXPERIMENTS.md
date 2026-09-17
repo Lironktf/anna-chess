@@ -27,8 +27,10 @@ The Stockfish-labelled sets agree far better with our search than the Leela set 
 ## Transfer test (2026-09-16 14:20, laptop, free): does the internal gain show against an external engine?
 
 Round robin at 60+0.6, 1 thread, UHO: anna-v5f, anna-v3b, Stormphrax 8, 200 games per pairing, same hardware and session
-(sprt/transfer.log). The two 100-game anchors on different boxes gave -111 +/- 34 (v5f) and -108 +/- 30 (v3b): a difference of
-~0 +/- 45, which neither confirms nor rules out the internal +35..+42. This paired test is the honest measurement.
+(sprt/transfer.log + transfer2.log). The two 100-game anchors on different boxes gave -111 +/- 34 (v5f) and -108 +/- 30 (v3b).
+**20:05 table (578 games, ~193 per pairing):** Stormphrax vs v3b +131 +/- 50; Stormphrax vs v5f +108 +/- 50; v5f vs v3b
++60 +/- 50. v5f is +24 Elo closer to Stormphrax than v3b (+/- ~70): partial transfer (~40% of the head-to-head gain), a lean,
+not a verdict. Run 2 continues to ~22:30; Stash pairings (200 games each) run 20:05-23:40 as a second reference.
 
 ## Net-side experiments (free)
 

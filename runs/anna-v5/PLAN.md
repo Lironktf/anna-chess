@@ -67,3 +67,4 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
 - 2026-09-16 13:57 **anchor (cpu-eval4, i9-13900K, 4 threads, 60+0.6, 100 games): v5f vs Stormphrax 8 -111 +/- 34** (9-40-51),
   the same as v3b (-108). The +35 over v3b at these settings did not transfer. Placement unchanged (~3525 on 40/15).
 - 14:20 transfer test started on the laptop: v5f / v3b / Stormphrax 8 round robin, 60+0.6, 200 games per pairing (sprt/transfer.log).
+- 20:05 transfer table (578 games): Stormphrax +131 vs v3b, +108 vs v5f (v5f +24 closer, +/- ~70); v5f +60 over v3b head-to-head.
