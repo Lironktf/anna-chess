@@ -42,6 +42,9 @@ params! {
     SF_PICK, "SfPick", 0, 0, 1;
     // G6: Stockfish master quiescence: SEE threshold, stand-pat blends, decisive TT guard, stalemate case.
     SF_QS, "SfQs", 0, 0, 1;
+    // G7: Stockfish master time management and root aspiration loop (falling eval, stability, effort, search-again,
+    // fail-high recovery, single-move cap, mate stop; timeman constants, time advantage).
+    SF_TM, "SfTm", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

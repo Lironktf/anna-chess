@@ -44,6 +44,34 @@ impl TimeManager {
         let time = time.max(1) as f64;
         let inc = inc as f64;
         let overhead = overhead as f64;
+        if crate::params::SF_TM.get() != 0 {
+            // Stockfish master timeman.cpp (031dfeb): constants, moves-to-go guess for tiny clocks, time advantage.
+            let mut mtg = p.movestogo.map(|m| (m as f64).min(50.0)).unwrap_or(50.0);
+            if time < 1000.0 && p.movestogo.is_none() {
+                mtg = (time * 0.05).floor().max(1.0);
+            }
+            let time_left = (time + inc * (mtg - 1.0) - overhead * (2.0 + mtg)).max(1.0);
+            let ply = ply as f64;
+            let (mut opt_scale, max_scale);
+            if p.movestogo.is_none() {
+                let log_t = (time / 1000.0).log10();
+                let opt_constant = (0.0029869 + 0.00033554 * log_t).min(0.004905);
+                let max_constant = (3.3744 + 3.0608 * log_t).max(3.1441);
+                opt_scale = (0.012112 + (ply + 3.22713).powf(0.46866) * opt_constant).min(0.19404 * time / time_left);
+                max_scale = (max_constant + ply / 12.352).min(6.873);
+            } else {
+                opt_scale = ((0.88 + ply / 116.4) / mtg).min(0.88 * time / time_left);
+                max_scale = 1.3 + 0.11 * mtg;
+            }
+            if p.movestogo != Some(1) {
+                let them = (if us_white { p.btime } else { p.wtime }).unwrap_or(time as i64).max(0) as f64;
+                let advantage = (time - them) / (1.0 + time + them);
+                opt_scale *= 1.0 + 0.9 * advantage.min(0.0);
+            }
+            let optimum = (opt_scale * time_left).max(1.0);
+            let maximum = (0.8097 * time - overhead).min(max_scale * optimum).max(optimum);
+            return TimeManager { start, optimum, maximum, use_time: true, fixed: false };
+        }
         let mtg = p.movestogo.map(|m| (m as f64).min(50.0)).unwrap_or(50.0);
         // Stockfish-derived formulas (search.cpp / timeman.cpp, 2025).
         let time_left = (time + inc * (mtg - 1.0) - overhead * (2.0 + mtg)).max(1.0);

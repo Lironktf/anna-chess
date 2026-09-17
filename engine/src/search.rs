@@ -1708,11 +1708,23 @@ impl<'a> Thread<'a> {
         let mut last_best = Move::NONE;
         self.opt_time = self.limits.tm.optimum;
 
+        // SfTm (Stockfish master iterative deepening / time management, runs/SEARCH_SYNC.md G7).
+        let sf7 = crate::params::SF_TM.get() != 0;
+        let mut search_again = 0i32;
+        let mut fail_high_recovery = 0i32;
+        let mut increase_depth = true;
+        if sf7 && self.best_prev_score != VALUE_INFINITE {
+            self.iter_value = [self.best_prev_score; 4];
+        }
+
         let mut depth = 1;
         while depth <= max_depth {
             self.root_depth = depth;
             if self.should_stop() {
                 break;
+            }
+            if sf7 && !increase_depth {
+                search_again += 1;
             }
             for rm in self.root_moves.iter_mut() {
                 rm.prev_score = rm.score;
@@ -1722,15 +1734,26 @@ impl<'a> Thread<'a> {
                 self.pv_idx = pv_idx;
                 self.sel_depth = 0;
                 let avg = self.root_moves[pv_idx].avg_score;
-                let mut delta = 10 + if avg == -VALUE_INFINITE { 0 } else { (avg * avg / 11131).min(400) };
+                let mut delta = if sf7 {
+                    5 + if avg == -VALUE_INFINITE { 0 } else { avg * avg / 10193 }
+                } else {
+                    10 + if avg == -VALUE_INFINITE { 0 } else { (avg * avg / 11131).min(400) }
+                };
                 let (mut alpha, mut beta) = if avg == -VALUE_INFINITE || depth < 4 {
                     (-VALUE_INFINITE, VALUE_INFINITE)
                 } else {
                     ((avg - delta).max(-VALUE_INFINITE), (avg + delta).min(VALUE_INFINITE))
                 };
                 let mut failed_high_cnt = 0;
+                if sf7 && pv_idx == 0 {
+                    fail_high_recovery = (fail_high_recovery - 2).max(0);
+                }
                 loop {
-                    let adjusted_depth = (depth - failed_high_cnt).max(1);
+                    let adjusted_depth = if sf7 {
+                        (depth - failed_high_cnt - fail_high_recovery - 3 * (search_again + 1) / 4).max(1)
+                    } else {
+                        (depth - failed_high_cnt).max(1)
+                    };
                     self.root_delta = beta - alpha;
                     let best_value = self.search(root, NodeType::Root, alpha, beta, adjusted_depth, false, 0);
                     // Stable sort root moves [pv_idx..] by score.
@@ -1739,19 +1762,25 @@ impl<'a> Thread<'a> {
                         break;
                     }
                     if best_value <= alpha {
-                        beta = (alpha + beta) / 2;
+                        beta = if sf7 { alpha } else { (alpha + beta) / 2 };
                         alpha = (best_value - delta).max(-VALUE_INFINITE);
                         failed_high_cnt = 0;
                     } else if best_value >= beta {
+                        if sf7 {
+                            alpha = (beta - delta).max(alpha);
+                        }
                         beta = (best_value + delta).min(VALUE_INFINITE);
                         failed_high_cnt += 1;
                     } else {
                         break;
                     }
-                    delta += delta / 3;
+                    delta += if sf7 { 47 * delta / 128 } else { delta / 3 };
                     if self.is_main() && !self.silent && self.limits.tm.elapsed_ms() > 3000.0 {
                         self.print_info(root, depth, pv_idx, alpha, beta);
                     }
+                }
+                if sf7 && failed_high_cnt > 0 && pv_idx == 0 {
+                    fail_high_recovery = (failed_high_cnt + 1) / 2 + 2;
                 }
                 self.root_moves[..=pv_idx].sort_by(|a, b| b.score.cmp(&a.score));
                 // Update running averages.
@@ -1802,19 +1831,46 @@ impl<'a> Thread<'a> {
                     // old (buggy) behaviour kept for A/B: saturates at 1.51
                     1.51
                 };
-                time_reduction = if last_best_move_depth + 8 <= depth { 1.56 } else { 0.69 };
-                let reduction = (1.4 + self.prev_time_reduction) / (2.2 * time_reduction);
-                let instability = 1.0 + crate::params::TM_INSTAB_PCT.get() as f64 / 100.0 * self.best_move_changes / self.threads as f64;
-                let effort_ratio = if self.nodes > 0 { self.root_moves[0].effort as f64 / self.nodes as f64 } else { 0.0 };
-                let effort_scale = if effort_ratio > 0.9 { 0.9 } else if effort_ratio > 0.8 { 0.95 } else { 1.0 };
-                let total = self.limits.tm.optimum * crate::params::TM_OPT_PCT.get() as f64 / 100.0 * falling_eval * reduction * instability * effort_scale;
-                let elapsed = self.limits.tm.elapsed_ms();
-                if elapsed > total {
-                    self.shared.stop.store(true, Ordering::Relaxed);
+                if sf7 {
+                    // Stockfish master search.cpp 575-620: falling eval on the score four iterations ago, interpolated
+                    // stability and effort factors, search-again gating, single-legal-move and mate stops.
+                    let interp = |x: f64, x0: f64, x1: f64, y0: f64, y1: f64| y0 + (y1 - y0) * (x - x0) / (x1 - x0);
+                    let prev_avg = if self.best_prev_score == VALUE_INFINITE { best_value } else { self.best_prev_score };
+                    let falling = ((11.48 + 2.30 * (prev_avg - best_value) as f64 + 1.1 * (self.iter_value[3] - best_value) as f64) / 100.0).clamp(0.576, 1.728);
+                    time_reduction = interp((depth - last_best_move_depth) as f64, 4.96, 18.79, 0.639, 1.712).clamp(0.629, 1.544);
+                    let reduction = (1.468 + self.prev_time_reduction) / (2.284 * time_reduction);
+                    let instability = 1.077 + 2.229 * self.best_move_changes / self.threads as f64;
+                    let nodes_effort = if self.nodes > 0 { (self.root_moves[0].effort as f64) * 100000.0 / self.nodes as f64 } else { 0.0 };
+                    let effort = interp(nodes_effort, 75800.0, 104510.0, 0.969, 0.714).clamp(0.693, 0.838);
+                    let mut total = self.limits.tm.optimum * crate::params::TM_OPT_PCT.get() as f64 / 100.0 * falling * reduction * instability * effort;
+                    if self.root_moves.len() == 1 {
+                        total = total.min(500.0);
+                    }
+                    let elapsed = self.limits.tm.elapsed_ms();
+                    let mate_stop = self.root_moves[multi_pv - 1].score >= mate_in(3) || self.root_moves[0].score == mated_in(2);
+                    if elapsed > total.min(self.limits.tm.maximum) || mate_stop {
+                        self.shared.stop.store(true, Ordering::Relaxed);
+                    } else {
+                        increase_depth = elapsed <= total * 0.50;
+                    }
+                    self.iter_value = [best_value, self.iter_value[0], self.iter_value[1], self.iter_value[2]];
+                    self.best_move_changes = 0.0;
+                    self.prev_time_reduction = time_reduction;
+                } else {
+                    time_reduction = if last_best_move_depth + 8 <= depth { 1.56 } else { 0.69 };
+                    let reduction = (1.4 + self.prev_time_reduction) / (2.2 * time_reduction);
+                    let instability = 1.0 + crate::params::TM_INSTAB_PCT.get() as f64 / 100.0 * self.best_move_changes / self.threads as f64;
+                    let effort_ratio = if self.nodes > 0 { self.root_moves[0].effort as f64 / self.nodes as f64 } else { 0.0 };
+                    let effort_scale = if effort_ratio > 0.9 { 0.9 } else if effort_ratio > 0.8 { 0.95 } else { 1.0 };
+                    let total = self.limits.tm.optimum * crate::params::TM_OPT_PCT.get() as f64 / 100.0 * falling_eval * reduction * instability * effort_scale;
+                    let elapsed = self.limits.tm.elapsed_ms();
+                    if elapsed > total {
+                        self.shared.stop.store(true, Ordering::Relaxed);
+                    }
+                    self.iter_value = [best_value, self.iter_value[0], self.iter_value[1], self.iter_value[2]];
+                    self.best_move_changes /= 2.0;
+                    self.prev_time_reduction = time_reduction;
                 }
-                self.iter_value = [best_value, self.iter_value[0], self.iter_value[1], self.iter_value[2]];
-                self.best_move_changes /= 2.0;
-                self.prev_time_reduction = time_reduction;
             }
             if self.limits.max_depth > 0 && depth >= self.limits.max_depth {
                 break;
