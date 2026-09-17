@@ -35,6 +35,12 @@ not a verdict. Run 2 continues to ~22:30; Stash pairings (200 games each) run 20
 v5f vs v3b +55 +/- 45. Transfer: v5f is +20 Elo closer to Stormphrax than v3b (+/- ~64), i.e. roughly a third of the
 head-to-head gain shows up against a stronger, different engine. Verdict stands: data gains are real but shrink externally;
 plan every future net verdict on the external anchor, not on the head-to-head number.
+**2026-09-17 00:55 Stash reference (build checked):** tools/stash-bot is Stash master 13e0a81 (2026-08-01, id "v37.26"), HCE
+evaluation (no net file), built -O3 -flto with native pext, bench 1.1M nps; match settings 60+0.6, 1 thread, Hash 128, UHO,
+identical for both sides. v5f vs Stash: +128 -8 =64 (200 games), +241 +/- 34. v3b vs Stash: +52 -5 =44 at 101 games, +175
+(running). CCRL 40/15: Stash 37.0 1CPU 3375, Stormphrax 8 1CPU 3609. The two anchors disagree: by Stash we would be ~3615,
+by Stormphrax ~3505. Expected for an HCE reference (NNUE engines beat HCE engines by more than the pooled ratings imply);
+Stormphrax stays the conservative anchor, Stash is used only for the v5f-v3b difference (+66 here vs +55 head-to-head).
 
 ## Net-side experiments (free)
 
