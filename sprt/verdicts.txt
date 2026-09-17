@@ -13,3 +13,5 @@ g3_sflmr PASS games=4938 | Elo: 9.71 +/- 5.55, nElo: 16.98 +/- 9.69 | LLR: 2.96 
 g4_sfcorr PASS games=1546 | Elo: 28.87 +/- 9.88, nElo: 50.88 +/- 17. | LLR: 2.98 (101.3%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfCorr=1] base=[option.SfCorr=0] tc=5+0.05 rc=0
 g5_sfpick PASS games=3983 | Elo: 11.35 +/- 5.97, nElo: 20.54 +/- 10. | LLR: 2.96 (100.4%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfPick=1] base=[option.SfPick=0] tc=5+0.05 rc=0
 g6_sfqs PASS games=8658 | Elo: 6.14 +/- 4.18, nElo: 10.74 +/- 7.32 | LLR: 2.96 (100.4%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfQs=1] base=[option.SfQs=0] tc=5+0.05 rc=0
+g1_sfprune STOPPED games=10093 | Elo: 0.90 +/- 4.25, nElo: 1.43 +/- 6.78 | LLR: -0.45 (-15.2%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfPrune=1] base=[option.SfPrune=0] tc=5+0.05 rc=124
+g7_sftm FAIL games=4403 | Elo: -7.66 +/- 5.73, nElo: -13.71 +/- 10 | LLR: -2.95 (-100.2%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfTm=1] base=[option.SfTm=0] tc=5+0.05 rc=0

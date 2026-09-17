@@ -50,3 +50,6 @@ but never picks from them.
 - **G4 SfCorr PASS** (server): +28.9 +/- 9.9, 1544 games, LLR 2.95 (54.2%). The correction-history rework is the biggest single gain so far.
 - **G5 SfPick PASS** (server): +11.4 +/- 6.0, 3980 games (51.6%). Killer/counter stages removed, Stockfish-master quiet scoring.
 - **G6 SfQs PASS** (server): +6.1 +/- 4.2, 8656 games (50.9%). Small but real.
+- **G7 SfTm FAIL** (server): -7.7 +/- 5.7, 4402 games (48.9%), 2 time losses in the log. Stays off. Candidate for a bisect:
+  time allocation constants (timeman.rs) vs the iterative-deepening changes (aspiration rules, search-again, effort factor
+  that always scales the optimum by <= 0.838, which our optimum constants were not tuned for).
