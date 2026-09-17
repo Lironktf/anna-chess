@@ -28,6 +28,11 @@ params! {
     SE_TTM, "SeTtmHist", 0, 0, 1;
     // Stockfish move ordering: +/- 20*piece_value for a quiet move escaping / entering a square attacked by a lesser piece.
     THREAT_ORDER, "ThreatOrder", 0, 0, 1;
+    // Search-sync groups (runs/SEARCH_SYNC.md): Stockfish master (2026-09) differences, each SPRT-tested separately.
+    // G1: hindsight depth adjust, in-check static eval, NMP/RFP/razoring/depth-reduction/fail-high formulas.
+    SF_PRUNE, "SfPrune", 0, 0, 1;
+    // G2: history bonus/malus formulas, eval-difference ordering bonus, previous-move maluses, continuation weights.
+    SF_HIST, "SfHist", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

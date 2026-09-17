@@ -39,6 +39,11 @@ pub struct StackEntry {
     pub corr_value: i32,
     /// Squares attacked by the opponent at this node (0 unless ThreatHist is on).
     pub threats: u64,
+    /// Number of null-move fail-highs seen at this node in this search (SfPrune; Stockfish priorNMPFailHigh).
+    pub prior_nmp_fail_high: i32,
+    /// Whether `current_move` is a capture or promotion, and the captured piece type (SfHist).
+    pub capture: bool,
+    pub captured: Option<PieceType>,
 }
 
 impl Default for StackEntry {
@@ -60,6 +65,9 @@ impl Default for StackEntry {
             reduction: 0,
             corr_value: 0,
             threats: 0,
+            prior_nmp_fail_high: 0,
+            capture: false,
+            captured: None,
         }
     }
 }
@@ -397,6 +405,32 @@ impl<'a> Thread<'a> {
 
     /// Continuation history update for the move at `ply` (plies 1,2,3,4,6 back).
     fn update_cont_histories(&mut self, ply: usize, piece: Piece, to: Square, bonus: i32) {
+        if crate::params::SF_HIST.get() != 0 {
+            // Stockfish master: plies 1-6, weights /65536 scaled by how many earlier entries were already positive.
+            const WEIGHTS: [(usize, i32); 6] = [(1, 520), (2, 390), (3, 145), (4, 251), (5, 66), (6, 209)];
+            const MULT: [i32; 7] = [94, 103, 110, 106, 119, 126, 121];
+            let in_check = self.ss_at(ply).in_check;
+            let mut positive = 0usize;
+            for &(back, w) in WEIGHTS.iter() {
+                if in_check && back > 2 {
+                    break;
+                }
+                if ply < back {
+                    break;
+                }
+                let prev = self.ss_prev(ply, back);
+                if prev.is_null || prev.current_move.is_none() {
+                    continue;
+                }
+                let idx = prev.cont_idx;
+                if self.hist.cont_get(idx, piece, to) > 0 {
+                    positive += 1;
+                }
+                let b = bonus * w * MULT[positive.min(6)] / 65536 + 73 * (back < 2) as i32;
+                self.hist.cont_update(idx, piece, to, b);
+            }
+            return;
+        }
         const WEIGHTS: [(usize, i32); 5] = [(1, 1024), (2, 768), (3, 300), (4, 500), (6, 400)];
         for &(back, w) in WEIGHTS.iter() {
             if ply < back {
@@ -417,9 +451,15 @@ impl<'a> Thread<'a> {
         let ti = History::threat_index(m, self.ss_at(ply).threats);
         self.hist.main_update(us, m, ti, bonus);
         self.hist.low_ply_update(ply, m, bonus * 712 / 1024);
-        self.update_cont_histories(ply, pc, m.to(), bonus);
-        let pb = if bonus > 0 { bonus * 1104 / 1024 } else { bonus * 459 / 1024 };
-        self.hist.pawn_update(pos.pawn_key(), pc, m.to(), pb);
+        if crate::params::SF_HIST.get() != 0 {
+            self.update_cont_histories(ply, pc, m.to(), bonus * 750 / 1024);
+            let pb = if bonus > -4 { bonus * 1104 / 1024 } else { bonus * 459 / 1024 };
+            self.hist.pawn_update(pos.pawn_key(), pc, m.to(), pb);
+        } else {
+            self.update_cont_histories(ply, pc, m.to(), bonus);
+            let pb = if bonus > 0 { bonus * 1104 / 1024 } else { bonus * 459 / 1024 };
+            self.hist.pawn_update(pos.pawn_key(), pc, m.to(), pb);
+        }
     }
 
     fn update_all_stats(
@@ -431,23 +471,43 @@ impl<'a> Thread<'a> {
         captures: &[Move],
         depth: i32,
         tt_move: Move,
+        pv_node: bool,
     ) {
-        let bonus = stat_bonus(depth) + 300 * (best_move == tt_move) as i32;
-        let malus = stat_malus(depth);
+        let sf2 = crate::params::SF_HIST.get() != 0;
+        let prev = if ply >= 1 { Some(*self.ss_prev(ply, 1)) } else { None };
+        let (bonus, malus) = if sf2 {
+            // Stockfish master: bonus grows with the previous move's stat score and, at non-PV nodes, with the
+            // number of moves searched before the cutoff.
+            let prev_stat = prev.map(|p| p.stat_score).unwrap_or(0);
+            let mut b = (133 * depth - 81).min(1487) + 364 * (best_move == tt_move) as i32 + prev_stat / 28;
+            if !pv_node {
+                b += b * (quiets.len() + captures.len()) as i32 / 256;
+            }
+            (b, (968 * depth - 235).min(2244))
+        } else {
+            (stat_bonus(depth) + 300 * (best_move == tt_move) as i32, stat_malus(depth))
+        };
         let moved = pos.moved_piece(best_move);
         if !pos.is_capture_or_promo(best_move) {
             self.update_quiet_histories(pos, ply, best_move, bonus * 899 / 1024);
             self.hist.update_killers(ply, best_move);
-            if ply >= 1 {
-                let prev = *self.ss_prev(ply, 1);
-                if !prev.is_null {
-                    self.hist.counter[prev.moved_piece.idx()][prev.current_move.to() as usize] = best_move;
+            if let Some(p) = prev {
+                if !p.is_null {
+                    self.hist.counter[p.moved_piece.idx()][p.current_move.to() as usize] = best_move;
                 }
             }
-            for (i, &q) in quiets.iter().enumerate() {
-                let m = -malus * (921i32.pow(i.min(6) as u32) as i64 / 1024i64.pow(i.min(6) as u32)) as i32;
-                let m = if i >= 7 { -malus / 2 } else { m };
-                self.update_quiet_histories(pos, ply, q, m);
+            if sf2 {
+                let mut actual = malus * 1159 / 1024;
+                for &q in quiets.iter() {
+                    actual = actual * 921 / 1024;
+                    self.update_quiet_histories(pos, ply, q, -actual);
+                }
+            } else {
+                for (i, &q) in quiets.iter().enumerate() {
+                    let m = -malus * (921i32.pow(i.min(6) as u32) as i64 / 1024i64.pow(i.min(6) as u32)) as i32;
+                    let m = if i >= 7 { -malus / 2 } else { m };
+                    self.update_quiet_histories(pos, ply, q, m);
+                }
             }
         } else {
             let captured = pos.captured_type(best_move).unwrap_or(PieceType::Pawn);
@@ -457,6 +517,12 @@ impl<'a> Thread<'a> {
             let captured = pos.captured_type(c).unwrap_or(PieceType::Pawn);
             let pc = pos.moved_piece(c);
             self.hist.capture_update(pc, c.to(), captured, -malus * 1489 / 1024);
+        }
+        // Stockfish master: malus for the previous quiet move when it was the only move tried there.
+        if let Some(p) = prev {
+            if sf2 && !p.is_null && !p.current_move.is_none() && !p.capture && p.move_count == 1 + p.tt_hit as i32 {
+                self.update_cont_histories_at(ply - 1, p.moved_piece, p.current_move.to(), -malus * 713 / 1024);
+            }
         }
     }
 
@@ -518,7 +584,12 @@ impl<'a> Thread<'a> {
         }
         self.ss(ply + 1).excluded = Move::NONE;
         self.ss(ply + 1).cutoff_cnt = 0;
+        self.ss(ply + 1).prior_nmp_fail_high = 0;
         self.hist.clear_killers(ply + 1);
+        // SfPrune (Stockfish master pruning/adjustment formulas, runs/SEARCH_SYNC.md G1).
+        let sf = crate::params::SF_PRUNE.get() != 0;
+        let prior_reduction = if ply >= 1 { self.ss_prev(ply, 1).reduction } else { 0 };
+        let seek_mate = sf && self.root_depth >= 16 && self.root_moves[self.pv_idx].score.abs() >= 2000;
 
         // ---- Transposition table ----
         let key = pos.key();
@@ -553,11 +624,11 @@ impl<'a> Thread<'a> {
                     let b = stat_bonus(depth);
                     self.update_quiet_histories(pos, ply, tt_move, b);
                 }
-                // Penalty for the previous quiet move that allowed this early cutoff.
-                if ply >= 1 {
+                // Extra penalty for early quiet moves of the previous ply (Stockfish master, SfHist).
+                if crate::params::SF_HIST.get() != 0 && ply >= 1 {
                     let prev = *self.ss_prev(ply, 1);
-                    if !prev.is_null && !prev.current_move.is_none() && prev.moved_piece != Piece::None {
-                        // (simplified: no access to previous position's capture status here)
+                    if !prev.is_null && !prev.current_move.is_none() && !prev.capture && prev.move_count < 5 {
+                        self.update_cont_histories_at(ply - 1, prev.moved_piece, prev.current_move.to(), -2210);
                     }
                 }
             }
@@ -609,8 +680,10 @@ impl<'a> Thread<'a> {
         let mut eval;
         let cv;
         if in_check {
-            self.ss(ply).static_eval = VALUE_NONE;
-            eval = VALUE_NONE;
+            // Stockfish master: in check, reuse the static eval from two plies ago (keeps improving/hindsight sane).
+            let se = if sf && ply >= 2 { self.ss_prev(ply, 2).static_eval } else { VALUE_NONE };
+            self.ss(ply).static_eval = se;
+            eval = se;
             cv = 0;
         } else {
             cv = self.corr_value(pos, ply);
@@ -634,7 +707,7 @@ impl<'a> Thread<'a> {
         self.ss(ply).corr_value = cv;
 
         let static_eval = self.ss_at(ply).static_eval;
-        let improving = !in_check && {
+        let mut improving = !in_check && {
             let p2 = if ply >= 2 { self.ss_prev(ply, 2).static_eval } else { VALUE_NONE };
             let p4 = if ply >= 4 { self.ss_prev(ply, 4).static_eval } else { VALUE_NONE };
             if is_valid(p2) {
@@ -653,9 +726,38 @@ impl<'a> Thread<'a> {
         let prev_move = if ply >= 1 { self.ss_prev(ply, 1).current_move } else { Move::NONE };
         let prev_null = ply >= 1 && self.ss_prev(ply, 1).is_null;
 
+        // Hindsight adjustment of the depth from the reduction applied to the previous move (Stockfish master).
+        // Applied after the TT cutoff here (Stockfish applies it before), see runs/SEARCH_SYNC.md.
+        if sf && is_valid(static_eval) && ply >= 1 {
+            if prior_reduction >= 3 && !opponent_worsening {
+                depth += 1;
+            }
+            let p1 = self.ss_prev(ply, 1).static_eval;
+            if prior_reduction >= 2 && depth >= 2 && is_valid(p1) && static_eval + p1 > 166 {
+                depth -= 1;
+            }
+        }
+
+        // Use the static evaluation difference to improve quiet move ordering (Stockfish master, SfHist).
+        if crate::params::SF_HIST.get() != 0 && !in_check && ply >= 1 {
+            let p1 = *self.ss_prev(ply, 1);
+            if !p1.is_null && !p1.current_move.is_none() && !p1.in_check && !p1.capture && is_valid(p1.static_eval) {
+                let eval_diff = (-(p1.static_eval + static_eval)).clamp(-189, 194) + 60;
+                let ti = History::threat_index(p1.current_move, p1.threats);
+                self.hist.main_update(!us, p1.current_move, ti, eval_diff * 11);
+                if !tt_hit && p1.moved_piece.piece_type() != PieceType::Pawn && !p1.current_move.is_promo() {
+                    self.hist.pawn_update(pos.pawn_key(), p1.moved_piece, p1.current_move.to(), eval_diff * 13);
+                }
+            }
+        }
+
         if !in_check && !root {
             // ---- Razoring ----
-            if !pv_node && eval < alpha - crate::params::RAZOR_MULT.get() * depth && !is_loss(alpha) {
+            if sf {
+                if !pv_node && eval < alpha - 482 * depth && !seek_mate {
+                    return self.qsearch(pos, false, alpha, beta, ply);
+                }
+            } else if !pv_node && eval < alpha - crate::params::RAZOR_MULT.get() * depth && !is_loss(alpha) {
                 let v = self.qsearch(pos, false, alpha - 1, alpha, ply);
                 if v < alpha && !is_decisive(v) {
                     return v;
@@ -663,25 +765,34 @@ impl<'a> Thread<'a> {
             }
 
             // ---- Reverse futility pruning ----
-            if !tt_pv && depth < crate::params::RFP_DEPTH.get() && eval >= beta && (tt_move.is_none() || tt_capture) && !is_loss(beta) && !is_win(eval) {
+            let rfp_depth = if sf { if seek_mate { 6 } else { 19 } } else { crate::params::RFP_DEPTH.get() };
+            if !tt_pv && depth < rfp_depth && eval >= beta && (tt_move.is_none() || tt_capture) && !is_loss(beta) && !is_win(eval) {
                 let fut_mult = (crate::params::RFP_MULT.get() + depth * 4).min(crate::params::RFP_MULT.get() + 40) - 20 * (!tt_hit) as i32;
-                let margin = fut_mult * depth - (2789 * improving as i32 + 335 * opponent_worsening as i32) * fut_mult / 1024 + cv.abs() / 4096;
+                let corr_term = if sf { cv.abs() / 388 } else { cv.abs() / 4096 };
+                let margin = fut_mult * depth - (2789 * improving as i32 + 335 * opponent_worsening as i32) * fut_mult / 1024 + corr_term;
                 if eval - margin >= beta {
-                    return if is_decisive(eval) { eval } else { beta + (eval - beta) / 3 };
+                    return if is_decisive(eval) {
+                        eval
+                    } else if sf {
+                        (661 * beta + 363 * eval) / 1024
+                    } else {
+                        beta + (eval - beta) / 3
+                    };
                 }
             }
 
             // ---- Null move pruning ----
-            if cut_node
-                && !prev_null
-                && excluded.is_none()
-                && eval >= beta
-                && static_eval >= beta - 13 * depth + 365 - 47 * improving as i32
-                && pos.has_non_pawn_material(us)
-                && ply >= self.nmp_min_ply
-                && !is_loss(beta)
-            {
-                let r = crate::params::NMP_BASE.get() + depth / 3 + ((eval - beta) / 200).min(4);
+            let nmp_ok = if sf {
+                static_eval + 50 * self.ss_at(ply).prior_nmp_fail_high >= beta - 13 * depth - 47 * improving as i32 + 365 && beta >= -2000
+            } else {
+                eval >= beta && static_eval >= beta - 13 * depth + 365 - 47 * improving as i32 && !is_loss(beta)
+            };
+            if cut_node && !prev_null && excluded.is_none() && nmp_ok && pos.has_non_pawn_material(us) && ply >= self.nmp_min_ply {
+                let r = if sf {
+                    7 + depth / 3 + ((static_eval - beta) / 256).max(0)
+                } else {
+                    crate::params::NMP_BASE.get() + depth / 3 + ((eval - beta) / 200).min(4)
+                };
                 {
                     let s = self.ss(ply);
                     s.current_move = Move::NONE;
@@ -689,6 +800,8 @@ impl<'a> Thread<'a> {
                     s.is_null = true;
                     s.cont_idx = History::cont_index(false, false, Piece::None, 0);
                     s.cont_corr_idx = Piece::None.idx() * 64;
+                    s.capture = false;
+                    s.captured = None;
                 }
                 let child = pos.make_null_move();
                 self.nn_push_null(&child);
@@ -701,6 +814,7 @@ impl<'a> Thread<'a> {
 
                 if null_value >= beta && !is_win(null_value) {
                     if self.nmp_min_ply > 0 || depth < 16 {
+                        self.ss(ply).prior_nmp_fail_high += 1;
                         return null_value;
                     }
                     // Verification search at high depths.
@@ -708,9 +822,13 @@ impl<'a> Thread<'a> {
                     let v = self.search(pos, NodeType::NonPv, beta - 1, beta, depth - r, false, ply);
                     self.nmp_min_ply = 0;
                     if v >= beta {
+                        self.ss(ply).prior_nmp_fail_high += 1;
                         return null_value;
                     }
                 }
+            }
+            if sf {
+                improving |= static_eval >= beta;
             }
 
             // ---- Internal iterative reductions ----
@@ -734,11 +852,14 @@ impl<'a> Thread<'a> {
                     let capture = pos.is_capture_or_promo(m);
                     let mp_piece = pos.moved_piece(m);
                     {
+                        let captured = pos.captured_type(m);
                         let s = self.ss(ply);
                         s.current_move = m;
                         s.moved_piece = mp_piece;
                         s.cont_idx = History::cont_index(in_check, capture, mp_piece, m.to());
                         s.cont_corr_idx = mp_piece.idx() * 64 + m.to() as usize;
+                        s.capture = capture;
+                        s.captured = captured;
                     }
                     let child = pos.make_move(m);
                     self.nn_push(pos, m, &child);
@@ -913,11 +1034,14 @@ impl<'a> Thread<'a> {
 
             // ---- Make the move ----
             {
+                let captured = pos.captured_type(m);
                 let s = self.ss(ply);
                 s.current_move = m;
                 s.moved_piece = moved_piece;
                 s.cont_idx = History::cont_index(in_check, capture, moved_piece, m.to());
                 s.cont_corr_idx = moved_piece.idx() * 64 + m.to() as usize;
+                s.capture = capture;
+                s.captured = captured;
             }
             let child = pos.make_move(m);
             self.shared.tt.prefetch(child.key());
@@ -1036,7 +1160,11 @@ impl<'a> Thread<'a> {
                         s.cutoff_cnt += 1 + (tt_move.is_none()) as u8;
                         break;
                     }
-                    if depth > 2 && depth < 14 && !is_decisive(value) {
+                    if sf {
+                        if depth > 3 && depth < 12 && !is_decisive(value) {
+                            depth -= 3;
+                        }
+                    } else if depth > 2 && depth < 14 && !is_decisive(value) {
                         depth -= 2;
                     }
                     alpha = value;
@@ -1053,6 +1181,11 @@ impl<'a> Thread<'a> {
             }
         }
 
+        // Adjust the best value for fail-high cases (Stockfish master).
+        if sf && best_value >= beta && !is_decisive(best_value) && !is_decisive(alpha) {
+            best_value = (best_value * depth + beta) / (depth + 1);
+        }
+
         // ---- Checkmate / stalemate ----
         if move_count == 0 {
             best_value = if !excluded.is_none() {
@@ -1063,24 +1196,38 @@ impl<'a> Thread<'a> {
                 VALUE_DRAW
             };
         } else if !best_move.is_none() {
-            self.update_all_stats(pos, ply, best_move, &quiets_searched[..n_quiets], &captures_searched[..n_caps], depth, tt_move);
+            self.update_all_stats(pos, ply, best_move, &quiets_searched[..n_quiets], &captures_searched[..n_caps], depth, tt_move, pv_node);
             if !pv_node && crate::params::SE_TTM.get() != 0 {
                 self.hist.ttm_update(if best_move == tt_move { 918 } else { -747 });
             }
         } else if ply >= 1 && !prev_null && !prev_move.is_none() {
-            // Bonus for the previous move that caused this fail-low.
             let p1 = *self.ss_prev(ply, 1);
-            let bonus_scale = (-241 - p1.stat_score / 98 + (59 * depth).min(420) + 186 * (p1.move_count > 9) as i32
-                + 142 * (!in_check && best_value <= static_eval - 106) as i32)
-                .max(0);
-            let bonus = stat_bonus(depth) * bonus_scale;
-            if p1.moved_piece != Piece::None {
-                let piece = p1.moved_piece;
-                let to = p1.current_move.to();
-                // Continuation histories of the previous position (ply-1).
-                self.update_cont_histories_at(ply - 1, piece, to, bonus * 263 / 16384);
-                let ti = History::threat_index(p1.current_move, p1.threats);
-                self.hist.main_update(!us, p1.current_move, ti, bonus * 215 / 32768);
+            let sf2 = crate::params::SF_HIST.get() != 0;
+            if sf2 && p1.capture {
+                // Bonus for the prior capture that caused this fail-low (Stockfish master).
+                if let Some(captured) = p1.captured {
+                    self.hist.capture_update(p1.moved_piece, p1.current_move.to(), captured, 892);
+                }
+            } else {
+                // Bonus for the previous quiet move that caused this fail-low.
+                let mut bonus_scale = -241 - p1.stat_score / 98 + (59 * depth).min(420) + 186 * (p1.move_count > 9) as i32
+                    + 142 * (!in_check && best_value <= static_eval - 106) as i32;
+                if sf2 {
+                    bonus_scale += 159 * (!p1.in_check && is_valid(p1.static_eval) && best_value <= -p1.static_eval - 68) as i32;
+                }
+                let bonus_scale = bonus_scale.max(0);
+                let bonus = stat_bonus(depth) * bonus_scale;
+                if p1.moved_piece != Piece::None {
+                    let piece = p1.moved_piece;
+                    let to = p1.current_move.to();
+                    // Continuation histories of the previous position (ply-1).
+                    self.update_cont_histories_at(ply - 1, piece, to, bonus * 263 / 16384);
+                    let ti = History::threat_index(p1.current_move, p1.threats);
+                    self.hist.main_update(!us, p1.current_move, ti, bonus * 215 / 32768);
+                    if sf2 && piece.piece_type() != PieceType::Pawn && !p1.current_move.is_promo() {
+                        self.hist.pawn_update(pos.pawn_key(), piece, to, bonus * 324 / 8192);
+                    }
+                }
             }
         }
 
@@ -1102,7 +1249,8 @@ impl<'a> Thread<'a> {
             } else {
                 Bound::Upper
             };
-            self.shared.tt.save(&writer, key, value_to_tt(best_value, ply), tt_pv, bound, depth, best_move, unadjusted_eval);
+            let tt_depth = if sf && move_count == 0 { (depth + 6).min(MAX_PLY as i32 - 1) } else { depth };
+            self.shared.tt.save(&writer, key, value_to_tt(best_value, ply), tt_pv, bound, tt_depth, best_move, unadjusted_eval);
         }
 
         // ---- Correction history update ----
