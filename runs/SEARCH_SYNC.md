@@ -53,3 +53,4 @@ but never picks from them.
 - **G7 SfTm FAIL** (server): -7.7 +/- 5.7, 4402 games (48.9%), 2 time losses in the log. Stays off. Candidate for a bisect:
   time allocation constants (timeman.rs) vs the iterative-deepening changes (aspiration rules, search-again, effort factor
   that always scales the optimum by <= 0.838, which our optimum constants were not tuned for).
+- **G1 SfPrune STOPPED** (laptop, 7 h cap): +0.9 +/- 4.4 after 10080 games (50.1%). Neutral; stays off.

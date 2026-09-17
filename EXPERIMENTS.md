@@ -183,3 +183,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **14:56 G5 SfPick PASS:** +11.4 +/- 6.0 (3980 games at 5+0.05, server). Move picker without killer/counter stages, master quiet scoring, capture threshold, good/bad quiet split.
 **16:44 G6 SfQs PASS:** +6.1 +/- 4.2 (8656 games at 5+0.05, server). Quiescence SEE threshold, stand-pat blends, decisive-TT guard, stalemate case.
 **17:37 G7 SfTm FAIL:** -7.7 +/- 5.7 (4402 games at 5+0.05, server). Off; bisect later (allocation vs aspiration/effort).
+**17:42 G1 SfPrune STOPPED at the 7 h cap:** +0.9 +/- 4.4 (10080 games at 5+0.05, laptop). Neutral; off. Laptop moved on to G2 SfHist.
