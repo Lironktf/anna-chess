@@ -47,3 +47,4 @@ but never picks from them.
 - 12:46 the owner's university server (64-vCPU node, shared, `ssh uw`) runs G3..G8 at 24 concurrent games in tmux (node
   ubuntu2404-002); the laptop keeps G1 then G2. Server verdicts: sprt/uw/verdicts.txt (rsynced every 10 min).
 - **G3 SfLmr PASS** (server, 5+0.05): +9.7 +/- 5.6, 4938 games, LLR 2.96. Will become the default after the queue.
+- **G4 SfCorr PASS** (server): +28.9 +/- 9.9, 1544 games, LLR 2.95 (54.2%). The correction-history rework is the biggest single gain so far.

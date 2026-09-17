@@ -179,3 +179,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 
 **2026-09-17 12:30 search sync campaign (free):** Anna's search re-diffed against Stockfish master 031dfeb (tools/refs/Stockfish); eight difference groups implemented behind params (SfPrune, SfHist, SfLmr, SfCorr, SfPick, SfQs, SfTm, SfTtVerify) and queued as sequential SPRTs at 5+0.05 [0,5] (scripts/sync_queue.sh; results in sprt/verdicts.txt). Plan and per-group contents: runs/SEARCH_SYNC.md. Speed is not the gap: Anna 375-447k nps vs Stormphrax 408-537k on this laptop with similar nodes to depth 16.
 **13:47 G3 SfLmr PASS:** +9.7 +/- 5.6 (4938 games at 5+0.05, university server). First confirmed gain of the sync campaign.
+**14:07 G4 SfCorr PASS:** +28.9 +/- 9.9 (1544 games at 5+0.05, server). Stockfish-master correction histories (weights, i16 gravity tables, (ss-2)/(ss-4) continuation correction, new update rule, no major-piece table).
