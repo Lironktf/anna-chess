@@ -130,3 +130,8 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
   Found and fixed a real bug: vast_selfdestruct.sh used bash (( )) with MAX_HOURS=7.5, which is an arithmetic error, so the
   hard wall-clock limit never fired (the "train end" path still worked). Fixed (awk seconds), re-armed 03:19:10Z -> hard limit
   10:49Z (06:49 EDT); guard $6.00 would fire ~11:13Z. Expected train end ~10:20Z (06:20 EDT); total ~$5.4-5.5.
+- 23:35 box->laptop ssh link is throttled per connection (~0.09 MB/s single stream; box uplink 32 MB/s to Cloudflare, laptop
+  downlink 3 MB/s). Wrote scripts/vast_pull_parallel.sh (byte ranges over 12 ssh streams, sha256-verified): 45 MB in 60 s.
+  Sync loop replaced by runs/anna-v6/sync_parallel.sh (newest checkpoint only). Self-destruct re-armed 03:34:09Z with
+  MAX_HOURS 7.58 so its hard limit (11:11Z) sits 3 min before the $6.00 guard (11:14Z); both under the cap. Final pull plan:
+  quantised.bin (1 min) then raw.bin (157 MB, ~4 min) with the parallel puller, then destroy by hand.
