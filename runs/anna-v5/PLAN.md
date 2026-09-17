@@ -68,3 +68,4 @@ Smoke (SB 2/2/1 on the same file list, checkpoint netcheck) before the real run.
   the same as v3b (-108). The +35 over v3b at these settings did not transfer. Placement unchanged (~3525 on 40/15).
 - 14:20 transfer test started on the laptop: v5f / v3b / Stormphrax 8 round robin, 60+0.6, 200 games per pairing (sprt/transfer.log).
 - 20:05 transfer table (578 games): Stormphrax +131 vs v3b, +108 vs v5f (v5f +24 closer, +/- ~70); v5f +60 over v3b head-to-head.
+- 22:31 transfer test final (~700 games): Stormphrax +126 vs v3b, +106 vs v5f (v5f +20 closer, +/- ~64); v5f +55 over v3b head-to-head.

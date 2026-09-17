@@ -31,6 +31,10 @@ Round robin at 60+0.6, 1 thread, UHO: anna-v5f, anna-v3b, Stormphrax 8, 200 game
 **20:05 table (578 games, ~193 per pairing):** Stormphrax vs v3b +131 +/- 50; Stormphrax vs v5f +108 +/- 50; v5f vs v3b
 +60 +/- 50. v5f is +24 Elo closer to Stormphrax than v3b (+/- ~70): partial transfer (~40% of the head-to-head gain), a lean,
 not a verdict. Run 2 continues to ~22:30; Stash pairings (200 games each) run 20:05-23:40 as a second reference.
+**22:31 final (both runs, ~700 games, ~232 per pairing):** Stormphrax vs v3b +126 +/- 46; Stormphrax vs v5f +106 +/- 45;
+v5f vs v3b +55 +/- 45. Transfer: v5f is +20 Elo closer to Stormphrax than v3b (+/- ~64), i.e. roughly a third of the
+head-to-head gain shows up against a stronger, different engine. Verdict stands: data gains are real but shrink externally;
+plan every future net verdict on the external anchor, not on the head-to-head number.
 
 ## Net-side experiments (free)
 
