@@ -162,8 +162,13 @@ fn value_draw(nodes: u64) -> Value {
 impl<'a> Thread<'a> {
     pub fn new(id: usize, shared: &'a Shared, net: Option<&'a AnyNet>, net_fast: Option<&'a AnyNet>, policy: Option<&'a crate::policy::PolicyNet>, limits: Limits, opts: &Options, hist: History) -> Self {
         let mut reductions = [0i32; 256];
+        let sf3 = crate::params::SF_LMR.get() != 0;
         for (i, r) in reductions.iter_mut().enumerate().skip(1) {
-            *r = ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32;
+            *r = if sf3 {
+                (2872.0 / 128.0 * (i as f64).ln()) as i32
+            } else {
+                ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32
+            };
         }
         Thread {
             id,
@@ -588,8 +593,10 @@ impl<'a> Thread<'a> {
         self.hist.clear_killers(ply + 1);
         // SfPrune (Stockfish master pruning/adjustment formulas, runs/SEARCH_SYNC.md G1).
         let sf = crate::params::SF_PRUNE.get() != 0;
+        let sf3 = crate::params::SF_LMR.get() != 0;
         let prior_reduction = if ply >= 1 { self.ss_prev(ply, 1).reduction } else { 0 };
-        let seek_mate = sf && self.root_depth >= 16 && self.root_moves[self.pv_idx].score.abs() >= 2000;
+        let seek_mate_cond = self.root_depth >= 16 && self.root_moves[self.pv_idx].score.abs() >= 2000;
+        let seek_mate = sf && seek_mate_cond;
 
         // ---- Transposition table ----
         let key = pos.key();
@@ -934,6 +941,9 @@ impl<'a> Thread<'a> {
             let mut new_depth = depth - 1;
             let delta = beta - alpha;
             let mut r = self.reduction(improving, depth, move_count, delta);
+            if sf3 && tt_pv {
+                r += 929;
+            }
 
             // ---- Pruning at shallow depth ----
             if !root && pos.has_non_pawn_material(us) && !is_loss(best_value) {
@@ -945,15 +955,29 @@ impl<'a> Thread<'a> {
                 if capture || gives_check {
                     let captured = pos.captured_type(m).unwrap_or(PieceType::Pawn);
                     let capt_hist = self.hist.capture_get(moved_piece, m.to(), captured);
-                    if !gives_check && lmr_depth < 7 && !in_check {
-                        let fut = static_eval + 232 + 224 * lmr_depth + piece_value(captured) + 131 * capt_hist / 1024;
-                        if fut <= alpha {
+                    if sf3 {
+                        if !gives_check && lmr_depth < 8 {
+                            let fut = static_eval + 234 + 247 * lmr_depth + piece_value(captured) + 134 * capt_hist / 1024;
+                            if fut <= alpha {
+                                continue;
+                            }
+                        }
+                        // Avoid pruning sacrifices of our last piece for stalemate.
+                        let see_margin = 177 * depth + capt_hist * 34 / 1024;
+                        if (alpha >= VALUE_DRAW || pos.non_pawn_material(us) != piece_value(moved_piece.piece_type())) && !pos.see_ge(m, -see_margin) {
                             continue;
                         }
-                    }
-                    let see_margin = 177 * depth + capt_hist * 34 / 1024;
-                    if !pos.see_ge(m, -see_margin) {
-                        continue;
+                    } else {
+                        if !gives_check && lmr_depth < 7 && !in_check {
+                            let fut = static_eval + 232 + 224 * lmr_depth + piece_value(captured) + 131 * capt_hist / 1024;
+                            if fut <= alpha {
+                                continue;
+                            }
+                        }
+                        let see_margin = 177 * depth + capt_hist * 34 / 1024;
+                        if !pos.see_ge(m, -see_margin) {
+                            continue;
+                        }
                     }
                 } else {
                     let mut history = self.hist.pawn_get(pos.pawn_key(), moved_piece, m.to());
@@ -966,8 +990,14 @@ impl<'a> Thread<'a> {
                     if history < -4136 * depth {
                         continue;
                     }
-                    history += 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
-                    lmr_depth += history / 3600;
+                    if sf3 {
+                        const LMR_DIV: [i32; 16] = [3637, 2787, 2761, 2939, 3171, 3347, 3147, 2762, 2772, 3106, 3107, 3060, 3112, 2991, 3090, 3542];
+                        history += 69 * self.hist.main_get(us, m, History::threat_index(m, threats)) / 32;
+                        lmr_depth += history / LMR_DIV[(depth.min(16) - 1).max(0) as usize];
+                    } else {
+                        history += 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
+                        lmr_depth += history / 3600;
+                    }
                     if !in_check && lmr_depth < 12 {
                         let fut = static_eval + crate::params::FUT_MARGIN.get() * lmr_depth + 90 * (static_eval > alpha) as i32 + 164;
                         if fut <= alpha {
@@ -986,6 +1016,13 @@ impl<'a> Thread<'a> {
 
             // ---- Extensions ----
             let mut extension = 0;
+            // Stockfish master: no singular search for shuffling moves (piece going back and forth) late in
+            // long 50-move sequences, nor while seeking a mate.
+            let shuffling = sf3 && !capture && pos.rule50() >= 10 && ply >= 20 && {
+                let p2 = self.ss_prev(ply, 2).current_move;
+                let p4 = self.ss_prev(ply, 4).current_move;
+                (1..=5).all(|k| !self.ss_prev(ply, k).is_null) && !p2.is_none() && !p4.is_none() && m.from() == p2.to() && p2.from() == p4.to()
+            };
             if !root
                 && m == tt_move
                 && excluded.is_none()
@@ -994,6 +1031,8 @@ impl<'a> Thread<'a> {
                 && !is_decisive(tt_value)
                 && tt.bound.has_lower()
                 && tt.depth >= depth - 3
+                && !shuffling
+                && !(sf3 && seek_mate_cond)
             {
                 let singular_beta = tt_value - (crate::params::SE_MARGIN.get() + 66 * (tt_pv && !pv_node) as i32) * depth / 63;
                 let singular_depth = new_depth / 2;
@@ -1001,8 +1040,8 @@ impl<'a> Thread<'a> {
                 let value = self.search(pos, NodeType::NonPv, singular_beta - 1, singular_beta, singular_depth, cut_node, ply);
                 self.ss(ply).excluded = Move::NONE;
                 if value < singular_beta {
-                    let ttm = crate::params::SE_TTM.get() != 0;
-                    let corr_adj = cv.abs() / 4096;
+                    let ttm = crate::params::SE_TTM.get() != 0 || sf3;
+                    let corr_adj = if sf3 { cv.abs() / 388 } else { cv.abs() / 4096 };
                     let deep = (ply as i32 > self.root_depth) as i32;
                     let double_margin = if ttm {
                         -2 + 204 * pv_node as i32 - 152 * (!tt_capture) as i32 - corr_adj - 1175 * self.hist.tt_move_history / 114178 - 38 * deep
@@ -1015,19 +1054,19 @@ impl<'a> Thread<'a> {
                         70 + 279 * pv_node as i32 - 188 * (!tt_capture) as i32 + 81 * tt_pv as i32
                     };
                     extension = 1 + (value < singular_beta - double_margin) as i32 + (value < singular_beta - triple_margin) as i32;
-                    if depth < 16 {
+                    if sf3 || depth < 16 {
                         depth += 1;
                     }
                 } else if value >= beta && !is_decisive(value) {
                     // Multi-cut: the TT move and at least one other move fail high.
-                    if crate::params::SE_TTM.get() != 0 {
+                    if crate::params::SE_TTM.get() != 0 || sf3 {
                         self.hist.ttm_update(-421 - 110 * depth);
                     }
                     return value;
                 } else if tt_value >= beta {
                     extension = -3;
                 } else if cut_node {
-                    extension = -2;
+                    extension = if sf3 { -3 } else { -2 };
                 }
             }
             new_depth += extension;
@@ -1052,37 +1091,81 @@ impl<'a> Thread<'a> {
             let nodes_before = self.nodes;
 
             // ---- Late move reductions ----
-            if tt_pv {
-                r -= 2230 + pv_node as i32 * 1017 + (tt_value > alpha) as i32 * 925 + (tt.depth >= depth) as i32 * (971 + cut_node as i32 * 1002);
-            }
-            r += 316 - move_count * 32;
-            r -= cv.abs() / 128;
-            if cut_node {
-                r += crate::params::LMR_CUTNODE.get() + 1024 * tt_move.is_none() as i32;
-            }
-            if tt_capture {
-                r += 1350;
-            }
-            if self.ss_at(ply + 1).cutoff_cnt > 3 {
-                r += 981 + all_node as i32 * 833;
-            } else if m == tt_move {
-                r -= 2000;
-            }
-            let stat_score = if capture {
-                let captured = pos.captured_type(m).unwrap_or(PieceType::Pawn);
-                7 * piece_value(captured) + self.hist.capture_get(moved_piece, m.to(), captured) - 5000
+            let stat_score;
+            if sf3 {
+                // Stockfish master term set (search.cpp 1330-1374 at 031dfeb).
+                if tt_pv {
+                    r -= 3023 + pv_node as i32 * 1004 + (tt_value > alpha) as i32 * 885 + (tt.depth >= depth) as i32 * (816 + cut_node as i32 * 940);
+                }
+                r += 697;
+                r -= move_count * 65;
+                r -= cv.abs() / 51;
+                if cut_node {
+                    r += 4026 + 933 * tt_move.is_none() as i32;
+                }
+                if tt_capture {
+                    r += 1079;
+                }
+                let cc = self.ss_at(ply + 1).cutoff_cnt;
+                if cc > 1 {
+                    r += 264 + 1095 * (cc > 2) as i32 + 1138 * all_node as i32;
+                } else if m == tt_move {
+                    r -= 2179;
+                }
+                stat_score = if capture {
+                    let captured = pos.captured_type(m).unwrap_or(PieceType::Pawn);
+                    873 * piece_value(captured) / 128 + self.hist.capture_get(moved_piece, m.to(), captured)
+                } else {
+                    let mut s = 2252 * self.hist.main_get(us, m, History::threat_index(m, threats));
+                    if cont_idx[0] != usize::MAX {
+                        s += 1126 * self.hist.cont_get(cont_idx[0], moved_piece, m.to());
+                    }
+                    if cont_idx[1] != usize::MAX {
+                        s += 1093 * self.hist.cont_get(cont_idx[1], moved_piece, m.to());
+                    }
+                    s / 1024
+                };
+                self.ss(ply).stat_score = stat_score;
+                r -= stat_score * 439 / 4096;
+                if !capture && !is_decisive(alpha) {
+                    r += 3 * (alpha - eval).clamp(-64, 96);
+                }
+                if all_node {
+                    r += r * 276 / (256 * depth + 268);
+                }
             } else {
-                let mut s = 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
-                if cont_idx[0] != usize::MAX {
-                    s += self.hist.cont_get(cont_idx[0], moved_piece, m.to());
+                if tt_pv {
+                    r -= 2230 + pv_node as i32 * 1017 + (tt_value > alpha) as i32 * 925 + (tt.depth >= depth) as i32 * (971 + cut_node as i32 * 1002);
                 }
-                if cont_idx[1] != usize::MAX {
-                    s += self.hist.cont_get(cont_idx[1], moved_piece, m.to());
+                r += 316 - move_count * 32;
+                r -= cv.abs() / 128;
+                if cut_node {
+                    r += crate::params::LMR_CUTNODE.get() + 1024 * tt_move.is_none() as i32;
                 }
-                s - 3996
-            };
-            self.ss(ply).stat_score = stat_score;
-            r -= stat_score * 1287 / crate::params::LMR_HIST_DIV.get();
+                if tt_capture {
+                    r += 1350;
+                }
+                if self.ss_at(ply + 1).cutoff_cnt > 3 {
+                    r += 981 + all_node as i32 * 833;
+                } else if m == tt_move {
+                    r -= 2000;
+                }
+                stat_score = if capture {
+                    let captured = pos.captured_type(m).unwrap_or(PieceType::Pawn);
+                    7 * piece_value(captured) + self.hist.capture_get(moved_piece, m.to(), captured) - 5000
+                } else {
+                    let mut s = 2 * self.hist.main_get(us, m, History::threat_index(m, threats));
+                    if cont_idx[0] != usize::MAX {
+                        s += self.hist.cont_get(cont_idx[0], moved_piece, m.to());
+                    }
+                    if cont_idx[1] != usize::MAX {
+                        s += self.hist.cont_get(cont_idx[1], moved_piece, m.to());
+                    }
+                    s - 3996
+                };
+                self.ss(ply).stat_score = stat_score;
+                r -= stat_score * 1287 / crate::params::LMR_HIST_DIV.get();
+            }
             if !capture && crate::params::POLICY_LMR.get() != 0 {
                 if let Some(net) = self.policy {
                     // The top of the policy stack is this node (children push and pop symmetrically).
@@ -1094,11 +1177,25 @@ impl<'a> Thread<'a> {
 
             let mut value;
             if depth >= 2 && move_count > 1 {
-                let d = (new_depth - r / 1024).min(new_depth + !all_node as i32).max(1) + pv_node as i32;
+                let d = if sf3 {
+                    (new_depth - r / 1024).min(new_depth + 2).max(1) + pv_node as i32
+                } else {
+                    (new_depth - r / 1024).min(new_depth + !all_node as i32).max(1) + pv_node as i32
+                };
                 self.ss(ply).reduction = new_depth - d;
                 value = -self.search(&child, NodeType::NonPv, -(alpha + 1), -alpha, d, true, ply + 1);
                 self.ss(ply).reduction = 0;
-                if value > alpha && d < new_depth {
+                if sf3 {
+                    if value > alpha {
+                        let do_deeper = d < new_depth && value > best_value + 53;
+                        let do_shallower = value < best_value + 8;
+                        new_depth += do_deeper as i32 - do_shallower as i32;
+                        if new_depth > d {
+                            value = -self.search(&child, NodeType::NonPv, -(alpha + 1), -alpha, new_depth, !cut_node, ply + 1);
+                        }
+                        self.update_cont_histories(ply, moved_piece, m.to(), 1334);
+                    }
+                } else if value > alpha && d < new_depth {
                     let do_deeper = value > best_value + 43 + 2 * new_depth;
                     let do_shallower = value < best_value + 9;
                     new_depth += do_deeper as i32 - do_shallower as i32;
@@ -1110,7 +1207,16 @@ impl<'a> Thread<'a> {
                     }
                 }
             } else if !pv_node || move_count > 1 {
-                let d = if tt_move.is_none() && r > 3200 { new_depth - 1 } else { new_depth };
+                let d = if sf3 {
+                    if tt_move.is_none() {
+                        r += 1127;
+                    }
+                    new_depth - (r > 5234) as i32 - (r > 5487 && new_depth > 2) as i32
+                } else if tt_move.is_none() && r > 3200 {
+                    new_depth - 1
+                } else {
+                    new_depth
+                };
                 value = -self.search(&child, NodeType::NonPv, -(alpha + 1), -alpha, d, !cut_node, ply + 1);
             } else {
                 value = 0;
@@ -1118,6 +1224,10 @@ impl<'a> Thread<'a> {
 
             if pv_node && (move_count == 1 || value > alpha) {
                 self.pv_len[ply + 1] = 0;
+                // Extend the TT move when about to dive into quiescence (Stockfish master).
+                if sf3 && m == tt_move && ((is_valid(tt_value) && is_decisive(tt_value) && tt.depth > 0) || tt.depth > 1) {
+                    new_depth = new_depth.max(1);
+                }
                 value = -self.search(&child, NodeType::Pv, -beta, -alpha, new_depth, false, ply + 1);
             }
 
@@ -1157,7 +1267,7 @@ impl<'a> Thread<'a> {
                     }
                     if value >= beta {
                         let s = self.ss(ply);
-                        s.cutoff_cnt += 1 + (tt_move.is_none()) as u8;
+                        s.cutoff_cnt += if sf3 { (extension < 2 || pv_node) as u8 } else { 1 + (tt_move.is_none()) as u8 };
                         break;
                     }
                     if sf {
@@ -1197,7 +1307,7 @@ impl<'a> Thread<'a> {
             };
         } else if !best_move.is_none() {
             self.update_all_stats(pos, ply, best_move, &quiets_searched[..n_quiets], &captures_searched[..n_caps], depth, tt_move, pv_node);
-            if !pv_node && crate::params::SE_TTM.get() != 0 {
+            if !pv_node && (crate::params::SE_TTM.get() != 0 || sf3) {
                 self.hist.ttm_update(if best_move == tt_move { 918 } else { -747 });
             }
         } else if ply >= 1 && !prev_null && !prev_move.is_none() {

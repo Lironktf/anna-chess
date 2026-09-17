@@ -33,6 +33,8 @@ params! {
     SF_PRUNE, "SfPrune", 0, 0, 1;
     // G2: history bonus/malus formulas, eval-difference ordering bonus, previous-move maluses, continuation weights.
     SF_HIST, "SfHist", 0, 0, 1;
+    // G3: LMR terms and constants, reductions table, LMR-depth divisor table, singular/negative-extension rules.
+    SF_LMR, "SfLmr", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).
