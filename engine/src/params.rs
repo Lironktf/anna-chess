@@ -45,6 +45,8 @@ params! {
     // G7: Stockfish master time management and root aspiration loop (falling eval, stability, effort, search-again,
     // fail-high recovery, single-move cap, mate stop; timeman constants, time advantage).
     SF_TM, "SfTm", 0, 0, 1;
+    // G8: TT cutoff at depth >= 7 verified against the TT entry of the position after the TT move.
+    SF_TT_VERIFY, "SfTtVerify", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

@@ -682,7 +682,18 @@ impl<'a> Thread<'a> {
                 }
             }
             if pos.rule50() < 90 {
-                return tt_value;
+                // SfTtVerify (Stockfish master 899-920): at depth >= 7 only cut off when the TT entry of the position
+                // after the TT move agrees with the cutoff direction (or has no usable value).
+                if crate::params::SF_TT_VERIFY.get() != 0 && depth >= 7 && !tt_move.is_none() && !is_decisive(tt_value) && pos.is_pseudo_legal(tt_move) && pos.is_legal(tt_move) {
+                    let child = pos.make_move(tt_move);
+                    let (h2, tt2, _) = self.shared.tt.probe(child.key());
+                    let v2 = if h2 { value_from_tt(tt2.value, ply + 1, child.rule50()) } else { VALUE_NONE };
+                    if !is_valid(v2) || (tt_value >= beta) == (-v2 >= beta) {
+                        return tt_value;
+                    }
+                } else {
+                    return tt_value;
+                }
             }
         }
 
