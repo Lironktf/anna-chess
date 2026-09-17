@@ -44,3 +44,5 @@ because it evaluates before the cutoff); G7 uses the previous search's best scor
 average score, counts best-move changes of the main thread only, and has no ponder handling; G3 skips the multi-cut
 correction update (it is in G4) and has no followPV bookkeeping (IIR unchanged); G5 keeps the killer/counter tables updated
 but never picks from them.
+- 12:46 the owner's university server (64-vCPU node, shared, `ssh uw`) runs G3..G8 at 24 concurrent games in tmux (node
+  ubuntu2404-002); the laptop keeps G1 then G2. Server verdicts: sprt/uw/verdicts.txt (rsynced every 10 min).
