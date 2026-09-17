@@ -37,6 +37,9 @@ params! {
     SF_LMR, "SfLmr", 0, 0, 1;
     // G4: Stockfish master correction history (tables, weights, update rule, multi-cut update; no major-piece table).
     SF_CORR, "SfCorr", 0, 0, 1;
+    // G5: Stockfish master move picker: no killer/counter stages, quiet scoring weights, check/threat terms,
+    // capture threshold, sort limit, good/bad quiet split.
+    SF_PICK, "SfPick", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

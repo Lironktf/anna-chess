@@ -16,6 +16,8 @@ enum Stage {
     GenQuiets,
     Quiets,
     BadCaptures,
+    /// Quiets scored at or below the good-quiet threshold (SfPick only).
+    BadQuiets,
     // evasions
     EvasionTT,
     GenEvasions,
@@ -73,8 +75,10 @@ pub struct MovePicker<'a> {
     depth: i32,
     ply: usize,
     skip_quiets: bool,
-    /// Continuation history indices for plies 1,2,4,6 back (usize::MAX if unavailable).
-    cont_idx: [usize; 4],
+    /// Continuation history indices for plies 1,2,3,4,6 back (usize::MAX if unavailable).
+    cont_idx: [usize; 5],
+    /// Stockfish-master picker rules (SfPick).
+    sf: bool,
     /// Squares attacked by the opponent (0 unless ThreatHist is on).
     threats: u64,
     /// Per piece type: squares attacked by a lesser enemy piece (all 0 unless ThreatOrder is on).
@@ -93,10 +97,12 @@ pub struct PolicyCtx<'a, 'b> {
 }
 
 pub const QUIET_LEFT_MARGIN: i32 = -3560;
+/// SfPick: quiets scored at or below this are tried after the bad captures (Stockfish goodQuietThreshold).
+pub const GOOD_QUIET_THRESHOLD: i32 = -14000;
 
 impl<'a> MovePicker<'a> {
     /// Main search picker.
-    pub fn new(pos: &Position, tt_move: Move, killers: [Move; 2], counter: Move, cont_idx: [usize; 4], depth: i32, ply: usize, policy: Option<PolicyCtx<'a, '_>>) -> Self {
+    pub fn new(pos: &Position, tt_move: Move, killers: [Move; 2], counter: Move, cont_idx: [usize; 5], depth: i32, ply: usize, policy: Option<PolicyCtx<'a, '_>>) -> Self {
         let tt_ok = !tt_move.is_none() && pos.is_pseudo_legal(tt_move);
         let stage = if pos.in_check() {
             if tt_ok { Stage::EvasionTT } else { Stage::GenEvasions }
@@ -105,11 +111,12 @@ impl<'a> MovePicker<'a> {
         } else {
             Stage::GenCaptures
         };
+        let sf = crate::params::SF_PICK.get() != 0;
         MovePicker {
             stage,
             tt_move: if tt_ok { tt_move } else { Move::NONE },
-            killers,
-            counter,
+            killers: if sf { [Move::NONE; 2] } else { killers },
+            counter: if sf { Move::NONE } else { counter },
             lists: Some(ListPair::take()),
             cur: 0,
             end: 0,
@@ -117,7 +124,8 @@ impl<'a> MovePicker<'a> {
             depth,
             ply,
             threats: if crate::params::THREAT_HIST.get() != 0 { pos.attacked_squares(!pos.side_to_move()) } else { 0 },
-            lesser: if crate::params::THREAT_ORDER.get() != 0 { pos.threats_by_lesser(!pos.side_to_move()) } else { [0; 6] },
+            lesser: if sf || crate::params::THREAT_ORDER.get() != 0 { pos.threats_by_lesser(!pos.side_to_move()) } else { [0; 6] },
+            sf,
             policy: policy.as_ref().map(|c| c.net),
             policy_acc: match &policy { Some(c) => *c.acc, None => [0; crate::policy::H] },
             skip_quiets: false,
@@ -126,7 +134,7 @@ impl<'a> MovePicker<'a> {
     }
 
     /// Quiescence picker: captures (and queen promotions) only, unless in check.
-    pub fn new_qsearch(pos: &Position, tt_move: Move, cont_idx: [usize; 4], ply: usize) -> Self {
+    pub fn new_qsearch(pos: &Position, tt_move: Move, cont_idx: [usize; 5], ply: usize) -> Self {
         let tt_ok = !tt_move.is_none() && pos.is_pseudo_legal(tt_move) && (pos.in_check() || pos.is_capture_or_promo(tt_move));
         let stage = if pos.in_check() {
             if tt_ok { Stage::EvasionTT } else { Stage::GenEvasions }
@@ -148,6 +156,7 @@ impl<'a> MovePicker<'a> {
             ply,
             threats: 0,
             lesser: [0; 6],
+            sf: false,
             policy: None,
             policy_acc: [0; crate::policy::H],
             skip_quiets: true,
@@ -171,10 +180,11 @@ impl<'a> MovePicker<'a> {
             ply: 0,
             threats: 0,
             lesser: [0; 6],
+            sf: false,
             policy: None,
             policy_acc: [0; crate::policy::H],
             skip_quiets: true,
-            cont_idx: [usize::MAX; 4],
+            cont_idx: [usize::MAX; 5],
         }
     }
 
@@ -203,15 +213,25 @@ impl<'a> MovePicker<'a> {
             let to = m.to();
             let mut s = 2 * hist.main_get(us, m, History::threat_index(m, self.threats));
             s += 2 * hist.pawn_get(pos.pawn_key(), pc, to);
+            // Continuation weights over plies 1,2,3,4,6: Stockfish master uses 1 each; the older scheme 2,2,-,1,1.
+            let weights: [i32; 5] = if self.sf { [1, 1, 1, 1, 1] } else { [2, 2, 0, 1, 1] };
             for (k, &ci) in self.cont_idx.iter().enumerate() {
-                if ci != usize::MAX {
-                    let w = [2, 2, 1, 1][k];
-                    s += w * hist.cont_get(ci, pc, to);
+                if ci != usize::MAX && weights[k] != 0 {
+                    s += weights[k] * hist.cont_get(ci, pc, to);
                 }
             }
-            s += hist.low_ply_get(self.ply, m) * 2;
-            if pos.check_squares(pc.piece_type()) & crate::types::bb(to) != 0 {
-                s += 4000;
+            if self.sf {
+                if pos.check_squares(pc.piece_type()) & crate::types::bb(to) != 0 && pos.see_ge(m, -75) {
+                    s += 16384;
+                }
+                if self.ply < crate::history::LOW_PLY_SIZE {
+                    s += 8 * hist.low_ply_get(self.ply, m) / (1 + self.ply as i32);
+                }
+            } else {
+                s += hist.low_ply_get(self.ply, m) * 2;
+                if pos.check_squares(pc.piece_type()) & crate::types::bb(to) != 0 {
+                    s += 4000;
+                }
             }
             // Escaping an attack by a lesser piece is good, walking into one is bad (Stockfish).
             let pt = pc.piece_type();
@@ -237,7 +257,10 @@ impl<'a> MovePicker<'a> {
                 let captured = pos.captured_type(m).unwrap();
                 piece_value(captured) + (1 << 28)
             } else {
-                let mut s = hist.main_get(us, m, History::threat_index(m, self.threats)) + hist.pawn_get(pos.pawn_key(), pc, m.to());
+                let mut s = hist.main_get(us, m, History::threat_index(m, self.threats));
+                if !self.sf {
+                    s += hist.pawn_get(pos.pawn_key(), pc, m.to());
+                }
                 if self.cont_idx[0] != usize::MAX {
                     s += hist.cont_get(self.cont_idx[0], pc, m.to());
                 }
@@ -321,7 +344,7 @@ impl<'a> MovePicker<'a> {
                             continue;
                         }
                         // Good capture if SEE >= -score/32 (SF: -capture score based threshold).
-                        let thr = -l.list.moves[self.cur - 1].score / 32;
+                        let thr = -l.list.moves[self.cur - 1].score / if self.sf { 18 } else { 32 };
                         if pos.see_ge(m, thr.min(0)) {
                             return m;
                         }
@@ -364,7 +387,8 @@ impl<'a> MovePicker<'a> {
                         self.cur = 0;
                         self.end = l.list.len();
                         self.score_quiets(l, pos, hist);
-                        self.sort_quiets(l, QUIET_LEFT_MARGIN - 3130 * self.depth);
+                        let limit = if self.sf { -3560 * self.depth } else { QUIET_LEFT_MARGIN - 3130 * self.depth };
+                        self.sort_quiets(l, limit);
                     } else {
                         self.cur = 0;
                         self.end = 0;
@@ -374,8 +398,12 @@ impl<'a> MovePicker<'a> {
                 Stage::Quiets => {
                     if !self.skip_quiets {
                         while self.cur < self.end {
-                            let m = l.list.moves[self.cur].mv;
+                            let e = l.list.moves[self.cur];
                             self.cur += 1;
+                            let m = e.mv;
+                            if self.sf && e.score <= GOOD_QUIET_THRESHOLD {
+                                continue;
+                            }
                             if m != self.tt_move && m != self.killers[0] && m != self.killers[1] && m != self.counter {
                                 return m;
                             }
@@ -389,6 +417,21 @@ impl<'a> MovePicker<'a> {
                         let m = l.bad_captures.moves[self.cur].mv;
                         self.cur += 1;
                         return m;
+                    }
+                    if self.sf && !self.skip_quiets {
+                        self.stage = Stage::BadQuiets;
+                        self.cur = 0;
+                    } else {
+                        self.stage = Stage::Done;
+                    }
+                }
+                Stage::BadQuiets => {
+                    while self.cur < self.end {
+                        let e = l.list.moves[self.cur];
+                        self.cur += 1;
+                        if e.score <= GOOD_QUIET_THRESHOLD && e.mv != self.tt_move {
+                            return e.mv;
+                        }
                     }
                     self.stage = Stage::Done;
                 }

@@ -939,6 +939,7 @@ impl<'a> Thread<'a> {
         let cont_idx = [
             if ply >= 1 { self.ss_prev(ply, 1).cont_idx } else { usize::MAX },
             if ply >= 2 { self.ss_prev(ply, 2).cont_idx } else { usize::MAX },
+            if ply >= 3 { self.ss_prev(ply, 3).cont_idx } else { usize::MAX },
             if ply >= 4 { self.ss_prev(ply, 4).cont_idx } else { usize::MAX },
             if ply >= 6 { self.ss_prev(ply, 6).cont_idx } else { usize::MAX },
         ];
@@ -1519,6 +1520,7 @@ impl<'a> Thread<'a> {
         let cont_idx = [
             if ply >= 1 { self.ss_prev(ply, 1).cont_idx } else { usize::MAX },
             if ply >= 2 { self.ss_prev(ply, 2).cont_idx } else { usize::MAX },
+            usize::MAX,
             usize::MAX,
             usize::MAX,
         ];
