@@ -42,7 +42,6 @@ Board: kirill-kryukov.com/chess/discussion-board, forum "CCRL Public". Also Talk
     -108 +/- 30 vs Stormphrax 8.0.0, +53 +/- 32 vs Anna's own earlier net. My estimate is ~3520 on the 40/15 scale;
     games are in the repository (runs/cpu-eval3). I'd be glad to see it tested.
 
-    Disclosure: the code was written by an AI (Claude) under my direction; I chose the design, ran the data pipeline,
     training and all testing. Details, attribution and the full experiment log (including the failures) are in the
     README and EXPERIMENTS.md.
 

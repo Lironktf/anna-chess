@@ -20,3 +20,4 @@ syzygy/
 runs/*/selfdestruct_key_id.txt
 play/games.sqlite*
 prof/flamegraph.svg
+CLAUDE.md

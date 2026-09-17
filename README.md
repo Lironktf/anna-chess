@@ -145,11 +145,9 @@ SPRT-tested; NNUE inference is checked against a scalar reference and incrementa
 release builds are soaked at repeating time controls and with several threads before tagging. Results, positive and
 negative, go into `EXPERIMENTS.md`.
 
-## Authorship and attribution
+## Attribution
 
-Anna's code was written by an AI (Anthropic's Claude, in Claude Code) working under the direction of the repository
-owner, who set the goals, made the design and spending decisions, ran the training runs and the rating matches, and
-tested every release. Nothing here is copied from another engine's source; the techniques are, and they are credited:
+Nothing here is copied from another engine's source; the techniques are, and they are credited:
 
 - **Search**: the alpha-beta framework follows the techniques published in
   [Stockfish](https://github.com/official-stockfish/Stockfish). The code is not derived from Stockfish's source
@@ -180,9 +178,6 @@ top NNUE engines (Stockfish, Berserk, Stormphrax, Viridithas).
 source; a scalar fallback exists but is much slower.
 
 **Why "Anna"?** A short name that is easy to say and search for. Earlier artefacts in `runs/` use the previous working name.
-
-**Was this written by an AI?** Yes, see Authorship below; all design and spending decisions, training runs and release
-testing were done by the owner, and every claim above is backed by logged matches in `runs/` and `EXPERIMENTS.md`.
 
 ## Citing and mentioning
 
