@@ -135,3 +135,9 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
   Sync loop replaced by runs/anna-v6/sync_parallel.sh (newest checkpoint only). Self-destruct re-armed 03:34:09Z with
   MAX_HOURS 7.58 so its hard limit (11:11Z) sits 3 min before the $6.00 guard (11:14Z); both under the cap. Final pull plan:
   quantised.bin (1 min) then raw.bin (157 MB, ~4 min) with the parallel puller, then destroy by hand.
+- 02:10 early signal: checkpoint anna-v6-s1-230 (SB 260/830, LR still high) vs v5f at 8+0.08, 300 games: -104 +/- 27
+  (sprt/v6_s1-230_blitz.log). Not a verdict (un-annealed nets are far behind their final form) but not encouraging either;
+  calibration against a same-stage checkpoint of an earlier run is needed to interpret it.
+- 03:18 calibration (8+0.08, 300 games each): v3b's same-fraction checkpoint (s1-100 of 310) vs v3b final: -90 +/- 27;
+  v6-s1-230 vs v3b final: -31 +/- 24 (and -104 +/- 27 vs v5f). If v6 gains what v3b gained from annealing (~90), the
+  projection is v6 final ~ v3b +60 ~ v5f +5, i.e. about level with v5f (+/- ~40). Next trend point: s1-500 vs v5f.

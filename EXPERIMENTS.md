@@ -169,3 +169,5 @@ speed on this EPYC box: 418k vs 926k nps). **v3b vs Stormphrax 8 (3634 on the 40
 (100 games, 35%)** -> v3b is about **3525 +/- 35 on the 40/15 scale (~#70)**, ~50 short of the top-50 line (3572). The earlier
 "~3565" was a scaled blitz guess and was too optimistic: the list's scale is not as compressed as assumed for this pairing.
 Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
+
+**2026-09-17 03:18 anna-v6 mid-run trend (blitz 8+0.08, 300 games each):** v6-s1-230 (SB 260/830, LR 0.7e-3): -104 +/- 27 vs v5f, -31 +/- 24 vs v3b final. Calibration: v3b's own same-fraction checkpoint was -90 +/- 27 vs v3b final. Projection: v6 final about level with v5f (+/- ~40). Full verdict after the run + external anchor.
