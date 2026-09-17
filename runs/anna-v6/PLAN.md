@@ -125,3 +125,8 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
 - 23:10 (03:10:46Z box) train started: SB 30/840/30, L1 512, SAVE_RATE 10, LOADER_THREADS 12, MAP_THREADS 12, DATA_ORDER
   = runs/anna-v6/data_order.txt. Self-destruct 7.5 h hard limit (grace 20 min), cost guard $6.00, sync loop every 120 s,
   monitor runs/anna-v6/monitor.sh. First SBs: ~3.6M pos/s, ~28 s/SB -> 900 SB in ~7.0 h, end ~06:10Z; total ~$5.4.
+- 23:18 restart: first 11 SB ran at 30.9 s/SB -> 900 SB = 7.7 h, over the 7.5 h self-destruct limit. Killed the tmux session
+  (no "train end" line written), archived anna-v6-s0-10 to checkpoints_aborted, restarted with SB 30/770/30 (830 SB, ~7.0 h).
+  Found and fixed a real bug: vast_selfdestruct.sh used bash (( )) with MAX_HOURS=7.5, which is an arithmetic error, so the
+  hard wall-clock limit never fired (the "train end" path still worked). Fixed (awk seconds), re-armed 03:19:10Z -> hard limit
+  10:49Z (06:49 EDT); guard $6.00 would fire ~11:13Z. Expected train end ~10:20Z (06:20 EDT); total ~$5.4-5.5.
