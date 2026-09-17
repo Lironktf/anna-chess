@@ -9,3 +9,4 @@ fut160 STOPPED Games:800, | Elo: -16.08 +/- 14.87, nElo: | queue stopped by owne
 threat_hist Elo: 1.09 +/- 7.59, nElo: 1.82 +/- 12.69 LLR: -0.08 (-2.8%) (-2.94, 2.94) [0.00, 5.00] 
 settm STOPPED | Elo: 3.65 +/- 8.96, nElo: 6.20 +/- 15.23 | LLR: 0.31 (10.4%) (-2.94, 2.94) [0.00, 5.00]
 thorder STOPPED | Elo: 3.30 +/- 9.47, nElo: 5.31 +/- 15.23 | LLR: 0.23 (7.9%) (-2.94, 2.94) [0.00, 5.00]
+g3_sflmr PASS games=4938 | Elo: 9.71 +/- 5.55, nElo: 16.98 +/- 9.69 | LLR: 2.96 (100.4%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfLmr=1] base=[option.SfLmr=0] tc=5+0.05 rc=0

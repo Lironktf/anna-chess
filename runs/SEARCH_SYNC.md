@@ -46,3 +46,4 @@ correction update (it is in G4) and has no followPV bookkeeping (IIR unchanged);
 but never picks from them.
 - 12:46 the owner's university server (64-vCPU node, shared, `ssh uw`) runs G3..G8 at 24 concurrent games in tmux (node
   ubuntu2404-002); the laptop keeps G1 then G2. Server verdicts: sprt/uw/verdicts.txt (rsynced every 10 min).
+- **G3 SfLmr PASS** (server, 5+0.05): +9.7 +/- 5.6, 4938 games, LLR 2.96. Will become the default after the queue.
