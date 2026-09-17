@@ -45,7 +45,14 @@ pub struct History {
     pub cont_corr: Vec<i32>,
     /// TT move history (how often the TT move failed low / high).
     pub tt_move_history: i32,
+    // Stockfish-master correction histories (SfCorr): i16 gravity entries with limit SF_CORR_LIMIT, indexed like the
+    // tables above (pawn/minor: [stm][key]; non-pawn: [stm][piece colour][key]; continuation: [prev piece*64+to][piece*64+to]).
+    pub sf_pawn_corr: Vec<i16>,
+    pub sf_minor_corr: Vec<i16>,
+    pub sf_non_pawn_corr: Vec<i16>,
+    pub sf_cont_corr: Vec<i16>,
 }
+pub const SF_CORR_LIMIT: i32 = 1024;
 
 impl History {
     pub fn new() -> Self {
@@ -63,6 +70,10 @@ impl History {
             non_pawn_corr: vec![0; 4 * CORR_SIZE],
             cont_corr: vec![0; 13 * 64 * 13 * 64],
             tt_move_history: 0,
+            sf_pawn_corr: vec![0; 2 * CORR_SIZE],
+            sf_minor_corr: vec![0; 2 * CORR_SIZE],
+            sf_non_pawn_corr: vec![0; 4 * CORR_SIZE],
+            sf_cont_corr: vec![0; 13 * 64 * 13 * 64],
         }
     }
 
@@ -152,6 +163,11 @@ impl History {
     pub fn corr_update(entry: &mut i32, diff: i32, w: i32) {
         let v = *entry;
         *entry = ((v * (256 - w) + diff * CORR_GRAIN * w) / 256).clamp(-CORR_MAX, CORR_MAX);
+    }
+    /// Stockfish-style correction entry update (gravity toward the bonus, limit SF_CORR_LIMIT).
+    #[inline(always)]
+    pub fn sf_corr_update(entry: &mut i16, bonus: i32) {
+        gravity(entry, bonus, SF_CORR_LIMIT);
     }
     #[inline(always)]
     pub fn corr_idx(c: Color, key: u64) -> usize {

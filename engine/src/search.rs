@@ -363,6 +363,26 @@ impl<'a> Thread<'a> {
     fn corr_value(&self, pos: &Position, ply: usize) -> i32 {
         let us = pos.side_to_move();
         let h = &self.hist;
+        if crate::params::SF_CORR.get() != 0 {
+            // Stockfish master (search.cpp 85-104): weights on i16 gravity tables; the result there is in units of
+            // 1/131072 pawn, converted here to this engine's CORR_GRAIN (1/256) so every consumer of `cv` is unchanged.
+            let pcv = h.sf_pawn_corr[History::corr_idx(us, pos.pawn_key())] as i32;
+            let micv = h.sf_minor_corr[History::corr_idx(us, pos.minor_key())] as i32;
+            let wn = h.sf_non_pawn_corr[History::non_pawn_idx(us, Color::White, pos.non_pawn_key(Color::White))] as i32;
+            let bn = h.sf_non_pawn_corr[History::non_pawn_idx(us, Color::Black, pos.non_pawn_key(Color::Black))] as i32;
+            let p1 = self.ss_prev(ply, 1);
+            let cnt = if ply >= 1 && !p1.is_null && !p1.current_move.is_none() {
+                let p2 = self.ss_prev(ply, 2);
+                let p4 = self.ss_prev(ply, 4);
+                let i2 = History::cont_corr_idx(p2.cont_corr_idx, p1.moved_piece, p1.current_move.to());
+                let i4 = History::cont_corr_idx(p4.cont_corr_idx, p1.moved_piece, p1.current_move.to());
+                8761 * (h.sf_cont_corr[i2] as i32 + h.sf_cont_corr[i4] as i32)
+            } else {
+                64049
+            };
+            let cv = 15341 * pcv + 10569 * micv + 12906 * (wn + bn) + cnt;
+            return cv / 512;
+        }
         let pawn = h.pawn_corr[History::corr_idx(us, pos.pawn_key())];
         let minor = h.minor_corr[History::corr_idx(us, pos.minor_key())];
         let major = h.major_corr[History::corr_idx(us, pos.major_key())];
@@ -405,6 +425,28 @@ impl<'a> Thread<'a> {
                 let i = History::cont_corr_idx(p2.cont_corr_idx, p1.moved_piece, p1.current_move.to());
                 History::corr_update(&mut self.hist.cont_corr[i], diff, w);
             }
+        }
+    }
+
+    /// Stockfish-master correction update (search.cpp 109-130): `bonus` already clamped to +-SF_CORR_LIMIT/4.
+    fn update_correction_sf(&mut self, pos: &Position, ply: usize, bonus: i32) {
+        let us = pos.side_to_move();
+        let i = History::corr_idx(us, pos.pawn_key());
+        History::sf_corr_update(&mut self.hist.sf_pawn_corr[i], bonus);
+        let i = History::corr_idx(us, pos.minor_key());
+        History::sf_corr_update(&mut self.hist.sf_minor_corr[i], bonus * 150 / 128);
+        let i = History::non_pawn_idx(us, Color::White, pos.non_pawn_key(Color::White));
+        History::sf_corr_update(&mut self.hist.sf_non_pawn_corr[i], bonus * 186 / 128);
+        let i = History::non_pawn_idx(us, Color::Black, pos.non_pawn_key(Color::Black));
+        History::sf_corr_update(&mut self.hist.sf_non_pawn_corr[i], bonus * 186 / 128);
+        let p1 = *self.ss_prev(ply, 1);
+        if ply >= 1 && !p1.is_null && !p1.current_move.is_none() {
+            let p2 = self.ss_prev(ply, 2).cont_corr_idx;
+            let p4 = self.ss_prev(ply, 4).cont_corr_idx;
+            let i2 = History::cont_corr_idx(p2, p1.moved_piece, p1.current_move.to());
+            let i4 = History::cont_corr_idx(p4, p1.moved_piece, p1.current_move.to());
+            History::sf_corr_update(&mut self.hist.sf_cont_corr[i2], bonus * 130 / 128);
+            History::sf_corr_update(&mut self.hist.sf_cont_corr[i4], bonus * 70 / 128);
         }
     }
 
@@ -1062,6 +1104,11 @@ impl<'a> Thread<'a> {
                     if crate::params::SE_TTM.get() != 0 || sf3 {
                         self.hist.ttm_update(-421 - 110 * depth);
                     }
+                    if crate::params::SF_CORR.get() != 0 && !in_check && is_valid(static_eval) && value > static_eval {
+                        let lim = SF_CORR_LIMIT / 4;
+                        let bonus = ((value - static_eval) * singular_depth * 177 / 1024).clamp(-lim, lim);
+                        self.update_correction_sf(pos, ply, bonus);
+                    }
                     return value;
                 } else if tt_value >= beta {
                     extension = -3;
@@ -1364,7 +1411,14 @@ impl<'a> Thread<'a> {
         }
 
         // ---- Correction history update ----
-        if !in_check
+        if crate::params::SF_CORR.get() != 0 {
+            // Stockfish master: only when the error direction matches whether a best move was found.
+            if !in_check && !(!best_move.is_none() && pos.is_capture(best_move)) && is_valid(static_eval) && (best_value > static_eval) == !best_move.is_none() {
+                let lim = SF_CORR_LIMIT / 4;
+                let bonus = ((best_value - static_eval) * depth * if best_move.is_none() { 18 } else { 12 } / 128).clamp(-lim, lim);
+                self.update_correction_sf(pos, ply, 1061 * bonus / 1024);
+            }
+        } else if !in_check
             && !(best_move.is_none() == false && pos.is_capture_or_promo(best_move))
             && !(best_value >= beta && best_value <= static_eval)
             && !(best_move.is_none() && best_value >= static_eval)
