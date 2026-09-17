@@ -109,3 +109,14 @@ inet_down_cost <= $0.002/GB, storage <= $0.25/GB-mo, disk_space >= 600, inet_dow
 estimate (9.5 h x (dph + 560 GB storage) + 503 GB x bandwidth) <= $5.60; DISK=560; cost guard $6.00 armed at creation; early
 GPU smoke and transfer-rate gate in the first minutes; training started only after the setup and smoke are verified, with
 MAX_HOURS computed from the actual spend so the total stays under $6.00. Data order: runs/anna-v6/data_order.txt.
+
+## Launch log (2026-09-16 21:05, fifth host, cap $6.00)
+- 21:05 chain rented offer 29357619 -> instance 51262070: Sweden, RTX 4090, driver 565.57.01, 24 cores, 128 GB RAM, 560 GB
+  container disk, verified, reliability 0.999; billed $0.582/h all-in (gpu 0.427 + storage 0.156), bandwidth 2.6e-6 $/GB.
+  Estimate 9.5 h x 0.582 = $5.53. Credit before: $6.52.
+- 21:08 cost guard armed at $6.00; guard double-counted storage (rate shown 0.74) -> fixed to use dph_total, restarted 21:11.
+- 21:12 trainer built with cuda; early GPU smoke on the validate set OK (driver/link problem of the Texas host ruled out).
+- 21:13 single-stream download 30-36 MB/s (4 h for 494 GB) -> scripts/prefetch_parallel.sh (6 streams, reverse manifest order,
+  .part + rename) started next to the sequential downloader: aggregate 113 MB/s, download ETA ~75 min.
+- Time budget: total (6.00 - 0.10 margin)/0.582 = 10.1 h from 21:05; train MAX_HOURS = (6.00 - spent - 0.3)/0.582 at train start;
+  trim the schedule below 900 SB if MAX_HOURS x 3600 / 28 s per SB is less than the schedule.
