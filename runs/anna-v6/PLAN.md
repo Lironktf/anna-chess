@@ -98,3 +98,14 @@ DISK=420. Cost formula per CLAUDE.md item 8: hours*(dph + DISK*storage/730) + GB
 At 17:15 the only clean hosts (driver>=550, bw<=0.002/GB, disk>=600) cost $0.60-0.73/h: full plan ~$7.0-7.9, above the
 $6.52 credit. Cheaper clean hosts ($0.44-0.47/h, bw ~0.001) appear intermittently; a poller watches for one (est. ~$5.0-5.5).
 No rental without the owner's number.
+
+## Go (2026-09-16 20:30): cap $6.00
+
+Owner: "run v6 ... do one last check that everything is proper ... make sure the host on vast ai is valid". Pre-rent checks done:
+36 manifest rows (494 GB download, ~503 GB on disk), every URL answered HTTP 200 with the exact manifest size, no duplicates;
+scripts syntax-checked, launcher refuses bandwidth-billing hosts and drivers < 550; trainer builds; 49 engine tests pass;
+zero instances; credit $6.52. Rental rule: first host with verified=true, reliability > 0.97, driver >= 550,
+inet_down_cost <= $0.002/GB, storage <= $0.25/GB-mo, disk_space >= 600, inet_down >= 300 Mbps, cores >= 10, and
+estimate (9.5 h x (dph + 560 GB storage) + 503 GB x bandwidth) <= $5.60; DISK=560; cost guard $6.00 armed at creation; early
+GPU smoke and transfer-rate gate in the first minutes; training started only after the setup and smoke are verified, with
+MAX_HOURS computed from the actual spend so the total stays under $6.00. Data order: runs/anna-v6/data_order.txt.
