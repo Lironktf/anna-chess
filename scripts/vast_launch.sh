@@ -110,7 +110,7 @@ if not drv.isdigit() or int(drv) < 550: print('REFUSING: driver older than 550 (
         timeout 40 ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "chmod +x /workspace/vast_selfdestruct.sh; ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' || setsid nohup /workspace/vast_selfdestruct.sh $INSTANCE_ID $(cat "$KEYFILE") $MAXH 20 /workspace/runs/$RUN/train.log >/dev/null 2>&1 </dev/null &" || true
         ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "ps -eo args | grep -q '^bash /workspace/vast_selfdestruct.sh' && grep -q 'armed:' /workspace/selfdestruct.log && { echo 'self-destruct ARMED:'; tail -n 1 /workspace/selfdestruct.log; }" || { echo 'self-destruct NOT running; refusing to train'; exit 5; }
         echo "$(date -u +%FT%TZ) train start superbatches=$SB self-destruct armed max_hours=$MAXH" >> "$ROOT/runs/$RUN/events.log"
-        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "tmux new-session -d -s train 'ARCH=${ARCH:-v1} L1=${L1:-1024} SB0=${SB0:-40} SB2=${SB2:-60} SAVE_RATE=${SAVE_RATE:-20} DATA_ORDER=${DATA_ORDER:-} bash /workspace/chess/scripts/vast_train_remote.sh $RUN $SB'"
+        ssh -p "$PORT" -o StrictHostKeyChecking=no root@"$HOST" "tmux new-session -d -s train 'ARCH=${ARCH:-v1} L1=${L1:-1024} SB0=${SB0:-40} SB2=${SB2:-60} SAVE_RATE=${SAVE_RATE:-20} LOADER_THREADS=${LOADER_THREADS:-8} MAP_THREADS=${MAP_THREADS:-12} DATA_ORDER=${DATA_ORDER:-} bash /workspace/chess/scripts/vast_train_remote.sh $RUN $SB'"
         echo "training started in tmux session 'train' on the box; watch with: scripts/vast_launch.sh status $RUN"
         ;;
     status)

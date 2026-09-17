@@ -120,3 +120,8 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
   .part + rename) started next to the sequential downloader: aggregate 113 MB/s, download ETA ~75 min.
 - Time budget: total (6.00 - 0.10 margin)/0.582 = 10.1 h from 21:05; train MAX_HOURS = (6.00 - spent - 0.3)/0.582 at train start;
   trim the schedule below 900 SB if MAX_HOURS x 3600 / 28 s per SB is less than the schedule.
+- 23:06 setup done: 38 files inspected (0 feature mismatches), smoke run OK, early-smoke checkpoint netcheck ok on the laptop.
+  Box->laptop upload is slow (<1 MB/s), so checkpoint pulls take a minute or two each.
+- 23:10 (03:10:46Z box) train started: SB 30/840/30, L1 512, SAVE_RATE 10, LOADER_THREADS 12, MAP_THREADS 12, DATA_ORDER
+  = runs/anna-v6/data_order.txt. Self-destruct 7.5 h hard limit (grace 20 min), cost guard $6.00, sync loop every 120 s,
+  monitor runs/anna-v6/monitor.sh. First SBs: ~3.6M pos/s, ~28 s/SB -> 900 SB in ~7.0 h, end ~06:10Z; total ~$5.4.

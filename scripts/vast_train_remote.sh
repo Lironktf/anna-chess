@@ -24,7 +24,7 @@ nvidia-smi --query-gpu=name,driver_version,memory.total --format=csv,noheader | 
 CLEANER=$!
 if [[ "${ARCH:-v1}" == "v3" || "${ARCH:-v1}" == "v4" ]]; then
     DATA="$DATA" NET_ID="$RUN_NAME" SB0="${SB0:-40}" SB1="$SB" SB2="${SB2:-60}" SAVE_RATE="${SAVE_RATE:-20}" THREADS="${MAP_THREADS:-12}" \
-        L1="${L1:-1024}" LOADER_THREADS=8 BUFFER_MB=4096 OUT_DIR="$WORK/checkpoints" "./target/release/train_${ARCH}" 2>&1 | tee -a "$WORK/runs/$RUN_NAME/train.log"
+        L1="${L1:-1024}" LOADER_THREADS="${LOADER_THREADS:-8}" BUFFER_MB=4096 OUT_DIR="$WORK/checkpoints" "./target/release/train_${ARCH}" 2>&1 | tee -a "$WORK/runs/$RUN_NAME/train.log"
 else
     DATA="$DATA" NET_ID="$RUN_NAME" SUPERBATCHES="$SB" SAVE_RATE=10 THREADS=4 LOADER_THREADS=8 BUFFER_MB=4096 \
         OUT_DIR="$WORK/checkpoints" ./target/release/trainer 2>&1 | tee -a "$WORK/runs/$RUN_NAME/train.log"
