@@ -49,3 +49,4 @@ but never picks from them.
 - **G3 SfLmr PASS** (server, 5+0.05): +9.7 +/- 5.6, 4938 games, LLR 2.96. Will become the default after the queue.
 - **G4 SfCorr PASS** (server): +28.9 +/- 9.9, 1544 games, LLR 2.95 (54.2%). The correction-history rework is the biggest single gain so far.
 - **G5 SfPick PASS** (server): +11.4 +/- 6.0, 3980 games (51.6%). Killer/counter stages removed, Stockfish-master quiet scoring.
+- **G6 SfQs PASS** (server): +6.1 +/- 4.2, 8656 games (50.9%). Small but real.

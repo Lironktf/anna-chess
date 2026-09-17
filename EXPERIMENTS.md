@@ -181,3 +181,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **13:47 G3 SfLmr PASS:** +9.7 +/- 5.6 (4938 games at 5+0.05, university server). First confirmed gain of the sync campaign.
 **14:07 G4 SfCorr PASS:** +28.9 +/- 9.9 (1544 games at 5+0.05, server). Stockfish-master correction histories (weights, i16 gravity tables, (ss-2)/(ss-4) continuation correction, new update rule, no major-piece table).
 **14:56 G5 SfPick PASS:** +11.4 +/- 6.0 (3980 games at 5+0.05, server). Move picker without killer/counter stages, master quiet scoring, capture threshold, good/bad quiet split.
+**16:44 G6 SfQs PASS:** +6.1 +/- 4.2 (8656 games at 5+0.05, server). Quiescence SEE threshold, stand-pat blends, decisive-TT guard, stalemate case.
