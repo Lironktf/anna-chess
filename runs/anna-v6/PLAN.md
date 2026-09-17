@@ -143,3 +143,5 @@ MAX_HOURS computed from the actual spend so the total stays under $6.00. Data or
   projection is v6 final ~ v3b +60 ~ v5f +5, i.e. about level with v5f (+/- ~40). Next trend point: s1-500 vs v5f.
 - 04:12 trend: v6-s1-500 (SB 530/830, LR 0.35e-3) vs v5f at 8+0.08, 300 games: -83 +/- 23 (s1-230 was -104). Closing slowly;
   the annealing tail (LR 0.35e-3 -> 1e-6 over the last 240 SB, then the WDL stage) has to deliver the rest. Next: s1-700.
+- 05:50 trend: v6-s1-700 (SB 730/830, LR 0.09e-3) vs v5f, 300 games: 45.2% (~-34 +/- 22). Trend -104 -> -83 -> -34; stage 2
+  (WDL 1.0, 30 SB) running, train end ~05:58.
