@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use Anna, please cite it as below."
+title: "Anna: a Rust NNUE chess engine"
+type: software
+authors:
+  - name: "Anna chess engine contributors"
+repository-code: "https://github.com/Lironktf/anna-chess"
+url: "https://chess.lironkatsif.com"
+license: "TBD"
+keywords:
+  - chess
+  - chess engine
+  - NNUE
+  - UCI
+  - Rust
+  - neural network
+  - alpha-beta search
+  - Chess960
+  - Syzygy

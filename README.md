@@ -1,6 +1,27 @@
-# Anna
+# Anna — a Rust NNUE chess engine (UCI)
 
-A UCI chess engine in Rust with an NNUE evaluation and a Stockfish-class alpha-beta search.
+[![Release](https://img.shields.io/github/v/release/Lironktf/anna-chess?label=release)](https://github.com/Lironktf/anna-chess/releases)
+[![Build](https://github.com/Lironktf/anna-chess/actions/workflows/build.yml/badge.svg)](https://github.com/Lironktf/anna-chess/actions)
+[![Play online](https://img.shields.io/badge/play-chess.lironkatsif.com-blue)](https://chess.lironkatsif.com)
+
+Anna is an open-source chess engine written in Rust: a UCI engine with an NNUE (efficiently updatable neural network)
+evaluation and a Stockfish-class alpha-beta search. It plays standard chess and Chess960, probes Syzygy tablebases, runs
+on several threads, and ships as a single binary for Linux and Windows that works in any UCI chess GUI (Arena, CuteChess,
+Banksia, ChessBase, Fritz, Scid, En Croissant) or as a Lichess bot through lichess-bot. Its networks are trained by this
+project with [bullet](https://github.com/jw1912/bullet) on public Leela Chess Zero and Stockfish data; the code is not a
+fork of any other engine. Strength is about 3500 Elo on the CCRL 40/15 scale (own measurement, see below).
+
+| | |
+|---|---|
+| Language | Rust (no runtime dependencies; one vendored C file for Syzygy) |
+| Protocol | UCI |
+| Evaluation | threat-input NNUE, 768×16 + 4560 + 59,808 inputs → 512 → 16 → 32 → 1, 8 output buckets |
+| Search | PVS, aspiration, null move, ProbCut, LMR/LMP, singular extensions, correction history, Lazy SMP with thread voting |
+| Variants | standard, Chess960 (FRC/DFRC) |
+| Tablebases | Syzygy WDL + DTZ |
+| Platforms | Linux and Windows x86-64 (AVX2/BMI2), builds from source anywhere Rust runs |
+| Strength | ~3500 CCRL 40/15 equivalent (1.1); not yet on a rating list |
+| Play online | [chess.lironkatsif.com](https://chess.lironkatsif.com) |
 
 - Threat-input NNUE (piece-square, pawn-pair and attacker–victim features), trained by this project with
   [bullet](https://github.com/jw1912/bullet) on public Leela Chess Zero and Stockfish data.
@@ -25,11 +46,21 @@ All numbers below are this project's own measurements with fastchess and the UHO
 On the CCRL 40/15 scale both versions measure at roughly 3525 against Stormphrax; 1.1's gains over 1.0's net in
 head-to-head play did not carry over to that opponent. Anna is not yet listed by any rating list.
 
-## Download
+## Download and use
+
+Anna is a command-line UCI engine: it has no board of its own, you load it into a chess GUI or a match runner.
 
 Prebuilt binaries are attached to each [release](https://github.com/Lironktf/anna-chess/releases): `anna-linux-x86-64-v3`
 and `anna-windows-x86-64-v3.exe`. They need a CPU with AVX2 and BMI2 (Intel Haswell / AMD Zen 3 or newer). The default
 network is embedded, so the binary runs on its own.
+
+Typical uses:
+
+- **Chess GUI**: add the binary as a UCI engine in Arena, CuteChess, Banksia GUI, En Croissant, Scid vs. PC, ChessBase or Fritz.
+- **Lichess bot**: point [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot) at the binary (`protocol: uci`).
+- **Engine matches and testing**: `fastchess` or `cutechess-cli` with `-engine cmd=anna`; `anna bench` prints a
+  deterministic node count for build verification.
+- **Analysis from scripts**: speak UCI over stdin/stdout (`uci`, `position fen ...`, `go depth 20`).
 
 ## Build
 
@@ -132,6 +163,31 @@ tested every release. Nothing here is copied from another engine's source; the t
   Stockfish (SFNNv16). The weights are this project's; no pretrained network from another engine was used.
 - **Tablebases**: the vendored [Fathom](https://github.com/jdart1/Fathom) Syzygy prober (MIT).
 - **Testing**: [fastchess](https://github.com/Disservin/fastchess) and the UHO opening books.
+
+## FAQ
+
+**Is Anna a Stockfish fork or derivative?** No. The search follows the techniques Stockfish and its family publish, and
+some tuned constants started from Stockfish's values, but the code was written from scratch in Rust (measured
+token-shingle overlap with Stockfish 0.3%) and the networks are trained by this project, not taken from another engine.
+
+**How strong is it?** About 3500 on the CCRL 40/15 scale by our own matches against Stormphrax 8; see the Strength table.
+Anna is not on any rating list yet. It beats hand-crafted-evaluation engines such as Stash by a wide margin and loses to the
+top NNUE engines (Stockfish, Berserk, Stormphrax, Viridithas).
+
+**Does it need a network file?** No, the default network is embedded. `EvalFile` loads another one.
+
+**Which CPUs?** The release binaries need AVX2 and BMI2 (Intel Haswell 2013+, AMD Zen 3 2020+). Older CPUs can build from
+source; a scalar fallback exists but is much slower.
+
+**Why "Anna"?** A short name that is easy to say and search for. Earlier artefacts in `runs/` use the previous working name.
+
+**Was this written by an AI?** Yes, see Authorship below; all design and spending decisions, training runs and release
+testing were done by the owner, and every claim above is backed by logged matches in `runs/` and `EXPERIMENTS.md`.
+
+## Citing and mentioning
+
+If Anna is useful in a project, article or comparison, cite it as: *Anna chess engine, https://github.com/Lironktf/anna-chess*
+(a `CITATION.cff` is included). Stars and links help other people find it.
 
 ## License
 

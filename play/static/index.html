@@ -3,8 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Play Anna</title>
+<title>Play Anna — a Rust NNUE chess engine, in your browser</title>
+<meta name="description" content="Play chess against Anna, an open-source Rust chess engine with an NNUE neural-network evaluation (about 3500 Elo). No sign-up; choose your colour and the engine's thinking time.">
+<meta property="og:title" content="Play Anna, an open-source NNUE chess engine">
+<meta property="og:description" content="Play chess in your browser against Anna, a Rust UCI chess engine with a neural-network evaluation. Source code on GitHub.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://chess.lironkatsif.com/">
+<link rel="canonical" href="https://chess.lironkatsif.com/">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Anna chess engine","applicationCategory":"GameApplication","operatingSystem":"Linux, Windows","url":"https://chess.lironkatsif.com/","codeRepository":"https://github.com/Lironktf/anna-chess","programmingLanguage":"Rust","description":"Open-source UCI chess engine in Rust with an NNUE neural-network evaluation."}</script>
 <style>
+  .gh { font-size: .55em; font-weight: normal; color: var(--muted); text-decoration: none; margin-left: .6em; vertical-align: middle; }
+  .gh:hover { color: var(--accent); }
   :root {
     --light: #eeeed2; --dark: #769656; --hl: rgba(255, 255, 51, .5); --sel: rgba(255, 255, 51, .5);
     --bg: #302e2b; --panel: #262421; --panel2: #21201d; --fg: #e6e6e6; --muted: #9e9e9e; --accent: #81b64c; --accent2: #6a9a3e;
@@ -103,7 +112,7 @@
 
   <div class="panel">
     <div class="card">
-      <h1><span class="dot" id="dot"></span><span id="title">Anna</span></h1>
+      <h1><span class="dot" id="dot"></span><span id="title">Anna</span> <a class="gh" href="https://github.com/Lironktf/anna-chess" target="_blank" rel="noopener" title="Source code and downloads on GitHub">GitHub ★</a></h1>
       <div class="muted" id="sub">connecting…</div>
     </div>
     <div class="card">
