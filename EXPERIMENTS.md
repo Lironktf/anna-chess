@@ -175,3 +175,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **05:50:** v6-s1-700 (SB 730/830, LR 0.09e-3) vs v5f: 45.2% (~-34 +/- 22, 300 games); trend -104 -> -83 -> -34.
 
 **2026-09-17 07:07 anna-v6 verdict (final anna-v6-s2-30 vs v5f):** equal nodes 30k, 300 games: +65 -87 =148, 46.3% (Elo: -25.52 +/- 22.94, nElo: -43.96 +/-); blitz 8+0.08 at 263 games +9 +/- 28 (500-game match running). Cost $5.53. Verdict so far: no improvement over v5f; the 36-file mixed set (494 GB, 830 SB) did not beat the 8-file v5 set (222 GB, 800 SB) at this net size.
+**08:10 anna-v6 blitz final:** 500 games at 8+0.08 vs v5f: +134 -115 =251, 51.9% (Elo: 13.21 +/- 17.98, nElo: 22.41 +/- 30). Final verdict: level at blitz, -26 per node; not adopted.
