@@ -18,7 +18,9 @@ while true; do
     read -r rate start status <<< "$(echo "$info" | python3 -c "
 import sys,json,time
 d=json.load(sys.stdin)
-rate=float(d.get('dph_total') or 0)+float(d.get('storage_cost') or 0)*float(d.get('disk_space') or 120)/720.0
+# dph_total already includes storage (storage_total_cost); add storage only if the API did not fold it in
+rate=float(d.get('dph_total') or 0)
+if d.get('storage_total_cost') is None: rate+=float(d.get('storage_cost') or 0)*float(d.get('disk_space') or 120)/720.0
 print(rate, d.get('start_date') or 0, d.get('actual_status') or '')")"
     now=$(date +%s)
     hours=$(python3 -c "print(max(0.0, ($now - float('$start'))/3600.0))")
