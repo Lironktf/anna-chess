@@ -11,3 +11,4 @@ settm STOPPED | Elo: 3.65 +/- 8.96, nElo: 6.20 +/- 15.23 | LLR: 0.31 (10.4%) (-2
 thorder STOPPED | Elo: 3.30 +/- 9.47, nElo: 5.31 +/- 15.23 | LLR: 0.23 (7.9%) (-2.94, 2.94) [0.00, 5.00]
 g3_sflmr PASS games=4938 | Elo: 9.71 +/- 5.55, nElo: 16.98 +/- 9.69 | LLR: 2.96 (100.4%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfLmr=1] base=[option.SfLmr=0] tc=5+0.05 rc=0
 g4_sfcorr PASS games=1546 | Elo: 28.87 +/- 9.88, nElo: 50.88 +/- 17. | LLR: 2.98 (101.3%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfCorr=1] base=[option.SfCorr=0] tc=5+0.05 rc=0
+g5_sfpick PASS games=3983 | Elo: 11.35 +/- 5.97, nElo: 20.54 +/- 10. | LLR: 2.96 (100.4%) (-2.94, 2.94) [0.00, 5.00] | new=[option.SfPick=1] base=[option.SfPick=0] tc=5+0.05 rc=0
