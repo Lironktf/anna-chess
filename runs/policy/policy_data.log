@@ -1,0 +1,129 @@
+✓ Initialized. View run at 
+https://modal.com/apps/lironktf/main/ap-DmYhTv9AodEFGIwmmsBCtA
+✓ Created objects.
+├── 🔨 Created mount /home/liron/Desktop/chess/scripts/modal_train.py
+├── 🔨 Created mount /home/liron/Desktop/chess/engine
+├── 🔨 Created mount /home/liron/Desktop/chess/trainer
+├── 🔨 Created mount /home/liron/Desktop/chess/nets/default.bin
+├── 🔨 Created mount /home/liron/Desktop/chess/lc0conv
+├── 🔨 Created function policy_data.
+├── 🔨 Created function fetch.
+├── 🔨 Created function train.
+└── 🔨 Created function status.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+training-run1-test80-20250804-0317: records 3819093 written 3818939 (99.996%) | decode_err 0 fen_err 0 illegal_policy 52 illegal_best 0 illegal_played 0 too_many_moves 102 | mean policy mass on le (410 s)
+training-run1-test80-20250804-1917: records 5169464 written 5169251 (99.996%) | decode_err 0 fen_err 0 illegal_policy 70 illegal_best 0 illegal_played 0 too_many_moves 143 | mean policy mass on le (520 s)
+training-run1-test80-20250805-1117: records 3598664 written 3598529 (99.996%) | decode_err 0 fen_err 0 illegal_policy 52 illegal_best 0 illegal_played 0 too_many_moves 83 | mean policy mass on leg (386 s)
+training-run1-test80-20250806-0317: records 5481917 written 5481682 (99.996%) | decode_err 0 fen_err 0 illegal_policy 78 illegal_best 0 illegal_played 0 too_many_moves 157 | mean policy mass on le (581 s)
+training-run1-test80-20250806-1917: records 4809780 written 4809536 (99.995%) | decode_err 0 fen_err 0 illegal_policy 74 illegal_best 0 illegal_played 0 too_many_moves 170 | mean policy mass on le (518 s)
+training-run1-test80-20250807-1117: records 5132322 written 5132062 (99.995%) | decode_err 0 fen_err 0 illegal_policy 67 illegal_best 0 illegal_played 0 too_many_moves 193 | mean policy mass on le (546 s)
+training-run1-test80-20250808-0317: records 4962048 written 4961822 (99.995%) | decode_err 0 fen_err 0 illegal_policy 75 illegal_best 0 illegal_played 0 too_many_moves 151 | mean policy mass on le (526 s)
+training-run1-test80-20250808-1917: records 5358824 written 5358585 (99.996%) | decode_err 0 fen_err 0 illegal_policy 78 illegal_best 0 illegal_played 0 too_many_moves 161 | mean policy mass on le (568 s)
+training-run1-test80-20250809-1117: records 5320688 written 5320471 (99.996%) | decode_err 0 fen_err 0 illegal_policy 69 illegal_best 0 illegal_played 0 too_many_moves 148 | mean policy mass on le (526 s)
+training-run1-test80-20250810-0317: records 4223340 written 4223172 (99.996%) | decode_err 0 fen_err 0 illegal_policy 55 illegal_best 0 illegal_played 0 too_many_moves 113 | mean policy mass on le (486 s)
+training-run1-test80-20250810-1917: records 4715856 written 4715637 (99.995%) | decode_err 0 fen_err 0 illegal_policy 58 illegal_best 0 illegal_played 0 too_many_moves 161 | mean policy mass on le (531 s)
+training-run1-test80-20250811-1117: records 4858195 written 4858000 (99.996%) | decode_err 0 fen_err 0 illegal_policy 70 illegal_best 0 illegal_played 0 too_many_moves 125 | mean policy mass on le (541 s)
+training-run1-test80-20250812-0317: records 4865474 written 4865246 (99.995%) | decode_err 0 fen_err 0 illegal_policy 63 illegal_best 0 illegal_played 0 too_many_moves 165 | mean policy mass on le (545 s)
+training-run1-test80-20250812-1917: records 4917400 written 4917225 (99.996%) | decode_err 0 fen_err 0 illegal_policy 69 illegal_best 0 illegal_played 0 too_many_moves 106 | mean policy mass on le (543 s)
+training-run1-test80-20250813-1117: records 3651172 written 3651013 (99.996%) | decode_err 0 fen_err 0 illegal_policy 47 illegal_best 0 illegal_played 0 too_many_moves 112 | mean policy mass on le (368 s)
+training-run1-test80-20250814-0317: records 4257827 written 4257637 (99.996%) | decode_err 0 fen_err 0 illegal_policy 81 illegal_best 0 illegal_played 0 too_many_moves 109 | mean policy mass on le (469 s)
+training-run1-test80-20250814-1917: records 3955974 written 3955772 (99.995%) | decode_err 0 fen_err 0 illegal_policy 64 illegal_best 0 illegal_played 0 too_many_moves 138 | mean policy mass on le (398 s)
+training-run1-test80-20250815-1117: records 4628454 written 4628222 (99.995%) | decode_err 0 fen_err 0 illegal_policy 62 illegal_best 0 illegal_played 0 too_many_moves 170 | mean policy mass on le (465 s)
+training-run1-test80-20250816-0317: records 4853126 written 4852925 (99.996%) | decode_err 0 fen_err 0 illegal_policy 70 illegal_best 0 illegal_played 0 too_many_moves 131 | mean policy mass on le (486 s)
+training-run1-test80-20250816-1917: records 4896014 written 4895848 (99.997%) | decode_err 0 fen_err 0 illegal_policy 66 illegal_best 0 illegal_played 0 too_many_moves 100 | mean policy mass on le (495 s)
+training-run1-test80-20250817-1117: records 4472688 written 4472435 (99.994%) | decode_err 0 fen_err 0 illegal_policy 70 illegal_best 0 illegal_played 0 too_many_moves 183 | mean policy mass on le (454 s)
+training-run1-test80-20250818-0317: records 4779107 written 4778874 (99.995%) | decode_err 0 fen_err 0 illegal_policy 74 illegal_best 0 illegal_played 0 too_many_moves 159 | mean policy mass on le (484 s)
+training-run1-test80-20250818-1917: records 5033401 written 5033230 (99.997%) | decode_err 0 fen_err 0 illegal_policy 63 illegal_best 0 illegal_played 0 too_many_moves 108 | mean policy mass on le (510 s)
+training-run1-test80-20250819-1117: records 5489043 written 5488793 (99.995%) | decode_err 0 fen_err 0 illegal_policy 92 illegal_best 0 illegal_played 0 too_many_moves 158 | mean policy mass on le (554 s)
+Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+have training-run1-test80-20250804-0317
+have training-run1-test80-20250804-1917
+have training-run1-test80-20250805-1117
+have training-run1-test80-20250806-0317
+have training-run1-test80-20250806-1917
+have training-run1-test80-20250807-1117
+have training-run1-test80-20250808-0317
+have training-run1-test80-20250808-1917
+have training-run1-test80-20250809-1117
+have training-run1-test80-20250810-0317
+have training-run1-test80-20250810-1917
+have training-run1-test80-20250811-1117
+have training-run1-test80-20250812-0317
+have training-run1-test80-20250812-1917
+have training-run1-test80-20250813-1117
+have training-run1-test80-20250814-0317
+have training-run1-test80-20250814-1917
+have training-run1-test80-20250815-1117
+have training-run1-test80-20250816-0317
+have training-run1-test80-20250816-1917
+have training-run1-test80-20250817-1117
+have training-run1-test80-20250818-0317
+have training-run1-test80-20250818-1917
+have training-run1-test80-20250819-1117
+training-run1-test80-20250820-0317: records 5481657 written 5481407 (99.995%) | decode_err 0 fen_err 0 illegal_policy 75 illegal_best 0 illegal_played 0 too_many_moves 175 | mean policy mass on le (546 s)
+have training-run1-test80-20250804-0317
+have training-run1-test80-20250804-1917
+have training-run1-test80-20250805-1117
+have training-run1-test80-20250806-0317
+have training-run1-test80-20250806-1917
+have training-run1-test80-20250807-1117
+have training-run1-test80-20250808-0317
+have training-run1-test80-20250808-1917
+have training-run1-test80-20250809-1117
+have training-run1-test80-20250810-0317
+have training-run1-test80-20250810-1917
+have training-run1-test80-20250811-1117
+have training-run1-test80-20250812-0317
+have training-run1-test80-20250812-1917
+have training-run1-test80-20250813-1117
+have training-run1-test80-20250814-0317
+have training-run1-test80-20250814-1917
+have training-run1-test80-20250815-1117
+have training-run1-test80-20250816-0317
+have training-run1-test80-20250816-1917
+have training-run1-test80-20250817-1117
+have training-run1-test80-20250818-0317
+have training-run1-test80-20250818-1917
+have training-run1-test80-20250819-1117
+training-run1-test80-20250820-0317: records 5481657 written 5481407 (99.995%) | decode_err 0 fen_err 0 illegal_policy 75 illegal_best 0 illegal_played 0 too_many_moves 175 | mean policy mass on le (546 s)
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/lironktf/main/ap-DmYhTv9AodEFGIwmmsBCtA
+exit=0

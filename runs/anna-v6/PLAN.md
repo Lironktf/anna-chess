@@ -94,7 +94,7 @@ xushawn bt4 Jan 2024 corr 0.858 / 82.4%. All usable (Leela-like agreement, below
 
 Full plan = Leela 2024 Jan-Jun (61 GB) + sf (156) + sf2 (131) + relabel2 (142) + t91 (12.6) = **~503 GB on disk** (zst deleted
 after decompression), DISK=560. Reduced plan (Stockfish self-play sets + relabel2 + t91, no Leela-derived rescores) ~360 GB,
-DISK=420. Cost formula per CLAUDE.md item 8: hours*(dph + DISK*storage/730) + GB*inet_down_cost; setup ~3.5 h + train ~5.5 h.
+DISK=420. Cost formula per the pre-rent checklist: hours*(dph + DISK*storage/730) + GB*inet_down_cost; setup ~3.5 h + train ~5.5 h.
 At 17:15 the only clean hosts (driver>=550, bw<=0.002/GB, disk>=600) cost $0.60-0.73/h: full plan ~$7.0-7.9, above the
 $6.52 credit. Cheaper clean hosts ($0.44-0.47/h, bw ~0.001) appear intermittently; a poller watches for one (est. ~$5.0-5.5).
 No rental without the owner's number.

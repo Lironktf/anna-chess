@@ -1,0 +1,80 @@
+python /root/policy_train.py --data /data/policy/training-run1-test80-20250804-0317.bin,/data/policy/training-run1-test80-20250804-1917.bin,/data/policy/training-run1-test80-20250805-1117.bin,/data/policy/training-run1-test80-20250806-0317.bin,/data/policy/training-run1-test80-20250806-1917.bin,/data/policy/training-run1-test80-20250807-1117.bin,/data/policy/training-run1-test80-20250808-0317.bin,/data/policy/training-run1-test80-20250808-1917.bin,/data/policy/training-run1-test80-20250809-1117.bin,/data/policy/training-run1-test80-20250810-0317.bin,/data/policy/training-run1-test80-20250810-1917.bin,/data/policy/training-run1-test80-20250811-1117.bin,/data/policy/training-run1-test80-20250812-0317.bin,/data/policy/training-run1-test80-20250812-1917.bin,/data/policy/training-run1-test80-20250813-1117.bin,/data/policy/training-run1-test80-20250814-0317.bin,/data/policy/training-run1-test80-20250814-1917.bin,/data/policy/training-run1-test80-20250815-1117.bin,/data/policy/training-run1-test80-20250816-0317.bin,/data/policy/training-run1-test80-20250816-1917.bin,/data/policy/training-run1-test80-20250817-1117.bin,/data/policy/training-run1-test80-20250818-0317.bin,/data/policy/training-run1-test80-20250818-1917.bin,/data/policy/training-run1-test80-20250819-1117.bin,/data/policy/training-run1-test80-20250820-0317.bin --epochs 2 --batch 16384 --lr 2e-3 --hidden 256 --out /data/policy_nets/policy-v1.bin
+train ~118626313 records over 25 files, eval 100000, device cuda, workers 7
+ep 0 step 200/14480 loss 2.9664 lr 4.20e-04 148s
+ep 0 step 400/14480 loss 2.7434 lr 1.20e-03 294s
+ep 0 step 600/14480 loss 2.6424 lr 1.87e-03 440s
+ep 0 step 800/14480 loss 2.6039 lr 2.00e-03 586s
+ep 0 step 1000/14480 loss 2.6027 lr 2.00e-03 739s
+ep 0 step 1200/14480 loss 2.5804 lr 1.99e-03 885s
+ep 0 step 1400/14480 loss 2.5776 lr 1.99e-03 1031s
+ep 0 step 1600/14480 loss 2.5717 lr 1.98e-03 1186s
+ep 0 step 1800/14480 loss 2.5570 lr 1.97e-03 1332s
+ep 0 step 2000/14480 loss 2.5548 lr 1.96e-03 1478s
+ep 0 step 2200/14480 loss 2.5623 lr 1.94e-03 1624s
+ep 0 step 2400/14480 loss 2.5652 lr 1.93e-03 1769s
+ep 0 step 2600/14480 loss 2.5482 lr 1.91e-03 1915s
+ep 0 step 2800/14480 loss 2.5493 lr 1.89e-03 2061s
+ep 0 step 3000/14480 loss 2.5548 lr 1.87e-03 2207s
+ep 0 step 3200/14480 loss 2.5514 lr 1.84e-03 2354s
+ep 0 step 3400/14480 loss 2.5598 lr 1.82e-03 2500s
+ep 0 step 3600/14480 loss 2.5494 lr 1.79e-03 2655s
+ep 0 step 3800/14480 loss 2.5554 lr 1.76e-03 2810s
+ep 0 step 4000/14480 loss 2.5584 lr 1.73e-03 2955s
+ep 0 step 4200/14480 loss 2.5421 lr 1.70e-03 3109s
+ep 0 step 4400/14480 loss 2.5480 lr 1.67e-03 3264s
+ep 0 step 4600/14480 loss 2.5504 lr 1.63e-03 3411s
+ep 0 step 4800/14480 loss 2.5333 lr 1.60e-03 3566s
+ep 0 step 5000/14480 loss 2.5467 lr 1.56e-03 3724s
+ep 0 step 5200/14480 loss 2.5353 lr 1.52e-03 3869s
+ep 0 step 5400/14480 loss 2.5274 lr 1.48e-03 4026s
+ep 0 step 5600/14480 loss 2.5283 lr 1.44e-03 4172s
+ep 0 step 5800/14480 loss 2.5351 lr 1.40e-03 4329s
+ep 0 step 6000/14480 loss 2.5418 lr 1.36e-03 4474s
+ep 0 step 6200/14480 loss 2.5234 lr 1.31e-03 4621s
+ep 0 step 6400/14480 loss 2.5174 lr 1.27e-03 4776s
+ep 0 step 6600/14480 loss 2.5249 lr 1.23e-03 4924s
+ep 0 step 6800/14480 loss 2.5256 lr 1.18e-03 5070s
+ep 0 step 7000/14480 loss 2.5175 lr 1.14e-03 5223s
+ep 0 step 7200/14480 loss 2.5156 lr 1.09e-03 5369s
+epoch 0: eval CE 2.5209 top1 0.3164 top3 0.5705 (5390s)
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0285%
+ep 1 step 7400/14480 loss 2.5386 lr 1.05e-03 5517s
+ep 1 step 7600/14480 loss 2.5108 lr 1.00e-03 5663s
+ep 1 step 7800/14480 loss 2.5090 lr 9.55e-04 5809s
+ep 1 step 8000/14480 loss 2.5299 lr 9.09e-04 5955s
+ep 1 step 8200/14480 loss 2.5207 lr 8.64e-04 6101s
+ep 1 step 8400/14480 loss 2.5150 lr 8.19e-04 6246s
+ep 1 step 8600/14480 loss 2.5168 lr 7.74e-04 6392s
+ep 1 step 8800/14480 loss 2.5162 lr 7.30e-04 6538s
+ep 1 step 9000/14480 loss 2.5103 lr 6.86e-04 6684s
+ep 1 step 9200/14480 loss 2.5233 lr 6.43e-04 6829s
+ep 1 step 9400/14480 loss 2.5129 lr 6.01e-04 6976s
+ep 1 step 9600/14480 loss 2.5071 lr 5.59e-04 7122s
+ep 1 step 9800/14480 loss 2.5147 lr 5.19e-04 7268s
+ep 1 step 10000/14480 loss 2.5144 lr 4.79e-04 7413s
+ep 1 step 10200/14480 loss 2.5143 lr 4.41e-04 7559s
+ep 1 step 10400/14480 loss 2.5179 lr 4.03e-04 7704s
+ep 1 step 10600/14480 loss 2.5121 lr 3.67e-04 7850s
+ep 1 step 10800/14480 loss 2.5081 lr 3.33e-04 7996s
+ep 1 step 11000/14480 loss 2.5249 lr 2.99e-04 8142s
+ep 1 step 11200/14480 loss 2.5070 lr 2.68e-04 8288s
+ep 1 step 11400/14480 loss 2.5046 lr 2.37e-04 8434s
+ep 1 step 11600/14480 loss 2.5085 lr 2.08e-04 8581s
+ep 1 step 11800/14480 loss 2.5096 lr 1.81e-04 8727s
+ep 1 step 12000/14480 loss 2.5104 lr 1.56e-04 8873s
+ep 1 step 12200/14480 loss 2.5162 lr 1.32e-04 9019s
+ep 1 step 12400/14480 loss 2.5051 lr 1.11e-04 9165s
+ep 1 step 12600/14480 loss 2.5073 lr 9.07e-05 9311s
+ep 1 step 12800/14480 loss 2.5171 lr 7.26e-05 9457s
+ep 1 step 13000/14480 loss 2.5234 lr 5.65e-05 9603s
+ep 1 step 13200/14480 loss 2.4998 lr 4.24e-05 9749s
+ep 1 step 13400/14480 loss 2.5049 lr 3.02e-05 9895s
+ep 1 step 13600/14480 loss 2.5234 lr 2.01e-05 10041s
+ep 1 step 13800/14480 loss 2.5060 lr 1.20e-05 10187s
+ep 1 step 14000/14480 loss 2.5082 lr 5.99e-06 10334s
+ep 1 step 14200/14480 loss 2.5072 lr 2.04e-06 10480s
+ep 1 step 14400/14480 loss 2.5017 lr 1.71e-07 10625s
+epoch 1: eval CE 2.5054 top1 0.3253 top3 0.5753 (10666s)
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0519%
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0519%
+=== exit=0

@@ -1,0 +1,34 @@
+✓ Initialized. View run at 
+https://modal.com/apps/lironktf/main/ap-14hfV6u4TAO0xhcsJiEJ0F
+✓ Created objects.
+├── 🔨 Created mount /home/liron/Desktop/chess/scripts/modal_train.py
+├── 🔨 Created mount /home/liron/Desktop/chess/scripts/policy_train.py
+├── 🔨 Created mount /home/liron/Desktop/chess/engine
+├── 🔨 Created function policy_train.
+├── 🔨 Created mount /home/liron/Desktop/chess/trainer
+├── 🔨 Created mount /home/liron/Desktop/chess/nets/default.bin
+├── 🔨 Created mount /home/liron/Desktop/chess/lc0conv
+├── 🔨 Created function policy_data.
+├── 🔨 Created function fetch.
+├── 🔨 Created function train.
+└── 🔨 Created function status.
+gpu=L40S cap=0.5 h (ANNA_GPU / ANNA_HOURS)
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+exit=0; checkpoints in /data/checkpoints/anna-v5-smoke; log /data/runs/anna-v5-smoke/train.log
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/lironktf/main/ap-14hfV6u4TAO0xhcsJiEJ0F

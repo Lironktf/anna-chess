@@ -5,7 +5,7 @@ Sources are linked at the end. Numbers are ours unless cited. Ledger of results:
 ## 1. Will the rating-list community reject an AI-written engine?
 
 Precedent (TalkChess, 2026): "Sable 1.6", a from-scratch C++ engine with a self-trained NNUE, disclosed up front as
-written by Claude under the author's direction (author designed the approach, ran datagen/training, tested). Reactions:
+written under the author's direction (author designed the approach, ran datagen/training, tested). Reactions:
 
 - One independent tester (chessica) tested it within days and published a rating (~3356 on her list); another developer
   (smatovic) called it the "Centaur phase of programming".

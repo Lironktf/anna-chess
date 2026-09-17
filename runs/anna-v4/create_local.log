@@ -1,0 +1,7 @@
+{
+ "instance_api_key": "b4c014002dfc4d8f641e78755fb7c87e4dfaae659f843decc170f75131dba355",
+ "new_contract": 50900782,
+ "success": false
+}
+instance 50900782 created; waiting for ssh...
+instance did not come up; check 'vastai show instances' and destroy it

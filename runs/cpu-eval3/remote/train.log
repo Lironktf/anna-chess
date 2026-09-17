@@ -1,0 +1,36 @@
+2026-09-13T17:52:23Z === train start (cpu-eval) run=cpu-eval3 conc=28 games_fast=400 games_long=100
+CPU(s):                                  64
+Model name:                              AMD EPYC 7742 64-Core Processor
+Thread(s) per core:                      1
+L3 cache:                                16 MiB (1 instance)
+               total        used        free      shared  buff/cache   available
+Mem:             125           4          38           0          82         119
+2026-09-13T17:52:53Z toolchain: rustc 1.98.1 (48a229cea 2026-09-01) / g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+    Updating crates.io index
+   Compiling engine v0.1.0 (/workspace/chess/engine)
+    Finished `release` profile [optimized] target(s) in 15.85s
+2026-09-13T17:53:09Z bench: Bench: 648519 nodes 1161383 nps
+2026-09-13T17:53:09Z netcheck /workspace/nets/anna-v1.bin: netcheck ok: /workspace/nets/anna-v1.bin (25200704 bytes)
+2026-09-13T17:53:09Z netcheck /workspace/nets/anna-v3.bin: netcheck ok: /workspace/nets/anna-v3.bin (45641280 bytes)
+2026-09-13T17:53:09Z netcheck /workspace/nets/anna-old.bin: netcheck ok: /workspace/nets/anna-old.bin (25334336 bytes)
+2026-09-13T17:53:15Z search speed /workspace/nets/anna-v1.bin: nps 926057
+2026-09-13T17:53:21Z search speed /workspace/nets/anna-v3.bin: nps 417957
+2026-09-13T17:53:59Z ok: fastchess/fastchess
+2026-09-13T17:54:00Z ok: stash-bot/stash
+2026-09-13T17:54:00Z ok: weiss/weiss
+2026-09-13T17:54:00Z ok: /workspace/tools/stormphrax
+2026-09-13T17:54:00Z ok: /workspace/tools/stockfish
+2026-09-13T17:54:00Z /workspace/tools/stormphrax: id name Stormphrax 8.0.0
+2026-09-13T17:54:00Z /workspace/tools/stockfish: id name Stockfish 19
+2026-09-13T17:54:00Z /workspace/tools/stash-bot/stash: id name Stash v37.26
+2026-09-13T17:54:00Z /workspace/tools/weiss/weiss: id name Weiss 2.1-dev (c735b8f)
+2026-09-13T17:54:00Z match slow4_smp4_vs_1: 40 games at 60+0.6
+2026-09-13T18:32:56Z result slow4_smp4_vs_1: Elo: 88.74 +/- 48.41, nElo: 207.63 +/- 107.67 | Games: 40, Wins: 14, Losses: 4, Draws: 22, Points: 25.0 (62.50 %)
+2026-09-13T18:32:56Z match slow4_old_vs_v1_fast: 300 games at 8+0.08
+2026-09-13T18:38:51Z result slow4_old_vs_v1_fast: Elo: -50.14 +/- 24.86, nElo: -80.55 +/- 39.32 | Games: 300, Wins: 56, Losses: 99, Draws: 145, Points: 128.5 (42.83 %)
+2026-09-13T18:38:51Z match slow4_new_vs_v1: 100 games at 60+0.6
+2026-09-13T20:17:55Z result slow4_new_vs_v1: Elo: 52.51 +/- 31.63, nElo: 115.10 +/- 68.10 | Games: 100, Wins: 30, Losses: 15, Draws: 55, Points: 57.5 (57.50 %)
+2026-09-13T20:17:55Z skip slow4_old_vs_new (done)
+2026-09-13T20:17:55Z match slow4_new_vs_stormphrax8: 100 games at 60+0.6
+2026-09-13T21:53:48Z result slow4_new_vs_stormphrax8: Elo: -107.54 +/- 30.03, nElo: -260.58 +/- 68.10 | Games: 100, Wins: 9, Losses: 39, Draws: 52, Points: 35.0 (35.00 %)
+2026-09-13T21:53:48Z === train end exit=0

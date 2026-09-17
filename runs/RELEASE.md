@@ -40,10 +40,8 @@ Board: kirill-kryukov.com/chess/discussion-board, forum "CCRL Public". Also Talk
 
     Strength, measured by me under CCRL 40/15-like conditions (4 threads, 60+0.6, UHO book, 100 games each):
     -108 +/- 30 vs Stormphrax 8.0.0, +53 +/- 32 vs Anna's own earlier net. My estimate is ~3520 on the 40/15 scale;
-    games are in the repository (runs/cpu-eval3). I'd be glad to see it tested.
-
-    training and all testing. Details, attribution and the full experiment log (including the failures) are in the
-    README and EXPERIMENTS.md.
+    games are in the repository (runs/cpu-eval3). I'd be glad to see it tested. Details, attribution and the full
+    experiment log (including the failures) are in the README and EXPERIMENTS.md.
 
 ## After posting
 

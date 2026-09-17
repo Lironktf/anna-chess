@@ -138,4 +138,4 @@
 2026-09-13 02:37:24 status=running rate=$0.49777777777777776/hr elapsed=2.3010267472929424h est_spent=$1.245
 2026-09-13 02:38:27 status=running rate=$0.49777777777777776/hr elapsed=2.3182489695151647h est_spent=$1.254
 2026-09-13 02:39:28 status= rate=$0.0/hr elapsed=497022.65777777776h est_spent=$0.1
-2026-09-13 02:39:28 stopped by Claude: instance destroyed
+2026-09-13 02:39:28 stopped: instance destroyed

@@ -1,0 +1,28 @@
+2026-09-16T15:43:57Z === train start (cpu-eval) run=cpu-eval4 conc=28 games_fast=400 games_long=100
+CPU(s):                                  32
+Model name:                              13th Gen Intel(R) Core(TM) i9-13900K
+Thread(s) per core:                      2
+L3 cache:                                36 MiB (1 instance)
+               total        used        free      shared  buff/cache   available
+Mem:             125           4         111           0           9         120
+2026-09-16T15:44:34Z toolchain: rustc 1.98.1 (48a229cea 2026-09-01) / g++ (Ubuntu 11.4.0-1ubuntu1~22.04) 11.4.0
+    Updating crates.io index
+   Compiling engine v1.1.0 (/workspace/chess/engine)
+    Finished `release` profile [optimized] target(s) in 7.69s
+2026-09-16T15:44:42Z bench: Bench: 648519 nodes 2156216 nps
+2026-09-16T15:44:42Z netcheck /workspace/nets/anna-v1.bin: netcheck ok: /workspace/nets/anna-v1.bin (45641280 bytes)
+2026-09-16T15:44:42Z netcheck /workspace/nets/anna-v3.bin: netcheck ok: /workspace/nets/anna-v3.bin (45641280 bytes)
+2026-09-16T15:44:48Z search speed /workspace/nets/anna-v1.bin: nps 996368
+2026-09-16T15:44:54Z search speed /workspace/nets/anna-v3.bin: nps 1002934
+2026-09-16T15:45:20Z ok: fastchess/fastchess
+2026-09-16T15:45:20Z ok: stash-bot/stash
+2026-09-16T15:45:20Z ok: weiss/weiss
+2026-09-16T15:45:20Z ok: /workspace/tools/stormphrax
+2026-09-16T15:45:20Z ok: /workspace/tools/stockfish
+2026-09-16T15:45:20Z /workspace/tools/stormphrax: id name Stormphrax 8.0.0
+2026-09-16T15:45:21Z /workspace/tools/stockfish: id name Stockfish 19
+2026-09-16T15:45:21Z /workspace/tools/stash-bot/stash: id name Stash v37.26
+2026-09-16T15:45:21Z /workspace/tools/weiss/weiss: id name Weiss 2.1-dev (c735b8f)
+2026-09-16T15:45:21Z match slow4_new_vs_stormphrax8: 100 games at 60+0.6
+2026-09-16T17:56:45Z result slow4_new_vs_stormphrax8: Elo: -111.37 +/- 33.64, nElo: -242.17 +/- 68.10 | Games: 100, Wins: 9, Losses: 40, Draws: 51, Points: 34.5 (34.50 %)
+2026-09-16T17:56:45Z === train end exit=0

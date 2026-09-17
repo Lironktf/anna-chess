@@ -1,0 +1,24 @@
+2026-09-13 11:56:51 sync loop start run=anna-v4 host=69.176.92.121 port=50025 interval=120
+2026-09-13 11:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/smoke4-s0-1/quantised.bin
+2026-09-13 11:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/smoke4-s1-1/quantised.bin
+2026-09-13 11:56:52 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/smoke4-s2-1/quantised.bin
+2026-09-13 12:07:03 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s0-20/quantised.bin
+2026-09-13 12:09:09 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s0-30/quantised.bin
+2026-09-13 12:15:17 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-20/quantised.bin
+2026-09-13 12:19:23 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-40/quantised.bin
+2026-09-13 12:23:33 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-60/quantised.bin
+2026-09-13 12:27:40 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-80/quantised.bin
+2026-09-13 12:33:49 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-100/quantised.bin
+2026-09-13 12:37:57 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-120/quantised.bin
+2026-09-13 12:44:07 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-140/quantised.bin
+2026-09-13 12:48:15 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-160/quantised.bin
+2026-09-13 12:52:22 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-180/quantised.bin
+2026-09-13 12:56:32 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-200/quantised.bin
+2026-09-13 13:00:40 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-220/quantised.bin
+2026-09-13 13:04:47 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-240/quantised.bin
+2026-09-13 13:08:54 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-260/quantised.bin
+2026-09-13 13:15:02 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-280/quantised.bin
+2026-09-13 13:19:07 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-300/quantised.bin
+2026-09-13 13:21:13 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s1-310/quantised.bin
+2026-09-13 13:25:19 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s2-20/quantised.bin
+2026-09-13 13:27:26 checkpoint OK: /home/liron/Desktop/chess/runs/anna-v4/checkpoints/anna-v4-s2-30/quantised.bin

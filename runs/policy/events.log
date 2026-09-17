@@ -1,0 +1,2 @@
+2026-09-14T00:02:02Z stopped policy-v1 run at step ~1700/13810: 0.75 s/step would overrun the 3 h cap and the script only exported at the end; relaunching with per-epoch export and a faster loader
+2026-09-14T00:08:49Z relaunch 2: sequential file reads (memmap random reads on the volume gave 0.8 s/step)

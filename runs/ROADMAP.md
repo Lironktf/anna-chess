@@ -49,7 +49,7 @@ v3 also subsumes v2's data gain (it trains on the same 4 months).
 ### Phase 3 — anna-v3 run (~$3.5-4.5, needs owner go)
 - Data: T80 2024-01/02/03/05 (manifest groups train + train2, ~6.2B filtered positions).
 - 800 superbatches (throughput will be lower than v1 because feature mapping is CPU-heavier; pick a 24-core box).
-- Kill layers as in CLAUDE.md; cap $4.50.
+- Kill layers as in the project checklist; cap $4.50.
 
 ### Phase 4 — search work that only pays with a good net (ongoing, free)
 - Threat-aware history indexing (Stockfish: main history indexed by whether from/to squares are threatened).

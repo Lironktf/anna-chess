@@ -1,0 +1,70 @@
+{
+ "instance_api_key": "73fba50cb2f48cb47704a23523962c8f980ae0823c88c54eb3cd3a6952b8c4cf",
+ "new_contract": 51237763,
+ "success": true
+}
+instance 51237763 created; waiting for ssh...
+ssh -p 41074 root@141.11.90.211
+=== prepare box (rsync is not in the CUDA image)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload repo
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== remote setup + smoke (this takes ~10-15 min)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== setup start 2026-09-16T18:28:56Z run=anna-v6 host=f707f50161e0
+Wed Sep 16 18:28:56 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 570.172.08             Driver Version: 570.172.08     CUDA Version: 12.8     |
+|-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  |   00000000:A1:00.0 Off |                  Off |
+| 31%   37C    P8             20W /  450W |       1MiB /  24564MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+                                                                                         
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+network preflight: HuggingFace download 15107414 B/s
+debconf: delaying package configuration, since apt-utils is not installed
+info: downloading installer
+info: profile set to minimal
+info: default host tuple is x86_64-unknown-linux-gnu
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 3 components
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+Build cuda_12.4.r12.4/compiler.34097967_0
+=== build trainer (cuda)
+   Compiling bullet_lib v1.0.0 (https://github.com/jw1912/bullet?rev=629ee50000b2afb7b3337595401c830d3b1e0f42#629ee500)
+   Compiling trainer v0.1.0 (/workspace/chess/trainer)
+    Finished `release` profile [optimized] target(s) in 14.09s
+-rwxr-xr-x 2 root root  920552 Sep 16 18:29 target/release/inspect
+-rwxr-xr-x 2 root root 2826784 Sep 16 18:29 target/release/trainer
+=== data
+2026-09-16 18:29:31 === downloader run start, groups: train train2 train3 sf, pid 2577
+2026-09-16 18:29:31 START test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst group=train size=6908056676 resume_from=0
+2026-09-16 18:41:05 VERIFIED test80-2024-02-feb-2tb7p.min-v2.v6.binpack.zst (6908056676 bytes, sha256 ok)
+2026-09-16 18:41:05 START test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst group=train size=7687798524 resume_from=0
+2026-09-16 18:51:42 VERIFIED test80-2024-01-jan-2tb7p.min-v2.v6.binpack.zst (7687798524 bytes, sha256 ok)
+2026-09-16 18:51:42 START test80-2024-03-mar-2tb7p.min-v2.v6.binpack.zst group=train2 size=8760594062 resume_from=0
+2026-09-16 19:03:02 VERIFIED test80-2024-03-mar-2tb7p.min-v2.v6.binpack.zst (8760594062 bytes, sha256 ok)
+2026-09-16 19:03:02 START test80-2024-05-may-2tb7p.min-v2.v6.binpack.zst group=train2 size=8846416555 resume_from=0
+2026-09-16 19:15:52 VERIFIED test80-2024-05-may-2tb7p.min-v2.v6.binpack.zst (8846416555 bytes, sha256 ok)
+2026-09-16 19:15:52 START test80-2024-04-apr-2tb7p.min-v2.v6.binpack.zst group=train3 size=12305706625 resume_from=0
+2026-09-16 19:33:09 VERIFIED test80-2024-04-apr-2tb7p.min-v2.v6.binpack.zst (12305706625 bytes, sha256 ok)
+2026-09-16 19:33:09 START test80-2024-06-jun-2tb7p.min-v2.v6.binpack.zst group=train3 size=7900797810 resume_from=0
+Terminated
+create exit=143

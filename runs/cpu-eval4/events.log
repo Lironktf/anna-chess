@@ -1,0 +1,9 @@
+2026-09-16T15:16:46Z create offer=51223888 run=cpu-eval4 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=40 cap=0.55
+{
+ "instance_api_key": "1bdb0971710f16ffd0f328f8c4f5b37f9b1ce7706b60702610507b1a9974336d",
+ "new_contract": 51224017,
+ "success": true
+}
+2026-09-16T15:46:15Z run start self-destruct armed max_hours=3 cap=0.55
+2026-09-16T16:07:46Z re-armed self-destruct at 3.5 h (match pace ~35 games/h); guard stays $0.55
+2026-09-16T17:59:40Z destroyed instance 51224017

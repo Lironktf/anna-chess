@@ -1,0 +1,54 @@
+{
+ "instance_api_key": "0c7e6d78fb595416a65c0946d79102878fb808a9cbdde019ae66f765c1b0bb55",
+ "new_contract": 51236656,
+ "success": true
+}
+instance 51236656 created; waiting for ssh...
+ssh -p 44071 root@45.23.135.240
+=== prepare box (rsync is not in the CUDA image)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== upload repo
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== remote setup + smoke (this takes ~10-15 min)
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+=== setup start 2026-09-16T18:24:00Z run=anna-v6 host=2d537978c634
+Wed Sep 16 18:24:00 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.183.01             Driver Version: 535.183.01   CUDA Version: 12.4     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA GeForce RTX 4090        On  | 00000000:81:00.0 Off |                  Off |
+|  0%   27C    P8              17W / 450W |      1MiB / 24564MiB |      0%      Default |
+|                                         |                      |                  N/A |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+network preflight: HuggingFace download 19957438 B/s
+debconf: delaying package configuration, since apt-utils is not installed
+info: downloading installer
+info: profile set to minimal
+info: default host tuple is x86_64-unknown-linux-gnu
+info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+info: latest update on 2026-09-03 for version 1.98.1 (48a229cea 2026-09-01)
+info: downloading 3 components
+info: default toolchain set to stable-x86_64-unknown-linux-gnu
+rustc 1.98.1 (48a229cea 2026-09-01)
+cargo 1.98.1 (797e8a9bc 2026-08-05)
+Build cuda_12.4.r12.4/compiler.34097967_0
+=== build trainer (cuda)
+          
+
+error: could not compile `trainer` (bin "train_v3") due to 1 previous error
+create exit=101

@@ -1,0 +1,14 @@
+=== creating restricted API key (instance_read+instance_write) for the on-box self-destruct
+key id 28263551 len 64
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+self-destruct ARMED:
+2026-09-16T15:43:14Z armed: id=51224017 max_hours=3 grace_min=20 log=/workspace/runs/cpu-eval4/train.log
+Welcome to vast.ai. If authentication fails, try again after a few seconds, and double check your ssh key.
+Have fun!
+2026-09-16 11:46:19 status=running rate=$0.14814814814814817/hr elapsed=0.5314677986833785h est_spent=$0.179
+matches started in tmux 'eval'; guard cap $0.55; results sync to runs/cpu-eval4/remote/ every 2 min. Watch: scripts/cpu_eval.sh status cpu-eval4

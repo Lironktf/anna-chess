@@ -1,0 +1,46 @@
+2026-09-16T18:00:38Z create offer=39099119 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "5dc64c7a12bae6e9c98a143995eab359679609995ded1976887e4c785a820cce",
+ "new_contract": 51235738,
+ "success": false
+}
+2026-09-16T18:12:06Z destroyed instance 51235738 (never left 'loading')
+2026-09-16T18:12:31Z create offer=51224273 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+Failed with error 400: error 404/3603: no_such_ask  Instance type by id 51224273 is not available.
+2026-09-16T18:13:07Z create offer=44637528 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "0c7e6d78fb595416a65c0946d79102878fb808a9cbdde019ae66f765c1b0bb55",
+ "new_contract": 51236656,
+ "success": true
+}
+2026-09-16T18:28:00Z destroyed instance 51236656 (driver 535 lacks cuFuncLoad; bullet needs CUDA driver >= 12.4)
+2026-09-16T18:28:51Z create offer=39184690 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=120
+{
+ "instance_api_key": "73fba50cb2f48cb47704a23523962c8f980ae0823c88c54eb3cd3a6952b8c4cf",
+ "new_contract": 51237763,
+ "success": true
+}
+2026-09-16T19:49:27Z destroyed instance 51237763 (container disk 120 GB: DISK default too small for 269+ GB of data)
+2026-09-16T19:49:49Z create offer=39184690 51008170 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=480
+2026-09-17T00:35:21Z v6 rental: offer 47694461 (5.352647252346525 47694461 RTX 5090 Shanghai, CN 0.4542592592592593 0.1333333333333333 0.00013020833333333333 595 1315.0 660.2)
+2026-09-17T00:35:21Z create offer=47694461 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=560
+2026-09-17T00:42:29Z v6 rental: offer 29357619 (5.525371920186454 29357619 RTX 4090 Sweden, SE 0.4280555555555556 0.19999999999999998 2.6041666666666666e-06 565 687.0 364.9)
+2026-09-17T00:42:29Z create offer=29357619 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=560
+2026-09-17T00:46:34Z v6 rental: offer 47694461 (5.352647252346525 47694461 RTX 5090 Shanghai, CN 0.4542592592592593 0.1333333333333333 0.00013020833333333333 595 1315.0 660.2)
+2026-09-17T00:46:34Z create offer=47694461 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=560
+2026-09-17T00:47:37Z v6 rental: offer 47694461 (5.352647252346525 47694461 RTX 5090 Shanghai, CN 0.4542592592592593 0.1333333333333333 0.00013020833333333333 595 1315.0 660.2)
+2026-09-17T00:47:37Z create offer=47694461 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=560
+2026-09-17T01:08:26Z v6 rental attempt: 5.525371920186454 29357619 RTX 4090 Sweden, SE 0.4280555555555556 0.19999999999999998 2.6041666666666666e-06 565 687.0 364.9
+2026-09-17T01:08:26Z create offer=29357619 run=anna-v6 image=nvidia/cuda:12.4.1-devel-ubuntu22.04 disk=560
+{
+ "instance_api_key": "7164498b00f5ab04c29a4aafee96fb9c8200f7ab0c02dfc8b9cd5b9ab04acbcc",
+ "new_contract": 51262070,
+ "success": true
+}
+2026-09-17T01:17:42Z v6 instance 51262070 rented (Sweden 4090, 0.582/h, cap 6.00); guard fixed+restarted; prefetcher started
+2026-09-17T03:13:47Z train start superbatches=840 self-destruct armed max_hours=7.5
+2026-09-17T03:14:48Z v6 training started (SB 30/840/30, L1 512, loader 12/map 12, self-destruct 7.5 h armed 03:10:46Z, sync loop + monitor on laptop); spent ~1.25
+2026-09-17T03:20:20Z v6 restart: 30.9 s/SB -> 900 SB would overrun the 7.5 h self-destruct; schedule trimmed to 30/770/30
+2026-09-17T03:20:27Z train start superbatches=770 self-destruct armed max_hours=7.5
+2026-09-17T03:21:34Z self-destruct re-armed 7.5 h (fractional-hours bug fixed)
+2026-09-17T03:36:33Z self-destruct re-armed MAX_HOURS=7.58 (hard limit = guard time - 3 min) because the box->laptop link is ~0.1 MB/s and the final pull needs ~45 min

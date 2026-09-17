@@ -1,0 +1,107 @@
+✓ Initialized. View run at 
+https://modal.com/apps/lironktf/main/ap-2CRLKmdHXY7xbtnKoQgF69
+Building image im-UbWwspWBPhE2xccDYLzgeU
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 450.95ms
+
+Built image im-UbWwspWBPhE2xccDYLzgeU in 1.88s
+
+
+Building image im-9bI4Nj3FkFjeQdxKKKXtJW
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 586.14ms
+
+Built image im-9bI4Nj3FkFjeQdxKKKXtJW in 2.92s
+
+
+Building image im-GIBZ8TgiYHKp4bkdGXvJ5Z
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 975.36ms
+
+Built image im-GIBZ8TgiYHKp4bkdGXvJ5Z in 15.69s
+
+
+Building image im-YA0SEXuPIZiNsMgIBLwAeA
+
+=> Step 0: FROM base
+
+=> Step 1: COPY . /
+Saving image...
+Image saved, took 1.30s
+
+Built image im-YA0SEXuPIZiNsMgIBLwAeA in 2.99s
+
+
+Building image im-Sn0w5OruxrebaW0DO9E6d6
+
+=> Step 0: FROM base
+
+=> Step 1: RUN cd /root/chess/trainer && cargo build --release --features cuda --bin train_v3 --bin inspect 2>&1 | tail -n 5
+   Compiling toml v0.8.23
+   Compiling viriformat v2.0.1
+   Compiling bullet_lib v1.0.0 (https://github.com/jw1912/bullet?rev=629ee50000b2afb7b3337595401c830d3b1e0f42#629ee500)
+   Compiling trainer v0.1.0 (/root/chess/trainer)
+    Finished `release` profile [optimized] target(s) in 11.72s
+
+=> Step 2: RUN printf '[workspace]\nresolver = "2"\nmembers = ["engine", "lc0conv"]\n' > /root/chess/Cargo.toml && cd /root/chess && cargo build --release -p lc0conv 2>&1 | tail -n 3
+   Compiling tar v0.4.46
+   Compiling lc0conv v0.1.0 (/root/chess/lc0conv)
+    Finished `release` profile [optimized] target(s) in 6.02s
+Saving image...
+Image saved, took 2.99s
+
+Built image im-Sn0w5OruxrebaW0DO9E6d6 in 22.90s
+
+
+✓ Created objects.
+├── 🔨 Created mount /home/liron/Desktop/chess/scripts/modal_train.py
+├── 🔨 Created mount /home/liron/Desktop/chess/scripts/policy_train.py
+├── 🔨 Created mount /home/liron/Desktop/chess/engine
+├── 🔨 Created function policy_train.
+├── 🔨 Created mount /home/liron/Desktop/chess/trainer
+├── 🔨 Created mount /home/liron/Desktop/chess/nets/default.bin
+├── 🔨 Created mount /home/liron/Desktop/chess/lc0conv
+├── 🔨 Created function policy_data.
+├── 🔨 Created function fetch.
+├── 🔨 Created function train.
+└── 🔨 Created function status.
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+WARNING: The NVIDIA Driver was not detected.  GPU functionality will not be available.
+   Use the NVIDIA Container Toolkit to start this container with GPU support; see
+   https://docs.nvidia.com/datacenter/cloud-native/ .
+
+fetch dfrc_n5000.binpack ...
+done dfrc_n5000.binpack: 37.5 GB in 1781 s
+fetch nodes5000pv2_UHO.binpack ...
+['/data/binpacks/dfrc_n5000.binpack', '/data/binpacks/nodes5000pv2_UHO.binpack']
+done nodes5000pv2_UHO.binpack: 40.3 GB in 1839 s
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/lironktf/main/ap-2CRLKmdHXY7xbtnKoQgF69
+exit=0

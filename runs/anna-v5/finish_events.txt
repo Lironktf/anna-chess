@@ -1,0 +1,13 @@
+=== train start 2026-09-15T18:16:20Z net=anna-v5f data=/data/binpacks/test80-2024-01-jan-2tb7p.min-v2.v6.binpack,/data/binpacks/test80-2024-02-feb-2tb7p.min-v2.v6.binpack,/data/binpacks/dfrc_n5000.binpack,/data/binpacks/test80-2024-03-mar-2tb7p.min-v2.v6.binpack,/data/binpacks/test80-2024-04-apr-2tb7p.min-v2.v6.binpack,/data/binpacks/nodes5000pv2_UHO.binpack,/data/binpacks/test80-2024-05-may-2tb7p.min-v2.v6.binpack,/data/binpacks/test80-2024-06-jun-2tb7p.min-v2.v6.binpack resume=/data/checkpoints/anna-v5/anna-v5-s1-670 SB=0/70/30 LR1=9.5e-5 L1=512 cap=1.5h
+resumed weights and optimiser state from /data/checkpoints/anna-v5/anna-v5-s1-670
+Saved [anna-v5f-s1-10]
+Saved [anna-v5f-s1-20]
+Saved [anna-v5f-s1-30]
+Saved [anna-v5f-s1-40]
+Saved [anna-v5f-s1-50]
+Saved [anna-v5f-s1-60]
+Saved [anna-v5f-s1-70]
+Saved [anna-v5f-s2-10]
+Saved [anna-v5f-s2-20]
+Saved [anna-v5f-s2-30]
+=== train end exit=0

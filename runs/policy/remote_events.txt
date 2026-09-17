@@ -1,0 +1,8 @@
+train ~118626313 records over 25 files, eval 100000, device cuda, workers 7
+epoch 0: eval CE 2.5209 top1 0.3164 top3 0.5705 (5390s)
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0285%
+epoch 1: eval CE 2.5054 top1 0.3253 top3 0.5753 (10666s)
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0519%
+exported /data/policy_nets/policy-v1.bin: W (768, 256) b (256,) V (6, 64, 256) U (64, 64) P (5,); V saturation 0.0519%
+=== exit=0
+ep 1 step 14000/14480 loss 2.5082 lr 5.99e-06 10334s
