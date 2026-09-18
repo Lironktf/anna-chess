@@ -216,6 +216,18 @@ fn run_search(engine: &Arc<Mutex<Engine>>, go: GoParams) {
         e.last_score = res.score;
     }
     let best = pos.move_to_uci(res.best_move);
+    // With thread voting the played move can come from a helper thread whose line was never printed; print it so the
+    // bestmove matches the last PV (GUIs and match runners warn otherwise).
+    if res.thread_id != 0 && !res.pv.is_empty() && !opts.silent {
+        let score = if res.score.abs() >= VALUE_MATE_IN_MAX_PLY {
+            let plies = if res.score > 0 { VALUE_MATE - res.score } else { -VALUE_MATE - res.score };
+            format!("mate {}", if plies > 0 { (plies + 1) / 2 } else { (plies - 1) / 2 })
+        } else {
+            format!("cp {}", res.score)
+        };
+        let pv: Vec<String> = res.pv.iter().map(|m| pos.move_to_uci(*m)).collect();
+        println!("info depth {} multipv 1 score {} nodes {} pv {}", res.depth, score, res.nodes, pv.join(" "));
+    }
     if res.ponder_move.is_none() {
         println!("bestmove {}", best);
     } else {

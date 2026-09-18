@@ -1955,6 +1955,9 @@ pub struct SearchResult {
     pub score: Value,
     pub nodes: u64,
     pub depth: i32,
+    /// Principal variation of the thread whose move is played, and that thread's id (0 = main).
+    pub pv: Vec<Move>,
+    pub thread_id: usize,
 }
 
 /// Run a search with `opts.threads` threads. Returns the main thread's result. `hists` holds
@@ -1996,13 +1999,13 @@ pub fn go(
                         if id == 0 {
                             shared.stop.store(true, Ordering::Relaxed);
                         }
-                        let (best, ponder, score) = if t.root_moves.is_empty() {
-                            (Move::NONE, Move::NONE, VALUE_DRAW)
+                        let (best, ponder, score, pv) = if t.root_moves.is_empty() {
+                            (Move::NONE, Move::NONE, VALUE_DRAW, Vec::new())
                         } else {
                             let rm = &t.root_moves[0];
-                            (rm.mv, rm.pv.get(1).copied().unwrap_or(Move::NONE), rm.score)
+                            (rm.mv, rm.pv.get(1).copied().unwrap_or(Move::NONE), rm.score, rm.pv.clone())
                         };
-                        let res = SearchResult { best_move: best, ponder_move: ponder, score, nodes: t.nodes, depth: t.completed_depth };
+                        let res = SearchResult { best_move: best, ponder_move: ponder, score, nodes: t.nodes, depth: t.completed_depth, pv, thread_id: id };
                         (res, t.hist)
                     })
                     .unwrap(),
