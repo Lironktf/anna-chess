@@ -64,3 +64,10 @@ but never picks from them.
   0 time losses. The gain holds at slow time controls (slightly larger than at 10+0.1).
 - **Anchors (server, 09:22):** vs Stormphrax 8 at 4 threads 60+0.6, 200 games each: new -58 +/- 38, old -98 +/- 35.
   ~+40 external of +95 internal. Placement ~3575 +/- 40 (top 50 = 3587). Release 1.2 candidate prepared.
+
+## Top-50 head-to-heads (server, started after the G7 bisect, 2026-09-18)
+Anna 1.2 vs six engines from the CCRL 40/15 top-50 neighbourhood, 4 threads each, 60+0.6, 150 games per opponent,
+3 games at a time (sprt/top50_<name>.out on the server, mirrored to sprt/uw/): Velvet 8.1.1 (3578, rank 45), Seer 2.8.0
+(3586, rank 37), Berserk 13 (3587 on the all-versions list), Clarity 7.2.0 (3569, rank 50), Motor 0.9.0 (3572, rank 49,
+1CPU entry), Koivisto 9.0 (3561, rank 56). Builds in tools/opp on the server (release binaries or source builds with the
+authors' networks; Igel dropped, repository gone).
