@@ -72,8 +72,10 @@ Measurements (fastchess, UHO book, 95% error bars):
   Earlier 1.1/1.0 anchors on two other boxes: -111 +/- 34 and -108 +/- 30 (100 games each).
 - Placement estimate on the CCRL 40/15 scale: ~3575 +/- 40 (Stormphrax 8 4CPU = 3634); rank 50 is 3587.
 
-Gates before tagging v1.2: soak at 40/20 repeating and 3+0.03 (done for 1.1's binary; rerun 20 games each with the new
-search), 4-thread 256 MB soak, CI binaries, README table (done). Owner tags `v1.2`; owner posts.
+Gates before tagging v1.2 (all done 2026-09-18 10:40): soaks with the new search at 40/20 repeating (20 games), 3+0.03 (40 games)
+and 4 threads / 256 MB (10 + 10 games): 0 time losses, 0 illegal moves, 0 crashes; the PV/bestmove mismatch warnings from
+thread voting fixed (the voted thread's PV is printed before bestmove); 49 tests pass; README table updated. Ready to tag:
+`git tag v1.2 && git push origin v1.2` (CI attaches the binaries); the owner posts the draft below.
 
 Announcement draft (owner's words, owner's account):
 
