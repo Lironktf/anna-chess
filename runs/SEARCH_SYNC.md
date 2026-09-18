@@ -62,3 +62,5 @@ but never picks from them.
 - 23:31 server: 60+0.6 confirmation started (new defaults vs anna_sync0, 1000 games, 24 concurrent).
 - **60+0.6 confirmation (server, 1000 games, 24 concurrent): new defaults vs anna_sync0 +94.7 +/- 12.0** (403-137-460, 63.3%),
   0 time losses. The gain holds at slow time controls (slightly larger than at 10+0.1).
+- **Anchors (server, 09:22):** vs Stormphrax 8 at 4 threads 60+0.6, 200 games each: new -58 +/- 38, old -98 +/- 35.
+  ~+40 external of +95 internal. Placement ~3575 +/- 40 (top 50 = 3587). Release 1.2 candidate prepared.

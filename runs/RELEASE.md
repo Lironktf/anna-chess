@@ -57,3 +57,28 @@ policy-net code shipped off. Measured vs 1.0's net (v3b): +78 +/- 30 per node, +
 hardening code is unchanged. **Released 2026-09-16 11:20 (owner go):** https://github.com/Lironktf/anna-chess/releases/tag/v1.1 with both binaries
 (46.8 MB each, v5f embedded). Anchor (2026-09-16, i9-13900K, 4 threads, 60+0.6, 100 games): **-111 +/- 34 vs Stormphrax 8**, the same as 1.0's net; the
 internal +35 did not transfer to the external opponent.
+
+
+## 1.2 (candidate, 2026-09-18, not tagged)
+
+Search only; the network is 1.1's anna-v5f. Five search groups brought in line with Stockfish master (histories,
+correction history, move picker, LMR, quiescence; runs/SEARCH_SYNC.md), each SPRT-tested separately at 5+0.05 and then
+verified together. Bench 360367.
+
+Measurements (fastchess, UHO book, 95% error bars):
+- vs Anna 1.1, 10+0.1, 1 thread: +86 +/- 9 (2000 games, laptop).
+- vs Anna 1.1, 60+0.6, 1 thread: +94.7 +/- 12 (1000 games, 64-core box), 0 time losses.
+- vs Stormphrax 8.0.0, 60+0.6, 4 threads, 200 games each on the same box in the same session: 1.2 -58 +/- 38, 1.1 -98 +/- 35.
+  Earlier 1.1/1.0 anchors on two other boxes: -111 +/- 34 and -108 +/- 30 (100 games each).
+- Placement estimate on the CCRL 40/15 scale: ~3575 +/- 40 (Stormphrax 8 4CPU = 3634); rank 50 is 3587.
+
+Gates before tagging v1.2: soak at 40/20 repeating and 3+0.03 (done for 1.1's binary; rerun 20 games each with the new
+search), 4-thread 256 MB soak, CI binaries, README table (done). Owner tags `v1.2`; owner posts.
+
+Announcement draft (owner's words, owner's account):
+
+    Anna 1.2 is out: https://github.com/Lironktf/anna-chess/releases/tag/v1.2
+    Same network as 1.1, new search: histories, correction history, move ordering, reductions and quiescence
+    brought in line with current Stockfish practice. +95 +/- 12 over 1.1 at 60+0.6 (1000 games), and -58 +/- 38
+    against Stormphrax 8 at 4 threads 60+0.6 (200 games, same box where 1.1 scored -98). Linux and Windows
+    x86-64-v3 binaries attached. Feedback welcome.

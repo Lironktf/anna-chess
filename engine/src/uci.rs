@@ -14,7 +14,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
 pub const NAME: &str = "Anna";
-pub const VERSION: &str = "1.1";
+pub const VERSION: &str = "1.2";
 pub const AUTHOR: &str = "Liron Katsif";
 pub const DEFAULT_NET: &str = "nets/default.bin";
 
