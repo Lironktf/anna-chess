@@ -44,3 +44,4 @@ Failed with error 400: error 404/3603: no_such_ask  Instance type by id 51224273
 2026-09-17T03:20:27Z train start superbatches=770 self-destruct armed max_hours=7.5
 2026-09-17T03:21:34Z self-destruct re-armed 7.5 h (fractional-hours bug fixed)
 2026-09-17T03:36:33Z self-destruct re-armed MAX_HOURS=7.58 (hard limit = guard time - 3 min) because the box->laptop link is ~0.1 MB/s and the final pull needs ~45 min
+2026-09-17T10:39:52Z instances 0 verified; key deleted; credit 0.987

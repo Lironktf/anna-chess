@@ -28,3 +28,63 @@
 01:31 superbatch 246 [ superbatch 247 [ /workspace/checkpoints/anna-v6-s1-240/ 
 01:36 superbatch 257 [ superbatch 257 [ /workspace/checkpoints/anna-v6-s1-250/ 
 01:41 superbatch 268 [ superbatch 268 [ /workspace/checkpoints/anna-v6-s1-260/ 
+01:46 superbatch 278 [ superbatch 278 [ /workspace/checkpoints/anna-v6-s1-270/ 
+01:51 superbatch 288 [ superbatch 289 [ /workspace/checkpoints/anna-v6-s1-280/ 
+01:56 superbatch 299 [ superbatch 299 [ /workspace/checkpoints/anna-v6-s1-290/ 
+02:01 superbatch 310 [ superbatch 310 [ /workspace/checkpoints/anna-v6-s1-300/ 
+02:06 superbatch 320 [ superbatch 320 [ /workspace/checkpoints/anna-v6-s1-310/ 
+02:11 superbatch 331 [ superbatch 331 [ /workspace/checkpoints/anna-v6-s1-330/ 
+02:16 superbatch 342 [ superbatch 342 [ /workspace/checkpoints/anna-v6-s1-340/ 
+02:21 superbatch 353 [ superbatch 353 [ /workspace/checkpoints/anna-v6-s1-350/ 
+02:26 superbatch 364 [ superbatch 364 [ /workspace/checkpoints/anna-v6-s1-360/ 
+02:32 superbatch 374 [ superbatch 375 [ /workspace/checkpoints/anna-v6-s1-370/ 
+02:37 superbatch 385 [ superbatch 385 [ /workspace/checkpoints/anna-v6-s1-380/ 
+02:42 superbatch 396 [ superbatch 396 [ /workspace/checkpoints/anna-v6-s1-390/ 
+02:47 superbatch 407 [ superbatch 407 [ /workspace/checkpoints/anna-v6-s1-400/ 
+02:52 superbatch 417 [ superbatch 417 [ /workspace/checkpoints/anna-v6-s1-410/ 
+02:57 superbatch 427 [ superbatch 428 [ /workspace/checkpoints/anna-v6-s1-420/ 
+03:02 superbatch 438 [ superbatch 438 [ /workspace/checkpoints/anna-v6-s1-430/ 
+03:07 superbatch 448 [ superbatch 449 [ /workspace/checkpoints/anna-v6-s1-440/ 
+03:12 superbatch 459 [ superbatch 459 [ /workspace/checkpoints/anna-v6-s1-450/ 
+03:17 superbatch 469 [ superbatch 469 [ /workspace/checkpoints/anna-v6-s1-460/ 
+03:22 superbatch 480 [ superbatch 480 [ /workspace/checkpoints/anna-v6-s1-470/ 
+03:27 superbatch 490 [ superbatch 490 [ /workspace/checkpoints/anna-v6-s1-480/ 
+03:32 Saved [anna-v6-s1-500] superbatch 501 [ /workspace/checkpoints/anna-v6-s1-500/ 
+03:37 superbatch 511 [ superbatch 511 [ /workspace/checkpoints/anna-v6-s1-510/ 
+03:42 superbatch 521 [ superbatch 522 [ /workspace/checkpoints/anna-v6-s1-520/ 
+03:47 superbatch 532 [ superbatch 532 [ /workspace/checkpoints/anna-v6-s1-530/ 
+03:52 superbatch 542 [ superbatch 543 [ /workspace/checkpoints/anna-v6-s1-540/ 
+03:57 superbatch 553 [ superbatch 553 [ /workspace/checkpoints/anna-v6-s1-550/ 
+04:02 superbatch 564 [ superbatch 564 [ /workspace/checkpoints/anna-v6-s1-560/ 
+04:08 superbatch 575 [ superbatch 575 [ /workspace/checkpoints/anna-v6-s1-570/ 
+04:13 superbatch 585 [ superbatch 585 [ /workspace/checkpoints/anna-v6-s1-580/ 
+04:18 superbatch 596 [ superbatch 596 [ /workspace/checkpoints/anna-v6-s1-590/ 
+04:23 superbatch 606 [ superbatch 606 [ /workspace/checkpoints/anna-v6-s1-600/ 
+04:28 superbatch 616 [ superbatch 617 [ /workspace/checkpoints/anna-v6-s1-610/ 
+04:33 superbatch 627 [ superbatch 627 [ /workspace/checkpoints/anna-v6-s1-620/ 
+04:38 superbatch 637 [ superbatch 637 [ /workspace/checkpoints/anna-v6-s1-630/ 
+04:43 superbatch 648 [ superbatch 648 [ /workspace/checkpoints/anna-v6-s1-640/ 
+04:48 superbatch 658 [ superbatch 658 [ /workspace/checkpoints/anna-v6-s1-650/ 
+04:53 superbatch 669 [ superbatch 669 [ /workspace/checkpoints/anna-v6-s1-660/ 
+04:58 superbatch 679 [ superbatch 679 [ /workspace/checkpoints/anna-v6-s1-670/ 
+05:03 superbatch 690 [ superbatch 690 [ /workspace/checkpoints/anna-v6-s1-680/ 
+05:08 superbatch 700 [ superbatch 700 [ /workspace/checkpoints/anna-v6-s1-690/ 
+05:13 Saved [anna-v6-s1-710] superbatch 711 [ /workspace/checkpoints/anna-v6-s1-710/ 
+05:18 superbatch 721 [ superbatch 721 [ /workspace/checkpoints/anna-v6-s1-720/ 
+05:23 superbatch 731 [ superbatch 731 [ /workspace/checkpoints/anna-v6-s1-730/ 
+05:28 superbatch 742 [ superbatch 742 [ /workspace/checkpoints/anna-v6-s1-740/ 
+05:33 superbatch 752 [ superbatch 752 [ /workspace/checkpoints/anna-v6-s1-750/ 
+05:38 superbatch 763 [ superbatch 763 [ /workspace/checkpoints/anna-v6-s1-760/ 
+05:44 superbatch 3 [ superbatch 3 [ /workspace/checkpoints/anna-v6-s1-770/ 
+05:49 superbatch 13 [ superbatch 13 [ /workspace/checkpoints/anna-v6-s2-10/ 
+05:54 superbatch 23 [ superbatch 23 [ /workspace/checkpoints/anna-v6-s2-20/ 
+05:59 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:04 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:09 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:14 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:19 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:24 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:29 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:34 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+06:39 superbatch 30 [ Saved [anna-v6-s2-30] /workspace/checkpoints/anna-v6-s2-30/ 
+INSTANCE GONE Thu Sep 17 06:39:34 EDT 2026

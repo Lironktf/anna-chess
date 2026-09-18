@@ -71,3 +71,111 @@ rsync: [receiver] write error: Broken pipe (32)
 2026-09-17 01:34:47 checkpoint OK: anna-v6-s1-250
 2026-09-17 01:39:38 anna-v6-s1-260: pulled runs/anna-v6/checkpoints/anna-v6-s1-260/quantised.bin (45641280 bytes, sha256 ok, 44 s, 12 streams)
 2026-09-17 01:39:38 checkpoint OK: anna-v6-s1-260
+2026-09-17 01:45:02 anna-v6-s1-270: pulled runs/anna-v6/checkpoints/anna-v6-s1-270/quantised.bin (45641280 bytes, sha256 ok, 77 s, 12 streams)
+2026-09-17 01:45:02 checkpoint OK: anna-v6-s1-270
+2026-09-17 01:50:45 anna-v6-s1-280: pulled runs/anna-v6/checkpoints/anna-v6-s1-280/quantised.bin (45641280 bytes, sha256 ok, 95 s, 12 streams)
+2026-09-17 01:50:45 checkpoint OK: anna-v6-s1-280
+2026-09-17 01:53:37 anna-v6-s1-290: pulled runs/anna-v6/checkpoints/anna-v6-s1-290/quantised.bin (45641280 bytes, sha256 ok, 47 s, 12 streams)
+2026-09-17 01:53:37 checkpoint OK: anna-v6-s1-290
+2026-09-17 01:59:12 anna-v6-s1-300: pulled runs/anna-v6/checkpoints/anna-v6-s1-300/quantised.bin (45641280 bytes, sha256 ok, 88 s, 12 streams)
+2026-09-17 01:59:12 checkpoint OK: anna-v6-s1-300
+2026-09-17 02:04:31 anna-v6-s1-310: pulled runs/anna-v6/checkpoints/anna-v6-s1-310/quantised.bin (45641280 bytes, sha256 ok, 72 s, 12 streams)
+2026-09-17 02:04:31 checkpoint OK: anna-v6-s1-310
+2026-09-17 02:10:13 anna-v6-s1-320: pulled runs/anna-v6/checkpoints/anna-v6-s1-320/quantised.bin (45641280 bytes, sha256 ok, 96 s, 12 streams)
+2026-09-17 02:10:13 checkpoint OK: anna-v6-s1-320
+2026-09-17 02:13:32 anna-v6-s1-330: pulled runs/anna-v6/checkpoints/anna-v6-s1-330/quantised.bin (45641280 bytes, sha256 ok, 75 s, 12 streams)
+2026-09-17 02:13:32 checkpoint OK: anna-v6-s1-330
+2026-09-17 02:18:22 anna-v6-s1-340: pulled runs/anna-v6/checkpoints/anna-v6-s1-340/quantised.bin (45641280 bytes, sha256 ok, 44 s, 12 streams)
+2026-09-17 02:18:22 checkpoint OK: anna-v6-s1-340
+2026-09-17 02:22:55 anna-v6-s1-350: pulled runs/anna-v6/checkpoints/anna-v6-s1-350/quantised.bin (45641280 bytes, sha256 ok, 26 s, 12 streams)
+2026-09-17 02:22:55 checkpoint OK: anna-v6-s1-350
+2026-09-17 02:27:20 anna-v6-s1-360: pulled runs/anna-v6/checkpoints/anna-v6-s1-360/quantised.bin (45641280 bytes, sha256 ok, 19 s, 12 streams)
+2026-09-17 02:27:20 checkpoint OK: anna-v6-s1-360
+2026-09-17 02:31:46 anna-v6-s1-370: pulled runs/anna-v6/checkpoints/anna-v6-s1-370/quantised.bin (45641280 bytes, sha256 ok, 19 s, 12 streams)
+2026-09-17 02:31:46 checkpoint OK: anna-v6-s1-370
+2026-09-17 02:36:12 anna-v6-s1-380: pulled runs/anna-v6/checkpoints/anna-v6-s1-380/quantised.bin (45641280 bytes, sha256 ok, 17 s, 12 streams)
+2026-09-17 02:36:12 checkpoint OK: anna-v6-s1-380
+2026-09-17 02:40:48 anna-v6-s1-390: pulled runs/anna-v6/checkpoints/anna-v6-s1-390/quantised.bin (45641280 bytes, sha256 ok, 29 s, 12 streams)
+2026-09-17 02:40:48 checkpoint OK: anna-v6-s1-390
+2026-09-17 02:45:17 anna-v6-s1-400: pulled runs/anna-v6/checkpoints/anna-v6-s1-400/quantised.bin (45641280 bytes, sha256 ok, 23 s, 12 streams)
+2026-09-17 02:45:17 checkpoint OK: anna-v6-s1-400
+2026-09-17 02:49:36 anna-v6-s1-410: pulled runs/anna-v6/checkpoints/anna-v6-s1-410/quantised.bin (45641280 bytes, sha256 ok, 12 s, 12 streams)
+2026-09-17 02:49:36 checkpoint OK: anna-v6-s1-410
+2026-09-17 02:56:07 anna-v6-s1-420: pulled runs/anna-v6/checkpoints/anna-v6-s1-420/quantised.bin (45641280 bytes, sha256 ok, 22 s, 12 streams)
+2026-09-17 02:56:07 checkpoint OK: anna-v6-s1-420
+2026-09-17 03:00:28 anna-v6-s1-430: pulled runs/anna-v6/checkpoints/anna-v6-s1-430/quantised.bin (45641280 bytes, sha256 ok, 14 s, 12 streams)
+2026-09-17 03:00:28 checkpoint OK: anna-v6-s1-430
+2026-09-17 03:05:00 anna-v6-s1-440: pulled runs/anna-v6/checkpoints/anna-v6-s1-440/quantised.bin (45641280 bytes, sha256 ok, 25 s, 12 streams)
+2026-09-17 03:05:00 checkpoint OK: anna-v6-s1-440
+2026-09-17 03:09:53 anna-v6-s1-450: pulled runs/anna-v6/checkpoints/anna-v6-s1-450/quantised.bin (45641280 bytes, sha256 ok, 46 s, 12 streams)
+2026-09-17 03:09:53 checkpoint OK: anna-v6-s1-450
+2026-09-17 03:14:52 anna-v6-s1-460: pulled runs/anna-v6/checkpoints/anna-v6-s1-460/quantised.bin (45641280 bytes, sha256 ok, 52 s, 12 streams)
+2026-09-17 03:14:52 checkpoint OK: anna-v6-s1-460
+2026-09-17 03:19:13 anna-v6-s1-470: pulled runs/anna-v6/checkpoints/anna-v6-s1-470/quantised.bin (45641280 bytes, sha256 ok, 15 s, 12 streams)
+2026-09-17 03:19:13 checkpoint OK: anna-v6-s1-470
+2026-09-17 03:24:04 anna-v6-s1-480: pulled runs/anna-v6/checkpoints/anna-v6-s1-480/quantised.bin (45641280 bytes, sha256 ok, 44 s, 12 streams)
+2026-09-17 03:24:04 checkpoint OK: anna-v6-s1-480
+2026-09-17 03:28:53 anna-v6-s1-490: pulled runs/anna-v6/checkpoints/anna-v6-s1-490/quantised.bin (45641280 bytes, sha256 ok, 41 s, 12 streams)
+2026-09-17 03:28:53 checkpoint OK: anna-v6-s1-490
+2026-09-17 03:34:20 anna-v6-s1-500: pulled runs/anna-v6/checkpoints/anna-v6-s1-500/quantised.bin (45641280 bytes, sha256 ok, 80 s, 12 streams)
+2026-09-17 03:34:20 checkpoint OK: anna-v6-s1-500
+2026-09-17 03:39:56 anna-v6-s1-510: pulled runs/anna-v6/checkpoints/anna-v6-s1-510/quantised.bin (45641280 bytes, sha256 ok, 89 s, 12 streams)
+2026-09-17 03:39:56 checkpoint OK: anna-v6-s1-510
+2026-09-17 03:44:30 anna-v6-s1-520: pulled runs/anna-v6/checkpoints/anna-v6-s1-520/quantised.bin (45641280 bytes, sha256 ok, 25 s, 12 streams)
+2026-09-17 03:44:30 checkpoint OK: anna-v6-s1-520
+2026-09-17 03:49:37 anna-v6-s1-530: pulled runs/anna-v6/checkpoints/anna-v6-s1-530/quantised.bin (45641280 bytes, sha256 ok, 60 s, 12 streams)
+2026-09-17 03:49:38 checkpoint OK: anna-v6-s1-530
+2026-09-17 03:55:01 anna-v6-s1-540: pulled runs/anna-v6/checkpoints/anna-v6-s1-540/quantised.bin (45641280 bytes, sha256 ok, 77 s, 12 streams)
+2026-09-17 03:55:01 checkpoint OK: anna-v6-s1-540
+2026-09-17 03:57:31 anna-v6-s1-550: pulled runs/anna-v6/checkpoints/anna-v6-s1-550/quantised.bin (45641280 bytes, sha256 ok, 25 s, 12 streams)
+2026-09-17 03:57:31 checkpoint OK: anna-v6-s1-550
+2026-09-17 04:01:54 anna-v6-s1-560: pulled runs/anna-v6/checkpoints/anna-v6-s1-560/quantised.bin (45641280 bytes, sha256 ok, 16 s, 12 streams)
+2026-09-17 04:01:54 checkpoint OK: anna-v6-s1-560
+2026-09-17 04:07:27 anna-v6-s1-570: pulled runs/anna-v6/checkpoints/anna-v6-s1-570/quantised.bin (45641280 bytes, sha256 ok, 85 s, 12 streams)
+2026-09-17 04:07:27 checkpoint OK: anna-v6-s1-570
+2026-09-17 04:11:51 anna-v6-s1-580: pulled runs/anna-v6/checkpoints/anna-v6-s1-580/quantised.bin (45641280 bytes, sha256 ok, 17 s, 12 streams)
+2026-09-17 04:11:51 checkpoint OK: anna-v6-s1-580
+2026-09-17 04:16:11 anna-v6-s1-590: pulled runs/anna-v6/checkpoints/anna-v6-s1-590/quantised.bin (45641280 bytes, sha256 ok, 13 s, 12 streams)
+2026-09-17 04:16:11 checkpoint OK: anna-v6-s1-590
+2026-09-17 04:22:51 anna-v6-s1-600: pulled runs/anna-v6/checkpoints/anna-v6-s1-600/quantised.bin (45641280 bytes, sha256 ok, 31 s, 12 streams)
+2026-09-17 04:22:51 checkpoint OK: anna-v6-s1-600
+2026-09-17 04:27:16 anna-v6-s1-610: pulled runs/anna-v6/checkpoints/anna-v6-s1-610/quantised.bin (45641280 bytes, sha256 ok, 18 s, 12 streams)
+2026-09-17 04:27:16 checkpoint OK: anna-v6-s1-610
+2026-09-17 04:31:54 anna-v6-s1-620: pulled runs/anna-v6/checkpoints/anna-v6-s1-620/quantised.bin (45641280 bytes, sha256 ok, 31 s, 12 streams)
+2026-09-17 04:31:54 checkpoint OK: anna-v6-s1-620
+2026-09-17 04:37:05 anna-v6-s1-630: pulled runs/anna-v6/checkpoints/anna-v6-s1-630/quantised.bin (45641280 bytes, sha256 ok, 63 s, 12 streams)
+2026-09-17 04:37:05 checkpoint OK: anna-v6-s1-630
+2026-09-17 04:41:31 anna-v6-s1-640: pulled runs/anna-v6/checkpoints/anna-v6-s1-640/quantised.bin (45641280 bytes, sha256 ok, 19 s, 12 streams)
+2026-09-17 04:41:31 checkpoint OK: anna-v6-s1-640
+2026-09-17 04:45:50 anna-v6-s1-650: pulled runs/anna-v6/checkpoints/anna-v6-s1-650/quantised.bin (45641280 bytes, sha256 ok, 12 s, 12 streams)
+2026-09-17 04:45:50 checkpoint OK: anna-v6-s1-650
+2026-09-17 04:50:09 anna-v6-s1-660: pulled runs/anna-v6/checkpoints/anna-v6-s1-660/quantised.bin (45641280 bytes, sha256 ok, 12 s, 12 streams)
+2026-09-17 04:50:09 checkpoint OK: anna-v6-s1-660
+2026-09-17 04:56:36 anna-v6-s1-670: pulled runs/anna-v6/checkpoints/anna-v6-s1-670/quantised.bin (45641280 bytes, sha256 ok, 17 s, 12 streams)
+2026-09-17 04:56:36 checkpoint OK: anna-v6-s1-670
+2026-09-17 05:00:54 anna-v6-s1-680: pulled runs/anna-v6/checkpoints/anna-v6-s1-680/quantised.bin (45641280 bytes, sha256 ok, 10 s, 12 streams)
+2026-09-17 05:00:54 checkpoint OK: anna-v6-s1-680
+2026-09-17 05:05:18 anna-v6-s1-690: pulled runs/anna-v6/checkpoints/anna-v6-s1-690/quantised.bin (45641280 bytes, sha256 ok, 17 s, 12 streams)
+2026-09-17 05:05:18 checkpoint OK: anna-v6-s1-690
+2026-09-17 05:10:33 anna-v6-s1-700: pulled runs/anna-v6/checkpoints/anna-v6-s1-700/quantised.bin (45641280 bytes, sha256 ok, 67 s, 12 streams)
+2026-09-17 05:10:33 checkpoint OK: anna-v6-s1-700
+2026-09-17 05:15:34 anna-v6-s1-710: pulled runs/anna-v6/checkpoints/anna-v6-s1-710/quantised.bin (45641280 bytes, sha256 ok, 55 s, 12 streams)
+2026-09-17 05:15:34 checkpoint OK: anna-v6-s1-710
+2026-09-17 05:20:04 anna-v6-s1-720: pulled runs/anna-v6/checkpoints/anna-v6-s1-720/quantised.bin (45641280 bytes, sha256 ok, 23 s, 12 streams)
+2026-09-17 05:20:04 checkpoint OK: anna-v6-s1-720
+2026-09-17 05:24:30 anna-v6-s1-730: pulled runs/anna-v6/checkpoints/anna-v6-s1-730/quantised.bin (45641280 bytes, sha256 ok, 19 s, 12 streams)
+2026-09-17 05:24:30 checkpoint OK: anna-v6-s1-730
+2026-09-17 05:28:48 anna-v6-s1-740: pulled runs/anna-v6/checkpoints/anna-v6-s1-740/quantised.bin (45641280 bytes, sha256 ok, 11 s, 12 streams)
+2026-09-17 05:28:49 checkpoint OK: anna-v6-s1-740
+2026-09-17 05:35:21 anna-v6-s1-750: pulled runs/anna-v6/checkpoints/anna-v6-s1-750/quantised.bin (45641280 bytes, sha256 ok, 23 s, 12 streams)
+2026-09-17 05:35:21 checkpoint OK: anna-v6-s1-750
+2026-09-17 05:40:33 anna-v6-s1-760: pulled runs/anna-v6/checkpoints/anna-v6-s1-760/quantised.bin (45641280 bytes, sha256 ok, 66 s, 12 streams)
+2026-09-17 05:40:33 checkpoint OK: anna-v6-s1-760
+2026-09-17 05:45:07 anna-v6-s1-770: pulled runs/anna-v6/checkpoints/anna-v6-s1-770/quantised.bin (45641280 bytes, sha256 ok, 28 s, 12 streams)
+2026-09-17 05:45:07 checkpoint OK: anna-v6-s1-770
+2026-09-17 05:49:31 anna-v6-s2-10: pulled runs/anna-v6/checkpoints/anna-v6-s2-10/quantised.bin (45641280 bytes, sha256 ok, 17 s, 12 streams)
+2026-09-17 05:49:31 checkpoint OK: anna-v6-s2-10
+2026-09-17 05:54:29 anna-v6-s2-20: pulled runs/anna-v6/checkpoints/anna-v6-s2-20/quantised.bin (45641280 bytes, sha256 ok, 51 s, 12 streams)
+2026-09-17 05:54:29 checkpoint OK: anna-v6-s2-20
+2026-09-17 05:58:47 anna-v6-s2-30: pulled runs/anna-v6/checkpoints/anna-v6-s2-30/quantised.bin (45641280 bytes, sha256 ok, 11 s, 12 streams)
+2026-09-17 05:58:47 checkpoint OK: anna-v6-s2-30
