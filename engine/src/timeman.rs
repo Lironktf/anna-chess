@@ -44,7 +44,7 @@ impl TimeManager {
         let time = time.max(1) as f64;
         let inc = inc as f64;
         let overhead = overhead as f64;
-        if crate::params::SF_TM.get() != 0 {
+        if crate::params::SF_TM.get() != 0 || crate::params::SF_TM_ALLOC.get() != 0 {
             // Stockfish master timeman.cpp (031dfeb): constants, moves-to-go guess for tiny clocks, time advantage.
             let mut mtg = p.movestogo.map(|m| (m as f64).min(50.0)).unwrap_or(50.0);
             if time < 1000.0 && p.movestogo.is_none() {

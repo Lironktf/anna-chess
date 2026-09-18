@@ -1720,7 +1720,7 @@ impl<'a> Thread<'a> {
         self.opt_time = self.limits.tm.optimum;
 
         // SfTm (Stockfish master iterative deepening / time management, runs/SEARCH_SYNC.md G7).
-        let sf7 = crate::params::SF_TM.get() != 0;
+        let sf7 = crate::params::SF_TM.get() != 0 || crate::params::SF_TM_LOOP.get() != 0;
         let mut search_again = 0i32;
         let mut fail_high_recovery = 0i32;
         let mut increase_depth = true;

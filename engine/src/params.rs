@@ -47,6 +47,10 @@ params! {
     SF_TM, "SfTm", 0, 0, 1;
     // G8: TT cutoff at depth >= 7 verified against the TT entry of the position after the TT move.
     SF_TT_VERIFY, "SfTtVerify", 0, 0, 1;
+    // G7 bisect: the time-allocation constants (timeman.rs) and the iterative-deepening changes (aspiration, search-again,
+    // effort/stability factors) separately. SfTm=1 still enables both.
+    SF_TM_ALLOC, "SfTmAlloc", 0, 0, 1;
+    SF_TM_LOOP, "SfTmLoop", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).
