@@ -32,8 +32,8 @@
   .avatar-old.you { background: linear-gradient(135deg, #5d9cec, #3b6fc4); }
   .pname { font-weight: 600; }
   .ptag { color: var(--muted); font-size: 13px; }
-  .thinking { display: none; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1s infinite; margin-left: 4px; }
-  .thinking.on { display: inline-block; }
+  .thinking { display: none; }
+  .thinking.on { display: none; }
   @keyframes pulse { 0%,100% { opacity: .3 } 50% { opacity: 1 } }
 
   .boardrow { display: flex; gap: 10px; align-items: stretch; }
@@ -63,7 +63,7 @@
   .piece.hidden { display: none; }
 
   /* ---- side panel ---- */
-  .panel { width: min(92vw, 380px); display: flex; flex-direction: column; gap: 12px; }
+  .panel { width: min(92vw, 380px); display: flex; flex-direction: column; gap: 12px; margin-top: 38px; }
   .card { background: var(--panel); border-radius: 10px; padding: 14px; }
   h1 { font-size: 20px; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
   .muted { color: var(--muted); font-size: 13px; }
@@ -86,7 +86,7 @@
   .moves .m.cur { background: #4a4744; }
   .result { text-align: center; padding: 8px; font-weight: 700; }
   .fen { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); word-break: break-all; }
-  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #c33; }
+  .dot { display: none; }
   .dot.on { background: var(--accent); }
 
   .promo { position: absolute; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 10; }
