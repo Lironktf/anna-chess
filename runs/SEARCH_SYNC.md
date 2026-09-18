@@ -60,3 +60,5 @@ but never picks from them.
   +86.0 +/- 9.2** (817-332-851, 62.1%). The five groups stack almost fully (sum of singles ~+105 at 5+0.05).
 - **G8 SfTtVerify STOPPED** (server): +0.7 +/- 2.2 after 28,839 games. Neutral; stays off. Queue complete.
 - 23:31 server: 60+0.6 confirmation started (new defaults vs anna_sync0, 1000 games, 24 concurrent).
+- **60+0.6 confirmation (server, 1000 games, 24 concurrent): new defaults vs anna_sync0 +94.7 +/- 12.0** (403-137-460, 63.3%),
+  0 time losses. The gain holds at slow time controls (slightly larger than at 10+0.1).

@@ -187,3 +187,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **18:25 G2 SfHist PASS:** +49 +/- 13 (1008 games at 5+0.05, laptop, 57.0%). Eval-difference ordering bonus, previous-move maluses, new bonus/malus formulas, continuation weights.
 **21:21 search sync combined:** new defaults vs pre-campaign binary at 10+0.1, 2000 games: **+86 +/- 9** (62.1%). Bench 360367. Longer-TC confirmation on the server next; then the external anchor.
 **23:31 G8 SfTtVerify neutral:** +0.7 +/- 2.2 (28,839 games), off. Sync queue complete: 5 passes, 2 neutral, 1 fail. 60+0.6 confirmation running on the server.
+**2026-09-18 02:14 search sync at 60+0.6:** new defaults vs pre-campaign, 1000 games on the server: **+94.7 +/- 12.0** (63.3%), 0 time losses. Anchor vs Stormphrax 8 (4 threads, 60+0.6, 200 games each for new and old) running on the server.
