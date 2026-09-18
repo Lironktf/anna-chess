@@ -56,3 +56,5 @@ but never picks from them.
 - **G1 SfPrune STOPPED** (laptop, 7 h cap): +0.9 +/- 4.4 after 10080 games (50.1%). Neutral; stays off.
 - **G2 SfHist PASS** (laptop): +49 +/- 13 after 1008 games (57.0%), LLR crossed in 42 minutes. The history rework is the
   largest gain of all.
+- **Combined verification (laptop, 10+0.1, 2000 games): new defaults (G2+G3+G4+G5+G6) vs pre-campaign anna_sync0:
+  +86.0 +/- 9.2** (817-332-851, 62.1%). The five groups stack almost fully (sum of singles ~+105 at 5+0.05).
