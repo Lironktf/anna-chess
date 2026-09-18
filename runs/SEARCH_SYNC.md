@@ -58,3 +58,5 @@ but never picks from them.
   largest gain of all.
 - **Combined verification (laptop, 10+0.1, 2000 games): new defaults (G2+G3+G4+G5+G6) vs pre-campaign anna_sync0:
   +86.0 +/- 9.2** (817-332-851, 62.1%). The five groups stack almost fully (sum of singles ~+105 at 5+0.05).
+- **G8 SfTtVerify STOPPED** (server): +0.7 +/- 2.2 after 28,839 games. Neutral; stays off. Queue complete.
+- 23:31 server: 60+0.6 confirmation started (new defaults vs anna_sync0, 1000 games, 24 concurrent).

@@ -186,3 +186,4 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **17:42 G1 SfPrune STOPPED at the 7 h cap:** +0.9 +/- 4.4 (10080 games at 5+0.05, laptop). Neutral; off. Laptop moved on to G2 SfHist.
 **18:25 G2 SfHist PASS:** +49 +/- 13 (1008 games at 5+0.05, laptop, 57.0%). Eval-difference ordering bonus, previous-move maluses, new bonus/malus formulas, continuation weights.
 **21:21 search sync combined:** new defaults vs pre-campaign binary at 10+0.1, 2000 games: **+86 +/- 9** (62.1%). Bench 360367. Longer-TC confirmation on the server next; then the external anchor.
+**23:31 G8 SfTtVerify neutral:** +0.7 +/- 2.2 (28,839 games), off. Sync queue complete: 5 passes, 2 neutral, 1 fail. 60+0.6 confirmation running on the server.
