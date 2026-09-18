@@ -71,3 +71,10 @@ Anna 1.2 vs six engines from the CCRL 40/15 top-50 neighbourhood, 4 threads each
 (3586, rank 37), Berserk 13 (3587 on the all-versions list), Clarity 7.2.0 (3569, rank 50), Motor 0.9.0 (3572, rank 49,
 1CPU entry), Koivisto 9.0 (3561, rank 56). Builds in tools/opp on the server (release binaries or source builds with the
 authors' networks; Igel dropped, repository gone).
+
+## G7 bisect (server, 2026-09-18)
+- **G7a SfTmAlloc FAIL**: -2.7 +/- 3.7 over 9279 games (LLR -2.95). The Stockfish-master *time-allocation constants*
+  (timeman.rs: opt/max scales, the tiny-clock moves-to-go guess, the time-advantage factor) are worth -3 Elo with our
+  search, so our existing allocation stays.
+- G7b SfTmLoop (aspiration window rules, search-again gating, fail-high recovery, falling-eval/stability/effort factors)
+  running.
