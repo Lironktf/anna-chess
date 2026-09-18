@@ -37,10 +37,10 @@ All numbers below are this project's own measurements with fastchess and the UHO
 
 | Version | Net | Measured against | Result |
 |---|---|---|---|
-| 1.2 | anna-v5f | Anna 1.1 (same net, old search), 60+0.6 | +95 ± 12 (1000 games) |
+| 1.2 | anna-v5f | Anna 1.1 (same net, old search), 60+0.6 | +100 ± 23 (952 games) |
 | 1.2 | anna-v5f | Anna 1.1 (same net, old search), 10+0.1 | +86 ± 9 (2000 games) |
-| 1.2 | anna-v5f | Stormphrax 8.0.0 (3634 on CCRL 40/15), 60+0.6, 4 threads | -58 ± 38 (200 games) |
-| 1.1 | anna-v5f | Stormphrax 8.0.0, same machine and session as the 1.2 row above | -98 ± 35 (200 games) |
+| 1.2 | anna-v5f | Stormphrax 8.0.0 (3634 on CCRL 40/15), 60+0.6, 4 threads | -66 ± 53 (161 games) |
+| 1.1 | anna-v5f | Stormphrax 8.0.0, same machine and session as the 1.2 row above | -116 ± 54 (161 games) |
 | 1.1 | anna-v5f | Anna 1.0's net (v3b), 8+0.08 | +53 ± 18 (SPRT, 446 games) |
 | 1.1 | anna-v5f | Anna 1.0's net (v3b), 60+0.6, 4 threads | +35 ± 33 (80 games) |
 | 1.1 | anna-v5f | Stormphrax 8.0.0 (3634 on CCRL 40/15), 60+0.6, 4 threads | -111 ± 34 (100 games) |
@@ -48,8 +48,8 @@ All numbers below are this project's own measurements with fastchess and the UHO
 | 1.0 | anna-v3b | Anna's first net (v1), 60+0.6, 4 threads | +53 ± 32 (100 games) |
 
 1.2 changes only the search (histories, correction history, move ordering, reductions and quiescence brought in line with
-current Stockfish practice) and keeps 1.1's network. On the CCRL 40/15 scale 1.2 measures at roughly 3575 ± 40 against
-Stormphrax, up from about 3525 to 3535 for 1.0 and 1.1. Anna is not yet listed by any rating list.
+current Stockfish practice) and keeps 1.1's network. On the CCRL 40/15 scale 1.2 measures at roughly 3570 ± 55 against
+Stormphrax, up from about 3520 for 1.1 measured the same way. Anna is not yet listed by any rating list.
 
 ## Download and use
 

@@ -191,3 +191,13 @@ Games: runs/cpu-eval3/remote/*.pgn. Box cost $0.71.
 **09:22 anchors (server, Stormphrax 8, 4 threads, 60+0.6, 200 games each, same session):** 1.2 build -58 +/- 38 (47-80-73), 1.1 build -98 +/- 35 (38-93-69). Transfer of the +95 head-to-head gain: about +40 externally (+/- ~50). Placement ~3575 +/- 40 on CCRL 40/15; top 50 = 3587. Release 1.2 candidate: runs/RELEASE.md.
 **13:51 G7a SfTmAlloc FAIL:** -2.7 +/- 3.7 (9279 games at 5+0.05, server). Stockfish allocation constants are slightly worse with our search; ours stay. G7b (search-loop half) running.
 **14:48 G7b SfTmLoop FAIL:** -6.8 +/- 5.3 (4738 games, server). Both halves of the time-management group are negative; G7 stays off entirely. Next time-management work = SPSA on our own constants, not importing Stockfish's.
+
+**2026-09-18 17:30 measurement correction (server CPU-time limit).** The student server's login shells cap CPU time at
+3600 s per process (`ulimit -t`); at 60+0.6 with 4 threads an engine process reaches that in ~30 min of wall clock, so it
+was killed mid-match and fastchess scored the game as a disconnect. Affected: the anchors (39 of 200 games each), the
+60+0.6 confirmation (48 of 1000) and the first top-50 matches. The blitz SPRTs of the sync campaign were NOT affected
+(0 disconnects: 1 thread and short games keep each process under the cap). Recomputed excluding abandoned games:
+1.2 vs Stormphrax 8 **-66 +/- 53** (161 games), 1.1 vs Stormphrax **-116 +/- 54** (161 games) -> the search sync is worth
+**+50 Elo externally**; 1.2 vs pre-campaign at 60+0.6 **+100 +/- 23** (952 games). Placement ~3570 +/- 55 on CCRL 40/15.
+Fix: `ulimit -t unlimited` at the top of every match script on that machine (the hard limit is unlimited); top-50
+head-to-heads restarted with it at 17:23.

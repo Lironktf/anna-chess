@@ -68,7 +68,8 @@ verified together. Bench 360367.
 Measurements (fastchess, UHO book, 95% error bars):
 - vs Anna 1.1, 10+0.1, 1 thread: +86 +/- 9 (2000 games, laptop).
 - vs Anna 1.1, 60+0.6, 1 thread: +94.7 +/- 12 (1000 games, 64-core box), 0 time losses.
-- vs Stormphrax 8.0.0, 60+0.6, 4 threads, 200 games each on the same box in the same session: 1.2 -58 +/- 38, 1.1 -98 +/- 35.
+- vs Stormphrax 8.0.0, 60+0.6, 4 threads, same box and session: 1.2 -66 +/- 53, 1.1 -116 +/- 54 (161 games each after
+  discarding games lost to the server's CPU-time cap killing an engine).
   Earlier 1.1/1.0 anchors on two other boxes: -111 +/- 34 and -108 +/- 30 (100 games each).
 - Placement estimate on the CCRL 40/15 scale: ~3575 +/- 40 (Stormphrax 8 4CPU = 3634); rank 50 is 3587.
 

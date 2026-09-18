@@ -83,3 +83,7 @@ authors' networks; Igel dropped, repository gone).
   best-move-change counting are not the same, and the effort factor alone always scales the optimum down by 16-31%.
   Our time management stays as it is. A future attempt should re-tune our own constants (SPSA on TmOptPct, TmInstabPct
   and the reduction/effort terms) rather than importing theirs.
+
+- 17:30 **measurement correction**: the server's 3600 s per-process CPU cap killed engines in the long-TC matches
+  (39/200 in each anchor, 48/1000 in the confirmation). Clean numbers: anchors -66 +/- 53 (1.2) and -116 +/- 54 (1.1),
+  confirmation +100 +/- 23. Conclusions unchanged and slightly stronger. All match scripts now start with `ulimit -t unlimited`.
