@@ -76,5 +76,10 @@ authors' networks; Igel dropped, repository gone).
 - **G7a SfTmAlloc FAIL**: -2.7 +/- 3.7 over 9279 games (LLR -2.95). The Stockfish-master *time-allocation constants*
   (timeman.rs: opt/max scales, the tiny-clock moves-to-go guess, the time-advantage factor) are worth -3 Elo with our
   search, so our existing allocation stays.
-- G7b SfTmLoop (aspiration window rules, search-again gating, fail-high recovery, falling-eval/stability/effort factors)
-  running.
+- **G7b SfTmLoop FAIL**: -6.8 +/- 5.3 over 4738 games (LLR -2.95). The Stockfish *search-loop* half (aspiration window
+  rules, search-again gating, fail-high recovery, falling-eval / stability / effort factors) is the larger loss.
+- **Verdict on G7:** both halves are negative with our engine, so the whole group stays off. The likely reason is that
+  Stockfish's factors are tuned around each other and around their own node rate; our optimum/maximum constants and our
+  best-move-change counting are not the same, and the effort factor alone always scales the optimum down by 16-31%.
+  Our time management stays as it is. A future attempt should re-tune our own constants (SPSA on TmOptPct, TmInstabPct
+  and the reduction/effort terms) rather than importing theirs.
