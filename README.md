@@ -21,7 +21,7 @@ fork of any other engine. Strength is about 3500 Elo on the CCRL 40/15 scale (ow
 | Tablebases | Syzygy WDL + DTZ |
 | Platforms | Linux and Windows x86-64 (AVX2/BMI2), builds from source anywhere Rust runs |
 | Strength | ~3500 CCRL 40/15 equivalent (1.1); not yet on a rating list |
-| Play online | [chess.lironkatsif.com](https://chess.lironkatsif.com) |
+| Play online | [chess.lironkatsif.com](https://chess.lironkatsif.com), or challenge [anna-bot](https://lichess.org/@/anna-bot) on Lichess |
 
 - Threat-input NNUE (piece-square, pawn-pair and attacker–victim features), trained by this project with
   [bullet](https://github.com/jw1912/bullet) on public Leela Chess Zero and Stockfish data.
@@ -62,7 +62,9 @@ network is embedded, so the binary runs on its own.
 Typical uses:
 
 - **Chess GUI**: add the binary as a UCI engine in Arena, CuteChess, Banksia GUI, En Croissant, Scid vs. PC, ChessBase or Fritz.
-- **Lichess bot**: point [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot) at the binary (`protocol: uci`).
+- **Lichess**: Anna plays on Lichess as [anna-bot](https://lichess.org/@/anna-bot) (standard and Chess960, bullet to classical,
+  casual or rated); challenge it from any account. To run your own, point [lichess-bot](https://github.com/lichess-bot-devs/lichess-bot)
+  at the binary (`protocol: uci`).
 - **Engine matches and testing**: `fastchess` or `cutechess-cli` with `-engine cmd=anna`; `anna bench` prints a
   deterministic node count for build verification.
 - **Analysis from scripts**: speak UCI over stdin/stdout (`uci`, `position fen ...`, `go depth 20`).
