@@ -201,3 +201,11 @@ was killed mid-match and fastchess scored the game as a disconnect. Affected: th
 **+50 Elo externally**; 1.2 vs pre-campaign at 60+0.6 **+100 +/- 23** (952 games). Placement ~3570 +/- 55 on CCRL 40/15.
 Fix: `ulimit -t unlimited` at the top of every match script on that machine (the hard limit is unlimited); top-50
 head-to-heads restarted with it at 17:23.
+
+**2026-09-19 00:05 head-to-heads and the control.** Anna 1.2 at 4 threads, 60+0.6, 150 games each, clean (0 disconnects):
+vs Velvet 8.1.1 **+156 +/- 19** (71%), vs Seer 2.8.0 **+120 +/- 25** (67%). Those imply ~3730 on the published scale, which
+contradicts our Stormphrax anchor (-66 -> ~3568). Control match under identical conditions: **Stormphrax 8 beats Velvet by
++173 +/- 42** (50 games) where CCRL has them 56 apart, so these opponents underperform their list ratings on this box by
+roughly 120 Elo. Chaining through the control instead: Velvet here = 3634-173 = 3461, so Anna = 3461+156 = ~3617, against
+3568 from the direct anchor: consistent within error. Placement stays ~3570-3620. A 400-game anchor vs Stormphrax is running
+to tighten it to about +/-27.
