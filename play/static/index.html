@@ -124,7 +124,9 @@
 
   <div class="panel">
     <div class="card">
-      <h1><span class="dot" id="dot"></span><span id="title">Anna</span> <a class="gh" href="https://github.com/Lironktf/anna-chess" target="_blank" rel="noopener" title="Source code and downloads on GitHub">GitHub ★</a> <a class="gh" href="https://lichess.org/@/anna-bot" target="_blank" rel="noopener" title="Challenge Anna on Lichess">Lichess</a></h1>
+      <h1><span class="dot" id="dot"></span><span id="title">Anna</span> <a class="gh" href="https://github.com/Lironktf/anna-chess" target="_blank" rel="noopener" title="Source code and downloads on GitHub">GitHub ★</a> <a class="gh" href="https://lichess.org/@/anna-bot" target="_blank" rel="noopener" title="Challenge Anna on Lichess">Lichess</a>
+        <button id="gear" title="settings" style="float:right;padding:2px 8px">&#9881;</button>
+      </h1>
       <div class="muted" id="sub">connecting…</div>
     </div>
     <div class="card">
@@ -133,12 +135,14 @@
         <button class="primary" id="newB">Play as Black</button>
         <button id="flip">Flip</button>
       </div>
-      <div style="margin-top:14px">
-        <label class="muted">Engine time per move: <b id="mtLabel" style="color:var(--fg)">1.0 s</b></label>
-        <input type="range" id="mt" min="0" max="100" value="50">
-      </div>
-      <div class="row" style="margin-top:6px">
-        <label class="muted">or fixed depth: <select id="depth"><option value="">off</option></select></label>
+      <div id="settings" style="display:none">
+        <div style="margin-top:14px">
+          <label class="muted">Engine time per move: <b id="mtLabel" style="color:var(--fg)">1.0 s</b></label>
+          <input type="range" id="mt" min="0" max="100" value="50">
+        </div>
+        <div class="row" style="margin-top:6px">
+          <label class="muted">or fixed depth: <select id="depth"><option value="">off</option></select></label>
+        </div>
       </div>
       <div class="row" style="margin-top:12px">
         <button id="undo">Undo</button>
@@ -162,17 +166,16 @@
       <div class="chatlog" id="chatlog"></div>
     </div>
     <div class="card" id="chatreopen" style="display:none;text-align:center;cursor:pointer">table talk</div>
+    <div class="card" style="padding:8px">
+      <div class="moves" id="moves"></div>
+      <div class="result" id="result"></div>
+    </div>
     <div class="card">
       <div class="status" id="status"></div>
       <div class="think" id="think"></div>
       <div class="pv" id="pv"></div>
     </div>
-    </div>
-    <div class="card" style="padding:8px">
-      <div class="moves" id="moves"></div>
-      <div class="result" id="result"></div>
-    </div>
-    <div class="card fen" id="fen"></div>
+    <div class="card fen" id="fen" style="display:none"></div>
     <div class="muted" style="font-size:11px;text-align:center">pieces: cburnett set, CC BY-SA 3.0</div>
   </div>
 </div>
@@ -606,6 +609,18 @@
     }
     return { onInfo, onState, init, add };
   })();
+  // Gear: show or hide the engine settings and the FEN line.
+  (() => {
+    const on = () => localStorage.getItem('annaSettings') === '1';
+    const apply = v => {
+      $('settings').style.display = v ? '' : 'none';
+      $('fen').style.display = v ? '' : 'none';
+      localStorage.setItem('annaSettings', v ? '1' : '0');
+    };
+    $('gear').onclick = () => apply(!on());
+    apply(on());
+  })();
+
   function setFlipped(v) { flipped = v; $('evalbar').classList.toggle('flipped', v); buildSquares(); render(false); renderPanel(); }
 
   // ---- websocket
