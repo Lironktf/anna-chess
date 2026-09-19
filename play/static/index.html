@@ -136,6 +136,13 @@
         <button id="flip">Flip</button>
       </div>
       <div id="settings" style="display:none">
+        <div class="row" style="margin-top:14px">
+          <label class="muted">Table talk: <select id="talkMode">
+            <option value="off">off</option>
+            <option value="clean">clean</option>
+            <option value="spicy">swearing</option>
+          </select></label>
+        </div>
         <div style="margin-top:14px">
           <label class="muted">Engine time per move: <b id="mtLabel" style="color:var(--fg)">1.0 s</b></label>
           <input type="range" id="mt" min="0" max="100" value="50">
@@ -152,16 +159,7 @@
     <div class="card chatcard" id="chatcard">
       <div class="chathead">
         <b>Table talk</b>
-        <span style="display:flex;align-items:center;gap:8px">
-          <label class="muted" style="font-size:12px">
-            <select id="talkMode">
-              <option value="clean">clean</option>
-              <option value="spicy">swearing</option>
-              <option value="off">off</option>
-            </select>
-          </label>
-          <button id="chatClose" title="close" style="padding:2px 8px">&times;</button>
-        </span>
+        <button id="chatClose" title="close" style="padding:2px 8px">&times;</button>
       </div>
       <div class="chatlog" id="chatlog"></div>
     </div>
@@ -447,7 +445,7 @@
       }
     };
     const PIECE = { Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', K: 'king' };
-    let mode = localStorage.getItem('annaTalk') || 'clean';
+    let mode = localStorage.getItem('annaTalk') || 'off';
     const recent = [];
     let lastEval = null, evalBeforeHuman = null, lastPly = -99, lastLine = '', humanTurnAt = 0, mateSaid = false, ended = false;
 
@@ -600,12 +598,11 @@
     }
     function init() {
       const sel = $('talkMode'); if (!sel) return;
+      const show = v => { $('chatcard').style.display = v ? '' : 'none'; $('chatreopen').style.display = 'none'; };
       sel.value = mode;
-      sel.onchange = () => { mode = sel.value; localStorage.setItem('annaTalk', mode); };
-      const show = v => { $('chatcard').style.display = v ? '' : 'none'; $('chatreopen').style.display = v ? 'none' : ''; localStorage.setItem('annaTalkOpen', v ? '1' : '0'); };
-      $('chatClose').onclick = () => show(false);
-      $('chatreopen').onclick = () => show(true);
-      show(localStorage.getItem('annaTalkOpen') !== '0');
+      sel.onchange = () => { mode = sel.value; localStorage.setItem('annaTalk', mode); show(mode !== 'off'); };
+      $('chatClose').onclick = () => { mode = 'off'; sel.value = 'off'; localStorage.setItem('annaTalk', 'off'); show(false); };
+      show(mode !== 'off');
     }
     return { onInfo, onState, init, add };
   })();

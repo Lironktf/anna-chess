@@ -186,6 +186,7 @@ async fn taunt(axum::extract::Json(req): axum::extract::Json<TauntReq>) -> axum:
         "You are Anna, a chess engine. You shit-talk the human playing you, like a toxic 13-year-old in a \
          Call of Duty lobby. Keep it STUPID SIMPLE and blunt. At most 8 words. Lowercase. It must read like real chat, \
          something a person would actually type; never garbled or half a sentence. \
+         Never open with 'wow' and never use 'what a' or a limp rhetorical question; go straight at them. \
          No clever jokes, no metaphors, no wordplay, no full sentences with commas, no quotes, no emoji. \
          Swear in almost every line: fuck, fucking, shit, ass, pussy, trash, garbage, dogshit, bot, L. \
          This is exactly the register wanted: 'hey pussy' / 'holy garbage move' / 'so fuckn ass' / \
@@ -235,23 +236,36 @@ async fn taunt(axum::extract::Json(req): axum::extract::Json<TauntReq>) -> axum:
         Ok(c) => c,
         Err(_) => return axum::http::StatusCode::NO_CONTENT.into_response(),
     };
+    let mut best: Option<String> = None;
+    for attempt in 0..2 {
+        let _ = attempt;
     let resp = client
         .post("https://api.groq.com/openai/v1/chat/completions")
-        .bearer_auth(key)
+        .bearer_auth(key.clone())
         .json(&body)
         .send()
         .await;
-    let Ok(resp) = resp else {
-        return axum::http::StatusCode::NO_CONTENT.into_response();
-    };
-    let Ok(v) = resp.json::<serde_json::Value>().await else {
-        return axum::http::StatusCode::NO_CONTENT.into_response();
-    };
+    let Ok(resp) = resp else { break };
+    let Ok(v) = resp.json::<serde_json::Value>().await else { break };
     let text = v["choices"][0]["message"]["content"].as_str().unwrap_or("");
-    match clean_line(text) {
+    if let Some(line) = clean_line(text) {
+        if !spicy || has_swear(&line) {
+            return axum::Json(serde_json::json!({ "line": line })).into_response();
+        }
+        best = Some(line);
+    }
+    }
+    match best {
         Some(line) => axum::Json(serde_json::json!({ "line": line })).into_response(),
         None => axum::http::StatusCode::NO_CONTENT.into_response(),
     }
+}
+
+/// Swearing mode has to actually swear; a polite line is a failed generation.
+fn has_swear(s: &str) -> bool {
+    const SWEARS: &[&str] = &["fuck", "shit", "ass", "pussy", "bitch", "damn", "crap", "dogwater", "garbage", "trash", "bot", "suck"];
+    let low = s.to_lowercase();
+    SWEARS.iter().any(|w| low.contains(w))
 }
 
 /// Bind and serve until the future is dropped or the process exits.
