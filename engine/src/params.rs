@@ -51,6 +51,11 @@ params! {
     // effort/stability factors) separately. SfTm=1 still enables both.
     SF_TM_ALLOC, "SfTmAlloc", 0, 0, 1;
     SF_TM_LOOP, "SfTmLoop", 0, 0, 1;
+    // Lazy SMP: give each helper thread a slightly different tree. 0 = every thread searches identically.
+    // SmpThreadLmr scales the reduction table with the thread count (Stockfish's ln(threads)/2 term, x100).
+    // SmpThreadDelta spreads the aspiration window across threads.
+    SMP_THREAD_LMR, "SmpThreadLmr", 0, 0, 1;
+    SMP_THREAD_DELTA, "SmpThreadDelta", 0, 0, 1;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

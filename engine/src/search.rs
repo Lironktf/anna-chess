@@ -165,7 +165,10 @@ impl<'a> Thread<'a> {
         let sf3 = crate::params::SF_LMR.get() != 0;
         for (i, r) in reductions.iter_mut().enumerate().skip(1) {
             *r = if sf3 {
-                (2872.0 / 128.0 * (i as f64).ln()) as i32
+                // With several threads Stockfish widens the reduction table so the helpers search
+                // differently-shaped trees; without it every thread repeats the same work.
+                let t = if crate::params::SMP_THREAD_LMR.get() != 0 { (opts.threads as f64).ln() / 2.0 } else { 0.0 };
+                ((2872.0 / 128.0 + t) * (i as f64).ln()) as i32
             } else {
                 ((20.37 + (opts.threads as f64).ln() / 2.0) * (i as f64).ln()) as i32
             };
@@ -1745,7 +1748,8 @@ impl<'a> Thread<'a> {
                 self.pv_idx = pv_idx;
                 self.sel_depth = 0;
                 let avg = self.root_moves[pv_idx].avg_score;
-                let mut delta = if sf7 {
+                let spread = if crate::params::SMP_THREAD_DELTA.get() != 0 { (self.id % 8) as Value } else { 0 };
+                let mut delta = spread + if sf7 {
                     5 + if avg == -VALUE_INFINITE { 0 } else { avg * avg / 10193 }
                 } else {
                     10 + if avg == -VALUE_INFINITE { 0 } else { (avg * avg / 11131).min(400) }
