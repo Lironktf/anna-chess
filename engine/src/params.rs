@@ -56,6 +56,37 @@ params! {
     // SmpThreadDelta spreads the aspiration window across threads.
     SMP_THREAD_LMR, "SmpThreadLmr", 0, 0, 1;
     SMP_THREAD_DELTA, "SmpThreadDelta", 0, 0, 1;
+    // --- constants of the synced search, exposed so SPSA can retune them for this engine ---
+    // Late move reductions (the SfLmr path).
+    LMR_BASE_OFF, "LmrBaseOff", 697, 200, 1400;
+    LMR_STAT, "LmrStat", 439, 150, 900;
+    LMR_CUT, "LmrCut", 4026, 2000, 6000;
+    LMR_TTPV, "LmrTtPv", 3023, 1500, 4500;
+    LMR_MOVECNT, "LmrMoveCnt", 65, 20, 140;
+    LMR_ALLNODE, "LmrAllNode", 276, 80, 500;
+    LMR_DEEPER, "LmrDeeper", 53, 10, 120;
+    LMR_SHALLOWER, "LmrShallower", 8, 0, 40;
+    // History bonus and malus.
+    STAT_BONUS_MUL, "StatBonusMul", 133, 60, 260;
+    STAT_BONUS_MAX, "StatBonusMax", 1487, 700, 2600;
+    STAT_MALUS_MUL, "StatMalusMul", 968, 400, 1700;
+    STAT_MALUS_MAX, "StatMalusMax", 2244, 1100, 3600;
+    // Correction history: the divisor that turns the weighted sum into centipawns (lower = stronger).
+    CORR_SCALE, "CorrScale", 512, 220, 1200;
+    // Quiescence margins.
+    QS_FUT_BASE, "QsFutBase", 306, 150, 520;
+    QS_SEE, "QsSee", 74, 20, 200;
+    // Move ordering.
+    PICK_CHECK_BONUS, "PickCheckBonus", 16384, 6000, 28000;
+    PICK_GOOD_QUIET, "PickGoodQuiet", 14000, 6000, 26000;
+    // Time management (our own formulas; Stockfish's did not port).
+    TM_FALL_BASE, "TmFallBase", 66, 0, 200;
+    TM_FALL_PREV, "TmFallPrev", 14, 0, 40;
+    TM_FALL_ITER, "TmFallIter", 6, 0, 24;
+    TM_FALL_DIV, "TmFallDiv", 616, 300, 1000;
+    TM_STABLE_HI, "TmStableHi", 156, 100, 260;
+    TM_STABLE_LO, "TmStableLo", 69, 30, 130;
+    TM_RED_DEN, "TmRedDen", 220, 120, 340;
     // Policy net (UCI option PolicyFile): quiet-move ordering adds PolicyScale * logit (0 = off).
     POLICY_SCALE, "PolicyScale", 0, 0, 20000;
     // Policy-guided LMR: reduce quiet moves by PolicyLmr * logit / 1024 fewer units (0 = off).

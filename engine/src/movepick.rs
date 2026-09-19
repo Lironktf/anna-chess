@@ -98,7 +98,7 @@ pub struct PolicyCtx<'a, 'b> {
 
 pub const QUIET_LEFT_MARGIN: i32 = -3560;
 /// SfPick: quiets scored at or below this are tried after the bad captures (Stockfish goodQuietThreshold).
-pub const GOOD_QUIET_THRESHOLD: i32 = -14000;
+pub fn good_quiet_threshold() -> i32 { -crate::params::PICK_GOOD_QUIET.get() }
 
 impl<'a> MovePicker<'a> {
     /// Main search picker.
@@ -222,7 +222,7 @@ impl<'a> MovePicker<'a> {
             }
             if self.sf {
                 if pos.check_squares(pc.piece_type()) & crate::types::bb(to) != 0 && pos.see_ge(m, -75) {
-                    s += 16384;
+                    s += crate::params::PICK_CHECK_BONUS.get();
                 }
                 if self.ply < crate::history::LOW_PLY_SIZE {
                     s += 8 * hist.low_ply_get(self.ply, m) / (1 + self.ply as i32);
@@ -401,7 +401,7 @@ impl<'a> MovePicker<'a> {
                             let e = l.list.moves[self.cur];
                             self.cur += 1;
                             let m = e.mv;
-                            if self.sf && e.score <= GOOD_QUIET_THRESHOLD {
+                            if self.sf && e.score <= good_quiet_threshold() {
                                 continue;
                             }
                             if m != self.tt_move && m != self.killers[0] && m != self.killers[1] && m != self.counter {
@@ -429,7 +429,7 @@ impl<'a> MovePicker<'a> {
                     while self.cur < self.end {
                         let e = l.list.moves[self.cur];
                         self.cur += 1;
-                        if e.score <= GOOD_QUIET_THRESHOLD && e.mv != self.tt_move {
+                        if e.score <= good_quiet_threshold() && e.mv != self.tt_move {
                             return e.mv;
                         }
                     }

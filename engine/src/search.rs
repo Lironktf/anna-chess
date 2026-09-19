@@ -384,7 +384,7 @@ impl<'a> Thread<'a> {
                 64049
             };
             let cv = 15341 * pcv + 10569 * micv + 12906 * (wn + bn) + cnt;
-            return cv / 512;
+            return cv / crate::params::CORR_SCALE.get().max(1);
         }
         let pawn = h.pawn_corr[History::corr_idx(us, pos.pawn_key())];
         let minor = h.minor_corr[History::corr_idx(us, pos.minor_key())];
@@ -529,11 +529,11 @@ impl<'a> Thread<'a> {
             // Stockfish master: bonus grows with the previous move's stat score and, at non-PV nodes, with the
             // number of moves searched before the cutoff.
             let prev_stat = prev.map(|p| p.stat_score).unwrap_or(0);
-            let mut b = (133 * depth - 81).min(1487) + 364 * (best_move == tt_move) as i32 + prev_stat / 28;
+            let mut b = (crate::params::STAT_BONUS_MUL.get() * depth - 81).min(crate::params::STAT_BONUS_MAX.get()) + 364 * (best_move == tt_move) as i32 + prev_stat / 28;
             if !pv_node {
                 b += b * (quiets.len() + captures.len()) as i32 / 256;
             }
-            (b, (968 * depth - 235).min(2244))
+            (b, (crate::params::STAT_MALUS_MUL.get() * depth - 235).min(crate::params::STAT_MALUS_MAX.get()))
         } else {
             (stat_bonus(depth) + 300 * (best_move == tt_move) as i32, stat_malus(depth))
         };
@@ -1157,13 +1157,13 @@ impl<'a> Thread<'a> {
             if sf3 {
                 // Stockfish master term set (search.cpp 1330-1374 at 031dfeb).
                 if tt_pv {
-                    r -= 3023 + pv_node as i32 * 1004 + (tt_value > alpha) as i32 * 885 + (tt.depth >= depth) as i32 * (816 + cut_node as i32 * 940);
+                    r -= crate::params::LMR_TTPV.get() + pv_node as i32 * 1004 + (tt_value > alpha) as i32 * 885 + (tt.depth >= depth) as i32 * (816 + cut_node as i32 * 940);
                 }
-                r += 697;
-                r -= move_count * 65;
+                r += crate::params::LMR_BASE_OFF.get();
+                r -= move_count * crate::params::LMR_MOVECNT.get();
                 r -= cv.abs() / 51;
                 if cut_node {
-                    r += 4026 + 933 * tt_move.is_none() as i32;
+                    r += crate::params::LMR_CUT.get() + 933 * tt_move.is_none() as i32;
                 }
                 if tt_capture {
                     r += 1079;
@@ -1188,12 +1188,12 @@ impl<'a> Thread<'a> {
                     s / 1024
                 };
                 self.ss(ply).stat_score = stat_score;
-                r -= stat_score * 439 / 4096;
+                r -= stat_score * crate::params::LMR_STAT.get() / 4096;
                 if !capture && !is_decisive(alpha) {
                     r += 3 * (alpha - eval).clamp(-64, 96);
                 }
                 if all_node {
-                    r += r * 276 / (256 * depth + 268);
+                    r += r * crate::params::LMR_ALLNODE.get() / (256 * depth + 268);
                 }
             } else {
                 if tt_pv {
@@ -1249,8 +1249,8 @@ impl<'a> Thread<'a> {
                 self.ss(ply).reduction = 0;
                 if sf3 {
                     if value > alpha {
-                        let do_deeper = d < new_depth && value > best_value + 53;
-                        let do_shallower = value < best_value + 8;
+                        let do_deeper = d < new_depth && value > best_value + crate::params::LMR_DEEPER.get();
+                        let do_shallower = value < best_value + crate::params::LMR_SHALLOWER.get();
                         new_depth += do_deeper as i32 - do_shallower as i32;
                         if new_depth > d {
                             value = -self.search(&child, NodeType::NonPv, -(alpha + 1), -alpha, new_depth, !cut_node, ply + 1);
@@ -1529,7 +1529,7 @@ impl<'a> Thread<'a> {
             if best_value > alpha {
                 alpha = best_value;
             }
-            futility_base = self.ss_at(ply).static_eval + 306;
+            futility_base = self.ss_at(ply).static_eval + crate::params::QS_FUT_BASE.get();
         }
 
         let cont_idx = [
@@ -1582,7 +1582,7 @@ impl<'a> Thread<'a> {
                 if sf6 && !capture {
                     continue;
                 }
-                if !pos.see_ge(m, -74) {
+                if !pos.see_ge(m, -crate::params::QS_SEE.get()) {
                     continue;
                 }
             }
@@ -1837,11 +1837,11 @@ impl<'a> Thread<'a> {
                 let prev_best_term = if self.best_prev_score == VALUE_INFINITE {
                     0.0
                 } else {
-                    14.0 * (self.best_prev_score as f64 - best_value as f64).clamp(-200.0, 200.0)
+                    crate::params::TM_FALL_PREV.get() as f64 * (self.best_prev_score as f64 - best_value as f64).clamp(-200.0, 200.0)
                 };
-                let prev_iter_term = if depth <= 1 { 0.0 } else { 6.0 * (prev_iter as f64 - best_value as f64).clamp(-200.0, 200.0) };
+                let prev_iter_term = if depth <= 1 { 0.0 } else { crate::params::TM_FALL_ITER.get() as f64 * (prev_iter as f64 - best_value as f64).clamp(-200.0, 200.0) };
                 let falling_eval = if crate::params::TM_FALLING_FIX.get() != 0 {
-                    ((66.0 + prev_best_term + prev_iter_term) / 616.0).clamp(0.51, 1.51)
+                    ((crate::params::TM_FALL_BASE.get() as f64 + prev_best_term + prev_iter_term) / crate::params::TM_FALL_DIV.get().max(1) as f64).clamp(0.51, 1.51)
                 } else {
                     // old (buggy) behaviour kept for A/B: saturates at 1.51
                     1.51
@@ -1872,8 +1872,8 @@ impl<'a> Thread<'a> {
                     self.best_move_changes = 0.0;
                     self.prev_time_reduction = time_reduction;
                 } else {
-                    time_reduction = if last_best_move_depth + 8 <= depth { 1.56 } else { 0.69 };
-                    let reduction = (1.4 + self.prev_time_reduction) / (2.2 * time_reduction);
+                    time_reduction = if last_best_move_depth + 8 <= depth { crate::params::TM_STABLE_HI.get() as f64 / 100.0 } else { crate::params::TM_STABLE_LO.get() as f64 / 100.0 };
+                    let reduction = (1.4 + self.prev_time_reduction) / (crate::params::TM_RED_DEN.get() as f64 / 100.0 * time_reduction);
                     let instability = 1.0 + crate::params::TM_INSTAB_PCT.get() as f64 / 100.0 * self.best_move_changes / self.threads as f64;
                     let effort_ratio = if self.nodes > 0 { self.root_moves[0].effort as f64 / self.nodes as f64 } else { 0.0 };
                     let effort_scale = if effort_ratio > 0.9 { 0.9 } else if effort_ratio > 0.8 { 0.95 } else { 1.0 };
