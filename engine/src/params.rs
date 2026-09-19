@@ -109,7 +109,7 @@ params! {
     LMR_HIST_DIV, "LmrHistDiv", 16384, 4096, 65536;
     RFP_MULT, "RfpMult", 45, 20, 120;
     RFP_DEPTH, "RfpDepth", 14, 4, 20;
-    NMP_BASE, "NmpBase", 5, 2, 8;
+    NMP_BASE, "NmpBase", 6, 2, 8;
     LMP_BASE, "LmpBase", 3, 1, 8;
     FUT_MARGIN, "FutMargin", 119, 40, 300;
     RAZOR_MULT, "RazorMult", 482, 100, 1000;

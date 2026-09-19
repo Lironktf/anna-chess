@@ -221,3 +221,13 @@ base: with NmpBase=7 the same search costs 0.91M nodes (20x less) and with the w
 raising RfpDepth to 19 or 24 changes almost nothing. Our base is 5 where Stockfish master uses 7, and in a lost position
 reverse futility and razoring are both inactive, so the null move is the only thing keeping the tree narrow. SPRT of
 NmpBase 7 and 6 against 5 queued at 5+0.05.
+
+**2026-09-19 12:00 results.**
+- **Top-50 head-to-heads complete** (Anna 1.2, 4 threads, 60+0.6, 150 games each, clean): Velvet 8.1.1 +156 +/- 19,
+  Clarity 7.2.0 +158 +/- 19, Koivisto 9.0 +158 +/- 20, Motor 0.9.0 +164 +/- 23 (single-threaded engine, not comparable),
+  Seer 2.8.0 +120 +/- 25, **Berserk 13 level: 38-38-74, 0 +/- 25**. Berserk is the only one of the six that matches its
+  list rating against us.
+- **400-game anchor**: Anna 1.2 vs Stormphrax 8 at 4 threads, 60+0.6: **-49 +/- 17** (63-119-218, 43.0%).
+  Placement on the CCRL 40/15 scale: 3634 - 49 = **~3585 +/- 17**, with rank 50 at 3587 and Berserk 13 (3587) level with us.
+- **NmpBase 6 PASSES**: +10.6 +/- 5.7 over 4192 games (LLR 2.96); NmpBase 7 was +2.9 +/- 3.4 after 12000 games (no pass).
+  Default changed 5 -> 6, bench 360367 -> 384645. The explosive position now costs 8.96M nodes at depth 14 instead of 18.0M.
