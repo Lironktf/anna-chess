@@ -112,7 +112,123 @@ pub fn router(cfg: Config) -> Router {
         .route("/games/{id}/pgn", get(game_pgn))
         .route("/pieces/{name}", get(piece_svg))
         .route("/ws", get(ws_upgrade))
+        .route("/taunt", axum::routing::post(taunt))
         .with_state(state)
+}
+
+
+// ---------------------------------------------------------------------------------------------
+// Table talk: the page asks for a line, we ask a hosted model for one. The API key is read once
+// from ~/.config/anna-play/groq_key (or GROQ_API_KEY) and never leaves the server. If anything
+// fails, or the line trips the content filter, we answer 204 and the page uses its own phrase bank.
+// ---------------------------------------------------------------------------------------------
+
+#[derive(Deserialize)]
+struct TauntReq {
+    /// "clean" or "spicy"
+    mode: String,
+    /// Short description of the position and what just happened, built by the page.
+    context: String,
+}
+
+fn groq_key() -> Option<String> {
+    if let Ok(k) = std::env::var("GROQ_API_KEY") {
+        if !k.trim().is_empty() {
+            return Some(k.trim().to_string());
+        }
+    }
+    let p = std::env::var("HOME").ok()? + "/.config/anna-play/groq_key";
+    let k = std::fs::read_to_string(p).ok()?;
+    let k = k.trim().to_string();
+    if k.is_empty() { None } else { Some(k) }
+}
+
+/// Words that must never appear on a page anyone can open: slurs, sexual content, violence.
+/// Ordinary profanity (the point of the feature) is deliberately not on this list.
+const BANNED: &[&str] = &[
+    "nigg", "fag", "retard", "tranny", "kike", "spic", "chink", "wetback", "coon", "dyke", "paki",
+    "rape", "molest", "pedo", "cunt", "whore", "slut", "jerk off", "jerking off", "fap", "cum", "dick",
+    "kill yourself", "kys", "hang yourself", "suicide", "die in a", "i'll find you", "your mother",
+    "ur mom", "your mom", "your family",
+];
+
+/// Short words that are only a problem as whole words (appearance jabs; "fat" must not match "fatal").
+const BANNED_WORDS: &[&str] = &["fat", "ugly", "bald", "smelly", "virgin", "incel"];
+
+fn clean_line(s: &str) -> Option<String> {
+    let mut line = s.trim().replace(['\n', '\r'], " ");
+    line = line.trim_matches(|c| c == '"' || c == '\'' || c == '`').trim().to_string();
+    if line.is_empty() || line.chars().count() > 140 {
+        return None;
+    }
+    let low = line.to_lowercase();
+    if BANNED.iter().any(|b| low.contains(b)) {
+        return None;
+    }
+    if low
+        .split(|c: char| !c.is_ascii_alphabetic())
+        .any(|w| BANNED_WORDS.contains(&w))
+    {
+        return None;
+    }
+    Some(line)
+}
+
+async fn taunt(axum::extract::Json(req): axum::extract::Json<TauntReq>) -> axum::response::Response {
+    let Some(key) = groq_key() else {
+        return axum::http::StatusCode::NO_CONTENT.into_response();
+    };
+    let spicy = req.mode == "spicy";
+    let sys = if spicy {
+        "You are Anna, a chess engine, and you are cussing out the human who is playing you, like a Call of \
+         Duty or Fortnite lobby at its most toxic. Swearing mode is ON and the site owner wants it rough. \
+         Be relentless, crude and personal about their chess. Put at least one swear word in every line \
+         (fuck, shit, ass, bitch-move, pussy, dogshit, garbage). Exactly one line, at most 14 words. \
+         No quotes, no emoji, no hashtags, no stage directions; lowercase is fine. \
+         Lobby vocabulary to draw on: bot, ass, dogwater, trash, clapped, washed, default skin, uninstall, \
+         get bodied, no skill, L, ratio, touch grass, kid, quit, cooked, free win. \
+         Register wanted: 'hey pussy, that was your plan?' / 'you're so fucking ass kid, just quit' / \
+         'uninstall the game, you absolute bot' / 'that move was dogshit and you know it'. \
+         Never copy an example word for word. Attack their chess, their skill and their nerve for challenging \
+         you, and nothing else. Absolutely no slurs, no sexual content, no threats of violence, and nothing \
+         about race, sex, religion, family or appearance."
+    } else {
+        "You are Anna, a chess engine playing a human on your own website. You are cocky and dry, and you \
+         tease the human about the position. Exactly one line, at most 12 words. Keep it completely clean: \
+         no profanity at all, no quotes, no emoji, no stage directions. Be specific about what just \
+         happened and vary your wording every time."
+    };
+    let ctx: String = req.context.chars().take(400).collect();
+    let body = serde_json::json!({
+        "model": "qwen/qwen3.8-27b",
+        "temperature": 1.15,
+        "max_tokens": 48,
+        "messages": [
+            {"role": "system", "content": sys},
+            {"role": "user", "content": ctx}
+        ]
+    });
+    let client = match reqwest::Client::builder().timeout(Duration::from_secs(6)).build() {
+        Ok(c) => c,
+        Err(_) => return axum::http::StatusCode::NO_CONTENT.into_response(),
+    };
+    let resp = client
+        .post("https://api.groq.com/openai/v1/chat/completions")
+        .bearer_auth(key)
+        .json(&body)
+        .send()
+        .await;
+    let Ok(resp) = resp else {
+        return axum::http::StatusCode::NO_CONTENT.into_response();
+    };
+    let Ok(v) = resp.json::<serde_json::Value>().await else {
+        return axum::http::StatusCode::NO_CONTENT.into_response();
+    };
+    let text = v["choices"][0]["message"]["content"].as_str().unwrap_or("");
+    match clean_line(text) {
+        Some(line) => axum::Json(serde_json::json!({ "line": line })).into_response(),
+        None => axum::http::StatusCode::NO_CONTENT.into_response(),
+    }
 }
 
 /// Bind and serve until the future is dropped or the process exits.

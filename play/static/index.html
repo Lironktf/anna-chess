@@ -85,9 +85,19 @@
   .moves .m { font-weight: 600; padding: 0 4px; border-radius: 4px; }
   .moves .m.cur { background: #4a4744; }
   .result { text-align: center; padding: 8px; font-weight: 700; }
+  /* ---- trash talk ---- */
+  .chatcard { display: flex; flex-direction: column; gap: 8px; }
+  .chathead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .chatlog { height: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; }
+  .msg { max-width: 92%; padding: 6px 9px; border-radius: 10px; line-height: 1.35; }
+  .msg.anna { align-self: flex-start; background: #3a3936; }
+  .msg.me { align-self: flex-end; background: #40506a; }
+  .msg .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 1px; }
+  .chatrow { display: flex; gap: 6px; }
+  .chatrow input { flex: 1; background: #3c3a37; color: var(--fg); border: 0; border-radius: 6px; padding: 7px 9px; }
   .fen { font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted); word-break: break-all; }
-  .dot { display: none; }
-  .dot.on { background: var(--accent); }
+  #dot { display: none; }   /* connection dot in the header; NOT .sq.dot, which marks legal moves */
+  #dot.on { background: var(--accent); }
 
   .promo { position: absolute; inset: 0; background: rgba(0,0,0,.45); display: none; align-items: center; justify-content: center; z-index: 10; }
   .promo.on { display: flex; }
@@ -135,10 +145,28 @@
         <button id="resign">Resign</button>
       </div>
     </div>
+    <div class="card chatcard" id="chatcard">
+      <div class="chathead">
+        <b>Table talk</b>
+        <span style="display:flex;align-items:center;gap:8px">
+          <label class="muted" style="font-size:12px">
+            <select id="talkMode">
+              <option value="clean">clean</option>
+              <option value="spicy">swearing</option>
+              <option value="off">off</option>
+            </select>
+          </label>
+          <button id="chatClose" title="close" style="padding:2px 8px">&times;</button>
+        </span>
+      </div>
+      <div class="chatlog" id="chatlog"></div>
+    </div>
+    <div class="card" id="chatreopen" style="display:none;text-align:center;cursor:pointer">table talk</div>
     <div class="card">
       <div class="status" id="status"></div>
       <div class="think" id="think"></div>
       <div class="pv" id="pv"></div>
+    </div>
     </div>
     <div class="card" style="padding:8px">
       <div class="moves" id="moves"></div>
@@ -359,6 +387,222 @@
     $('think').textContent = `depth ${info.depth ?? '?'}/${info.seldepth ?? '?'} · eval ${sc} · ${info.nps ? Math.round(info.nps / 1000) + 'k nps' : ''} · ${info.nodes ? (info.nodes / 1e6).toFixed(2) + 'M nodes' : ''}`;
     $('pv').textContent = (info.pv_san || info.pv || []).join(' ');
   }
+  // ---- table talk: local, template-driven commentary from the engine (no network, no API) ----
+  const talk = (() => {
+    const L = {
+      start: {
+        clean: ["Board's set. Try to make this interesting.", "I hope you brought an opening.", "Let's see what you've got.", "I've got a thousand cores of patience. You've got a clock."],
+        spicy: ["Alright, let's get this over with.", "Try not to hang everything in ten moves, yeah?", "Board's set. Bring something better than last time, damn.", "Let's see if you actually know an opening or you're just winging this shit."]
+      },
+      blunder: {
+        clean: ["Oh. You meant to do that?", "That move gave me {gain} pawns. Thank you.", "I'd take that one back if I were you.", "Interesting. Wrong, but interesting.", "My evaluation just jumped {gain}. Yours should too."],
+        spicy: ["Oh that's just bad.", "You dropped {gain} pawns with one move. Nice going.", "What the hell was that?", "That's the kind of move that ends friendships.", "Damn. I didn't even have to work for that one."]
+      },
+      goodmove: {
+        clean: ["Alright, that was decent.", "Didn't hate that move.", "Fine. Noted.", "Hm. You've been practising."],
+        spicy: ["Okay, that one was actually good, don't get used to it.", "Fine, damn it, that's a move.", "Huh. You're not completely hopeless."]
+      },
+      winning: {
+        clean: ["I'm up {adv}. Just so we're clear.", "This is going roughly how I expected.", "Take your time. It won't help, but take it.", "You can resign whenever you like."],
+        spicy: ["I'm up {adv} and you're still thinking about it?", "This is getting embarrassing for one of us, and it isn't me.", "Hell of a position. For me.", "Resign or don't, I'm having fun either way."]
+      },
+      losing: {
+        clean: ["Fine. You're better here. For now.", "I've been worse. Not often.", "Enjoy it while it lasts.", "Alright, that's a real position you've built."],
+        spicy: ["Okay, this is annoying.", "You're better. I hate it here.", "Don't get cocky, I've come back from worse crap than this."]
+      },
+      mate: {
+        clean: ["Mate in {n}. It's been a pleasure.", "I can see the end from here. Mate in {n}.", "Mate in {n}. Don't feel bad."],
+        spicy: ["Mate in {n}. Pack it up.", "Mate in {n}, and you saw none of it.", "Mate in {n}. That's all she wrote."]
+      },
+      slow: {
+        clean: ["Take your time, I'll be here.", "Still thinking? I did that position in half a second.", "I've searched forty million positions while you've been staring."],
+        spicy: ["Any day now.", "I've evaluated more positions than you've had hot dinners, and you're still hovering.", "Hell of a long think for a move that bad."]
+      },
+      capture: {
+        clean: ["Your {piece}. Thanks.", "I'll take the {piece}, cheers.", "That {piece} wasn't doing much anyway."],
+        spicy: ["That {piece} is mine now.", "Cheers for the {piece}, genuinely.", "Free {piece}. What the hell were you doing?"]
+      },
+      undo: {
+        clean: ["Taking it back, are we?", "I saw that. It still counts in my heart.", "Rewriting history. Bold."],
+        spicy: ["Oh, we're just undoing bad moves now? Cute.", "Take it back then, coward.", "That's cheating and we both know it."]
+      },
+      won: {
+        clean: ["Good game. Rematch whenever you're ready.", "That's mine. Again.", "Good game. You had moments."],
+        spicy: ["Good game, sort of. Run it back.", "That's mine. Go on, one more.", "Well that was a hell of a lot easier than the last one."]
+      },
+      lost: {
+        clean: ["Well played. Genuinely.", "You got me. Run it back.", "Good game. I'll want that one back."],
+        spicy: ["Alright, alright, you got me. Damn.", "Fine. Well played, you absolute menace.", "That's going to bother me all night."]
+      },
+      drew: {
+        clean: ["A draw. Nobody's happy.", "Split point. I'll take it. Barely.", "Draw. We both survive."],
+        spicy: ["A draw. How thrilling for everyone.", "Split point, and neither of us deserved more.", "Draw. Boring as hell, but fair."]
+      },
+      reply: {
+        clean: ["Talk with your moves.", "Sure. Your move, though.", "Noted. Still your turn.", "I'll add that to my evaluation function.", "Big words for someone down on the clock."],
+        spicy: ["Cute. Your move.", "Big talk from that position.", "Uh huh. Play a move.", "Say it again when you're not losing."]
+      }
+    };
+    const PIECE = { Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', K: 'king' };
+    let mode = localStorage.getItem('annaTalk') || 'clean';
+    let lastEval = null, evalBeforeHuman = null, lastPly = -99, lastLine = '', humanTurnAt = 0, mateSaid = false, ended = false;
+
+    function pick(cat, vars) {
+      const bank = L[cat] && L[cat][mode === 'spicy' ? 'spicy' : 'clean'];
+      if (!bank || !bank.length) return null;
+      let line = bank[Math.floor(Math.random() * bank.length)];
+      if (line === lastLine && bank.length > 1) line = bank[(bank.indexOf(line) + 1) % bank.length];
+      lastLine = line;
+      for (const k in (vars || {})) line = line.replace('{' + k + '}', vars[k]);
+      return line;
+    }
+    // Ask the server (which asks a hosted model) for a line; fall back to the local phrase bank.
+    async function llmLine(cat, vars) {
+      const ctx = buildContext(cat, vars);
+      if (!ctx) return null;
+      try {
+        const r = await fetch('/taunt', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mode: mode, context: ctx })
+        });
+        if (r.status !== 200) return null;
+        const j = await r.json();
+        return (j && j.line) ? j.line : null;
+      } catch (e) { return null; }
+    }
+    function buildContext(cat, vars) {
+      const ev = lastEval == null ? null : (lastEval / 100).toFixed(1);
+      const side = state ? (state.human === 'w' ? 'the human is White, Anna is Black' : 'the human is Black, Anna is White') : '';
+      const moves = state ? Math.ceil(state.history.length / 2) : 0;
+      const head = `Chess game on move ${moves}, ${side}. Current evaluation from Anna's point of view: ${ev == null ? 'unknown' : ev + ' pawns'}.`;
+      const what = {
+        start: 'A new game just started. Greet the human with a taunt.',
+        blunder: `The human just blundered and lost about ${vars.gain} pawns of evaluation. Taunt them about it.`,
+        goodmove: 'The human just played a genuinely good move that hurt Anna. Give a grudging, annoyed taunt.',
+        winning: 'Anna is clearly winning and the human is still playing on. Taunt them.',
+        losing: 'The human is better right now. Anna is annoyed but still cocky.',
+        mate: `Anna has found forced mate in ${vars.n}. Taunt them about it.`,
+        slow: 'The human has been thinking for a long time in a bad position. Taunt them about being slow.',
+        capture: `Anna just captured the human's ${vars.piece}. Taunt them about losing it.`,
+        undo: 'The human just took back a move. Mock them for undoing it.',
+        won: 'The game just ended and Anna won. Gloat.',
+        lost: 'The game just ended and the human beat Anna. Be a sore loser but admit it.',
+        drew: 'The game just ended in a draw. Be unimpressed.',
+        reply: `The human typed this to you in chat: "${vars.text}". Fire one line back.`
+      }[cat];
+      return what ? head + ' ' + what : null;
+    }
+
+    function say(cat, vars, force) {
+      if (mode === 'off') return;
+      const ply = state ? state.history.length : 0;
+      if (!force && ply - lastPly < 3) return;
+      lastPly = ply;
+      llmLine(cat, vars || {}).then(line => {
+        const out = line || pick(cat, vars);
+        if (out) add('anna', out);
+      });
+    }
+    function add(who, text) {
+      const log = $('chatlog'); if (!log) return;
+      const d = document.createElement('div');
+      d.className = 'msg ' + (who === 'me' ? 'me' : 'anna');
+      d.innerHTML = '<span class="who"></span>';
+      d.firstChild.textContent = who === 'me' ? 'You' : ((hello && hello.engine) || 'Anna');
+      d.appendChild(document.createTextNode(text));
+      log.appendChild(d); log.scrollTop = log.scrollHeight;
+    }
+    // Engine evaluation from Anna's point of view, in centipawns.
+    function annaCp(info) {
+      if (!state) return null;
+      const annaWhite = state.human === 'b';
+      if (info.mate_white != null) return (annaWhite ? info.mate_white : -info.mate_white) > 0 ? 10000 : -10000;
+      if (info.cp_white == null) return null;
+      return annaWhite ? info.cp_white : -info.cp_white;
+    }
+    function onInfo(info) {
+      const cp = annaCp(info);
+      if (cp != null) lastEval = cp;
+      if (info.mate_white != null && !mateSaid && state && state.status === 'playing') {
+        const annaWhite = state.human === 'b';
+        const m = annaWhite ? info.mate_white : -info.mate_white;
+        if (m > 0) { mateSaid = true; say('mate', { n: Math.abs(m) }, true); }
+      }
+    }
+    function onState(prev, m) {
+      if (!prev || prev.history.length !== m.history.length) mateSaid = mateSaid && m.status !== 'playing';
+      // new game
+      if (!prev || m.history.length < (prev.history.length || 0) - 1 || (m.history.length === 0 && prev.history.length > 0)) {
+        if (m.history.length === 0) { $('chatlog').innerHTML = ''; lastEval = null; evalBeforeHuman = null; lastPly = -99; mateSaid = false; ended = false; say('start', {}, true); }
+      }
+      // undo
+      if (prev && m.history.length < prev.history.length && m.history.length > 0) say('undo', {}, true);
+      // a move was played
+      if (prev && m.history.length === prev.history.length + 1) {
+        const last = m.history[m.history.length - 1];
+        const humanMoved = prev.turn === prev.human;
+        if (humanMoved) {
+          const took = humanTurnAt ? (Date.now() - humanTurnAt) / 1000 : 0;
+          const before = evalBeforeHuman;
+          setTimeout(() => {
+            const after = lastEval;
+            if (before != null && after != null && Math.abs(before) < 900 && Math.abs(after) < 900) {
+              const gain = (after - before) / 100;
+              if (gain >= 1.5) return say('blunder', { gain: gain.toFixed(1) });
+              if (gain <= -1.5) return say('goodmove', {});
+            }
+            if (took > 25) return say('slow', {});
+            if (last && last.san && /x/.test(last.san) === false && after != null) {
+              if (after >= 300) return say('winning', { adv: (after / 100).toFixed(1) });
+              if (after <= -300) return say('losing', {});
+            }
+          }, 1200);
+        } else {
+          // Anna just moved; if it was a capture of something big, gloat.
+          const san = last && last.san || '';
+          const mx = san.match(/^([QRBN])?[a-h]?[1-8]?x([a-h][1-8])/);
+          if (mx && Math.random() < 0.5) {
+            const victim = capturedName(prev, san);
+            if (victim) say('capture', { piece: victim });
+          }
+          evalBeforeHuman = lastEval;
+          humanTurnAt = Date.now();
+        }
+      }
+      if (m.status && m.status !== 'playing' && !ended) {
+        ended = true;
+        const annaWhite = m.human === 'b';
+        if (m.result === '1/2-1/2') say('drew', {}, true);
+        else if (m.result === '1-0') say(annaWhite ? 'won' : 'lost', {}, true);
+        else if (m.result === '0-1') say(annaWhite ? 'lost' : 'won', {}, true);
+      }
+    }
+    // Which piece stood on the target square before the capture (from the previous position's FEN).
+    function capturedName(prev, san) {
+      try {
+        const sq = (san.match(/x([a-h][1-8])/) || [])[1];
+        if (!sq || !prev.fen) return null;
+        const rows = prev.fen.split(' ')[0].split('/');
+        const file = 'abcdefgh'.indexOf(sq[0]), rank = 8 - parseInt(sq[1], 10);
+        let f = 0;
+        for (const ch of rows[rank]) {
+          if (/\d/.test(ch)) f += parseInt(ch, 10);
+          else { if (f === file) return PIECE[ch.toUpperCase()] || 'pawn'; f++; }
+        }
+      } catch (e) {}
+      return null;
+    }
+    function init() {
+      const sel = $('talkMode'); if (!sel) return;
+      sel.value = mode;
+      sel.onchange = () => { mode = sel.value; localStorage.setItem('annaTalk', mode); };
+      const show = v => { $('chatcard').style.display = v ? '' : 'none'; $('chatreopen').style.display = v ? 'none' : ''; localStorage.setItem('annaTalkOpen', v ? '1' : '0'); };
+      $('chatClose').onclick = () => show(false);
+      $('chatreopen').onclick = () => show(true);
+      show(localStorage.getItem('annaTalkOpen') !== '0');
+    }
+    return { onInfo, onState, init, add };
+  })();
   function setFlipped(v) { flipped = v; $('evalbar').classList.toggle('flipped', v); buildSquares(); render(false); renderPanel(); }
 
   // ---- websocket
@@ -381,9 +625,9 @@
         const prev = state; state = m; selected = null;
         if (m.depth) $('depth').value = String(m.depth); else $('depth').value = '';
         const animate = prev && prev.history.length + 1 === m.history.length && m.last;
-        render(!!animate); renderPanel();
+        render(!!animate); renderPanel(); talk.onState(prev, m);
       } else if (m.t === 'info') {
-        renderInfo(m);
+        renderInfo(m); talk.onInfo(m);
       } else if (m.t === 'error') {
         $('sub').textContent = 'error: ' + m.msg;
       }
