@@ -1,4 +1,4 @@
-# Anna — a Rust NNUE chess engine (UCI)
+# Anna: a Rust NNUE chess engine (UCI)
 
 [![Release](https://img.shields.io/github/v/release/Lironktf/anna-chess?label=release)](https://github.com/Lironktf/anna-chess/releases)
 [![Build](https://github.com/Lironktf/anna-chess/actions/workflows/build.yml/badge.svg)](https://github.com/Lironktf/anna-chess/actions)
@@ -23,7 +23,7 @@ fork of any other engine. Strength is about 3500 Elo on the CCRL 40/15 scale (ow
 | Strength | ~3500 CCRL 40/15 equivalent (1.1); not yet on a rating list |
 | Play online | [chess.lironkatsif.com](https://chess.lironkatsif.com), or challenge [anna-bot](https://lichess.org/@/anna-bot) on Lichess |
 
-- Threat-input NNUE (piece-square, pawn-pair and attacker–victim features), trained by this project with
+- Threat-input NNUE (piece-square, pawn-pair and attacker-victim features), trained by this project with
   [bullet](https://github.com/jw1912/bullet) on public Leela Chess Zero and Stockfish data.
 - Alpha-beta search in the Stockfish family: PVS, aspiration windows, null move, ProbCut, late-move reductions and pruning,
   singular extensions, correction history, Lazy SMP with thread voting.
@@ -128,7 +128,7 @@ scalar reference that the tests compare against bit for bit. Earlier nets (piece
 **Training** (`trainer/`, `scripts/modal_train.py`): bullet at a pinned revision; data validation (`inspect stats`,
 feature-index cross-checks against the engine, a byte-exact round trip of the engine's own data writer); runs on a rented
 GPU with checkpoints every 10 superbatches synced off the box; every checkpoint passes `engine netcheck` before use. The
-1.1 net was trained on Leela T80 (Jan–Jun 2024) plus Stockfish's `dfrc_n5000` and `nodes5000pv2_UHO` binpacks, 800
+1.1 net was trained on Leela T80 (January to June 2024) plus Stockfish's `dfrc_n5000` and `nodes5000pv2_UHO` binpacks, 800
 superbatches.
 
 **Tools**: `prof/` (in-process sampling profiler with flame graph), `lc0conv/` (Leela training-chunk converter),
