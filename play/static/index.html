@@ -446,6 +446,7 @@
     };
     const PIECE = { Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', K: 'king' };
     let mode = localStorage.getItem('annaTalk') || 'off';
+    if (mode === 'spicy' && localStorage.getItem('annaSwearOk') !== '1') mode = 'clean';
     const recent = [];
     let lastEval = null, evalBeforeHuman = null, lastPly = -99, lastLine = '', humanTurnAt = 0, mateSaid = false, ended = false;
 
@@ -600,7 +601,21 @@
       const sel = $('talkMode'); if (!sel) return;
       const show = v => { $('chatcard').style.display = v ? '' : 'none'; $('chatreopen').style.display = 'none'; };
       sel.value = mode;
-      sel.onchange = () => { mode = sel.value; localStorage.setItem('annaTalk', mode); show(mode !== 'off'); };
+      sel.onchange = () => {
+        // Swearing is gated behind a password so nobody turns it on by accident.
+        if (sel.value === 'spicy' && localStorage.getItem('annaSwearOk') !== '1') {
+          const pw = window.prompt('Swearing mode is rude on purpose. Type the password to turn it on:');
+          if ((pw || '').trim().toLowerCase() !== 'swear') {
+            sel.value = mode === 'spicy' ? 'clean' : mode;
+            if (pw !== null) window.alert('Wrong password.');
+            return;
+          }
+          localStorage.setItem('annaSwearOk', '1');
+        }
+        mode = sel.value;
+        localStorage.setItem('annaTalk', mode);
+        show(mode !== 'off');
+      };
       $('chatClose').onclick = () => { mode = 'off'; sel.value = 'off'; localStorage.setItem('annaTalk', 'off'); show(false); };
       show(mode !== 'off');
     }
