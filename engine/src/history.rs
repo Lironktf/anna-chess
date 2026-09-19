@@ -169,6 +169,29 @@ impl History {
     pub fn sf_corr_update(entry: &mut i16, bonus: i32) {
         gravity(entry, bonus, SF_CORR_LIMIT);
     }
+    /// Prefetch the correction-history lines a node will read. The tables are megabytes wide and the
+    /// indices are hashes, so every read is a cache miss unless it is started early (profiled at ~4% of
+    /// search time after the correction rework).
+    #[inline(always)]
+    pub fn prefetch_corr(&self, stm: Color, pawn_key: u64, minor_key: u64, npw: u64, npb: u64) {
+        #[cfg(target_arch = "x86_64")]
+        unsafe {
+            use std::arch::x86_64::{_mm_prefetch, _MM_HINT_T0};
+            let sf = crate::params::SF_CORR.get() != 0;
+            if sf {
+                _mm_prefetch(self.sf_pawn_corr.as_ptr().add(History::corr_idx(stm, pawn_key)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.sf_minor_corr.as_ptr().add(History::corr_idx(stm, minor_key)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.sf_non_pawn_corr.as_ptr().add(History::non_pawn_idx(stm, Color::White, npw)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.sf_non_pawn_corr.as_ptr().add(History::non_pawn_idx(stm, Color::Black, npb)) as *const i8, _MM_HINT_T0);
+            } else {
+                _mm_prefetch(self.pawn_corr.as_ptr().add(History::corr_idx(stm, pawn_key)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.minor_corr.as_ptr().add(History::corr_idx(stm, minor_key)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.non_pawn_corr.as_ptr().add(History::non_pawn_idx(stm, Color::White, npw)) as *const i8, _MM_HINT_T0);
+                _mm_prefetch(self.non_pawn_corr.as_ptr().add(History::non_pawn_idx(stm, Color::Black, npb)) as *const i8, _MM_HINT_T0);
+            }
+        }
+    }
+
     #[inline(always)]
     pub fn corr_idx(c: Color, key: u64) -> usize {
         c.idx() * CORR_SIZE + (key as usize % CORR_SIZE)

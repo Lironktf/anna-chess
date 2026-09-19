@@ -1146,6 +1146,7 @@ impl<'a> Thread<'a> {
             }
             let child = pos.make_move(m);
             self.shared.tt.prefetch(child.key());
+            self.hist.prefetch_corr(child.side_to_move(), child.pawn_key(), child.minor_key(), child.non_pawn_key(Color::White), child.non_pawn_key(Color::Black));
             self.nn_push(pos, m, &child);
             self.keys.push(key);
             self.nodes += 1;
@@ -1597,6 +1598,7 @@ impl<'a> Thread<'a> {
             }
             let child = pos.make_move(m);
             self.shared.tt.prefetch(child.key());
+            self.hist.prefetch_corr(child.side_to_move(), child.pawn_key(), child.minor_key(), child.non_pawn_key(Color::White), child.non_pawn_key(Color::Black));
             self.nn_push(pos, m, &child);
             self.keys.push(key);
             self.nodes += 1;
