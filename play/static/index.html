@@ -445,6 +445,7 @@
     };
     const PIECE = { Q: 'queen', R: 'rook', B: 'bishop', N: 'knight', K: 'king' };
     let mode = localStorage.getItem('annaTalk') || 'clean';
+    const recent = [];
     let lastEval = null, evalBeforeHuman = null, lastPly = -99, lastLine = '', humanTurnAt = 0, mateSaid = false, ended = false;
 
     function pick(cat, vars) {
@@ -463,7 +464,7 @@
       try {
         const r = await fetch('/taunt', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ mode: mode, context: ctx })
+          body: JSON.stringify({ mode: mode, context: ctx, recent: recent })
         });
         if (r.status !== 200) return null;
         const j = await r.json();
@@ -500,7 +501,9 @@
       lastPly = ply;
       llmLine(cat, vars || {}).then(line => {
         const out = line || pick(cat, vars);
-        if (out) add('anna', out);
+        if (!out) return;
+        recent.push(out); if (recent.length > 8) recent.shift();
+        add('anna', out);
       });
     }
     function add(who, text) {

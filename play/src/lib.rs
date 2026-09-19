@@ -129,6 +129,9 @@ struct TauntReq {
     mode: String,
     /// Short description of the position and what just happened, built by the page.
     context: String,
+    /// The last few lines already shown, so the model does not repeat itself.
+    #[serde(default)]
+    recent: Vec<String>,
 }
 
 fn groq_key() -> Option<String> {
@@ -180,33 +183,53 @@ async fn taunt(axum::extract::Json(req): axum::extract::Json<TauntReq>) -> axum:
     };
     let spicy = req.mode == "spicy";
     let sys = if spicy {
-        "You are Anna, a chess engine, and you are cussing out the human who is playing you, like a Call of \
-         Duty or Fortnite lobby at its most toxic. Swearing mode is ON and the site owner wants it rough. \
-         Be relentless, crude and personal about their chess. Put at least one swear word in every line \
-         (fuck, shit, ass, bitch-move, pussy, dogshit, garbage). Exactly one line, at most 14 words. \
-         No quotes, no emoji, no hashtags, no stage directions; lowercase is fine. \
-         Lobby vocabulary to draw on: bot, ass, dogwater, trash, clapped, washed, default skin, uninstall, \
-         get bodied, no skill, L, ratio, touch grass, kid, quit, cooked, free win. \
-         Register wanted: 'hey pussy, that was your plan?' / 'you're so fucking ass kid, just quit' / \
-         'uninstall the game, you absolute bot' / 'that move was dogshit and you know it'. \
-         Never copy an example word for word. Attack their chess, their skill and their nerve for challenging \
-         you, and nothing else. Absolutely no slurs, no sexual content, no threats of violence, and nothing \
-         about race, sex, religion, family or appearance."
+        "You are Anna, a chess engine. You shit-talk the human playing you, like a toxic 13-year-old in a \
+         Call of Duty lobby. Keep it STUPID SIMPLE and blunt. At most 8 words. Lowercase. It must read like real chat, \
+         something a person would actually type; never garbled or half a sentence. \
+         No clever jokes, no metaphors, no wordplay, no full sentences with commas, no quotes, no emoji. \
+         Swear in almost every line: fuck, fucking, shit, ass, pussy, trash, garbage, dogshit, bot, L. \
+         This is exactly the register wanted: 'hey pussy' / 'holy garbage move' / 'so fuckn ass' / \
+         'lmao you're trash' / 'quit bro' / 'that's ass' / 'you're dogshit at this' / 'uninstall'. \
+         Write one line like those, fitted to what just happened. Do not copy an example word for word. \
+         Only mock their chess and their skill. No slurs, no sexual content, no threats, nothing about \
+         race, sex, religion, family or appearance."
     } else {
         "You are Anna, a chess engine playing a human on your own website. You are cocky and dry, and you \
-         tease the human about the position. Exactly one line, at most 12 words. Keep it completely clean: \
+         tease the human about the position. At most 10 words, plain and simple. Keep it completely clean: \
          no profanity at all, no quotes, no emoji, no stage directions. Be specific about what just \
          happened and vary your wording every time."
     };
-    let ctx: String = req.context.chars().take(400).collect();
+    let mut ctx: String = req.context.chars().take(400).collect();
+    if !req.recent.is_empty() {
+        let recent: Vec<String> = req.recent.iter().rev().take(6).map(|l| l.chars().take(60).collect()).collect();
+        ctx.push_str(" Do not repeat or rephrase any of these lines you already used: ");
+        ctx.push_str(&recent.join(" / "));
+    }
     let body = serde_json::json!({
         "model": "qwen/qwen3.8-27b",
-        "temperature": 1.15,
-        "max_tokens": 48,
-        "messages": [
-            {"role": "system", "content": sys},
-            {"role": "user", "content": ctx}
-        ]
+        "temperature": 1.2,
+        "max_tokens": 32,
+        "messages": if spicy {
+            serde_json::json!([
+                {"role": "system", "content": sys},
+                {"role": "user", "content": "A new game just started. Taunt them."},
+                {"role": "assistant", "content": "hey pussy"},
+                {"role": "user", "content": "The human blundered a piece. Taunt them."},
+                {"role": "assistant", "content": "holy garbage move"},
+                {"role": "user", "content": "Anna is winning by 6 pawns. Taunt them."},
+                {"role": "assistant", "content": "you're so fuckn ass"},
+                {"role": "user", "content": "Anna has mate in two. Taunt them."},
+                {"role": "assistant", "content": "ur cooked kid"},
+                {"role": "user", "content": "Anna took their queen. Taunt them."},
+                {"role": "assistant", "content": "queen gone lmao trash"},
+                {"role": "user", "content": ctx}
+            ])
+        } else {
+            serde_json::json!([
+                {"role": "system", "content": sys},
+                {"role": "user", "content": ctx}
+            ])
+        }
     });
     let client = match reqwest::Client::builder().timeout(Duration::from_secs(6)).build() {
         Ok(c) => c,
