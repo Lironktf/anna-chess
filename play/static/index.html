@@ -668,6 +668,7 @@
     boardEl.dispatchEvent(new PointerEvent('pointerdown', { clientX: x, clientY: y, pointerId: 1, bubbles: true }));
     boardEl.dispatchEvent(new PointerEvent('pointerup', { clientX: x, clientY: y, pointerId: 1, bubbles: true })); };
   buildSquares();
+  talk.init();
   connect();
 })();
 </script>
