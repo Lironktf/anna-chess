@@ -214,3 +214,10 @@ to tighten it to about +/-27.
 **+177 +/- 23** for Stormphrax, where CCRL 40/15 has them 56 apart. So the opponents we build from source or download
 underperform their list ratings here by roughly 120 Elo, and the direct Stormphrax anchor is the number to trust.
 Chained estimate: Velvet here ~3457, Anna = 3457 + 156 = ~3613; direct anchor gives ~3568. Placement ~3570-3615.
+
+**2026-09-19 01:00 search-explosion bug diagnosed.** The parked position (r1bqkb1r/pp2bppp/2n2n2/2pp4/3P4/2PBPN2/PP1N1PPP/R2QK2R w KQ)
+still explodes with the 1.2 search: depth 13 costs 54k nodes, depth 14 costs 18.0M. Cause is the null-move reduction
+base: with NmpBase=7 the same search costs 0.91M nodes (20x less) and with the whole SfPrune group 0.52M (35x less);
+raising RfpDepth to 19 or 24 changes almost nothing. Our base is 5 where Stockfish master uses 7, and in a lost position
+reverse futility and razoring are both inactive, so the null move is the only thing keeping the tree narrow. SPRT of
+NmpBase 7 and 6 against 5 queued at 5+0.05.
