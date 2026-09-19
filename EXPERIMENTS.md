@@ -209,3 +209,8 @@ contradicts our Stormphrax anchor (-66 -> ~3568). Control match under identical 
 roughly 120 Elo. Chaining through the control instead: Velvet here = 3634-173 = 3461, so Anna = 3461+156 = ~3617, against
 3568 from the direct anchor: consistent within error. Placement stays ~3570-3620. A 400-game anchor vs Stormphrax is running
 to tighten it to about +/-27.
+
+**2026-09-19 00:40 control complete.** Stormphrax 8 vs Velvet 8.1.1, same box, 4 threads, 60+0.6, 100 games:
+**+177 +/- 23** for Stormphrax, where CCRL 40/15 has them 56 apart. So the opponents we build from source or download
+underperform their list ratings here by roughly 120 Elo, and the direct Stormphrax anchor is the number to trust.
+Chained estimate: Velvet here ~3457, Anna = 3457 + 156 = ~3613; direct anchor gives ~3568. Placement ~3570-3615.
