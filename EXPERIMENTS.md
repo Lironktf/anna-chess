@@ -231,3 +231,14 @@ NmpBase 7 and 6 against 5 queued at 5+0.05.
   Placement on the CCRL 40/15 scale: 3634 - 49 = **~3585 +/- 17**, with rank 50 at 3587 and Berserk 13 (3587) level with us.
 - **NmpBase 6 PASSES**: +10.6 +/- 5.7 over 4192 games (LLR 2.96); NmpBase 7 was +2.9 +/- 3.4 after 12000 games (no pass).
   Default changed 5 -> 6, bench 360367 -> 384645. The explosive position now costs 8.96M nodes at depth 14 instead of 18.0M.
+
+**2026-09-19 evening.**
+- **SMP changes FAIL**: thread-scaled reductions -7.4 +/- 11.8 and spread aspiration windows -8.3 +/- 11.8 (800 games each
+  at 4 threads, 10+0.1). Both stay off. Lazy SMP needs a different idea than copying Stockfish's thread terms.
+- **SPSA over 21 parameters moved nothing**: 21,600 games and every value ended within 0.3% of its start (LmrBaseOff
+  697->698, StatBonusMax 1487->1490, CorrScale unchanged). Same outcome as the 2026-09-12 run on v3b. The perturbations are
+  too small against the noise of 24-game iterations, so SPSA at this scale is not a useful tool for us; single-parameter
+  SPRTs with real step sizes are (NmpBase 5->6 found +10.6 that way).
+- Queued instead: 14 targeted SPRTs with meaningful steps (LmrCut +-800, CorrScale 384/700, StatBonusMul 170,
+  StatMalusMul 760, QsSee 40/120, PickGoodQuiet 9000, PickCheckBonus 22000, RfpDepth 19, LmpBase 4, SeMargin 72,
+  LmrStat 560) and a fresh 400-game Stormphrax anchor with the NmpBase 6 build.
