@@ -242,3 +242,12 @@ NmpBase 7 and 6 against 5 queued at 5+0.05.
 - Queued instead: 14 targeted SPRTs with meaningful steps (LmrCut +-800, CorrScale 384/700, StatBonusMul 170,
   StatMalusMul 760, QsSee 40/120, PickGoodQuiet 9000, PickCheckBonus 22000, RfpDepth 19, LmpBase 4, SeMargin 72,
   LmrStat 560) and a fresh 400-game Stormphrax anchor with the NmpBase 6 build.
+
+**2026-09-20 11:10.**
+- **New anchor with the NmpBase 6 build**: Anna vs Stormphrax 8, 4 threads, 60+0.6, 400 games: **-38.4 +/- 17.1**
+  (70-114-216, 44.5%), up from -49 +/- 17 before the change. Placement **3596 +/- 17** on the CCRL 40/15 scale,
+  above the rank-50 line of 3587.
+- Tuning batch so far: LmrCut 4800 FAIL (-8.0 +/- 5.8); **LmrCut 3300 +4.3 +/- 3.3 with LLR 2.78 of 2.94 after 12,273
+  games** (hit the 3 h cap just short of passing, worth rerunning); CorrScale 384 and 700 both neutral (+0.2), so the
+  correction scale is already right; StatBonusMul 170 trending -10 when its slot ran out of time.
+  Note: the batch shared the box with the 400-game anchor, so its games ran at roughly a third speed.
