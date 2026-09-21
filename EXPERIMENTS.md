@@ -251,3 +251,9 @@ NmpBase 7 and 6 against 5 queued at 5+0.05.
   games** (hit the 3 h cap just short of passing, worth rerunning); CorrScale 384 and 700 both neutral (+0.2), so the
   correction scale is already right; StatBonusMul 170 trending -10 when its slot ran out of time.
   Note: the batch shared the box with the 400-game anchor, so its games ran at roughly a third speed.
+
+**2026-09-21 self-play data generation started** (free, university server, tmux "selfplay", nice 19, 16 threads,
+5000 nodes per position, 20,000 games per chunk into ~/anna/data/selfplay/sp_NNNN.bin; stop with a STOP file).
+Rate measured at ~660 positions/s, so about 55M positions (1.8 GB) per day. Labels come from our own 1.2 engine, so
+their *quality* is below the Stockfish binpacks we already train on; the value is the *position distribution*, the
+positions our own search actually reaches. Plan: blend at 10-30% into the next training run.
