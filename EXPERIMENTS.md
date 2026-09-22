@@ -257,3 +257,14 @@ NmpBase 7 and 6 against 5 queued at 5+0.05.
 Rate measured at ~660 positions/s, so about 55M positions (1.8 GB) per day. Labels come from our own 1.2 engine, so
 their *quality* is below the Stockfish binpacks we already train on; the value is the *position distribution*, the
 positions our own search actually reaches. Plan: blend at 10-30% into the next training run.
+
+**2026-09-21 20:40 tuning batch complete (16 tests, ~190,000 games at 5+0.05).** One pass, one fail cluster, the rest flat:
+- **PASS: LmrCut 2800** (cut-node reduction) +3.2 +/- 2.6, LLR 2.95 over 20,759 games. Adopted; bench 384645 -> 270714.
+  The intermediate value 3300 was +2.1 +/- 2.5 over 24,000 games without concluding, so the effect is real but small and
+  lower is better; 4800 was -8.0.
+- FAIL: QsSee 120 (-5.0), RfpDepth 19 (-3.8), LmrCut 4800 (-8.0), StatBonusMul 170 (trending -10 when its slot expired).
+- Flat: CorrScale 384 and 700 (+0.2 each, so the correction scale is right), StatMalusMul 760 (+1.3), QsSee 40 (+1.8),
+  PickGoodQuiet 9000 (-0.6), PickCheckBonus 22000 (-0.3), LmrStat 560 (+0.5).
+- Unresolved but positive: LmpBase 4 (+3.4 +/- 3.3, LLR 1.89) and SeMargin 72 (+2.6 +/- 3.5, LLR 1.09) both deserve a rerun.
+Conclusion: the synced constants are close to right for this engine. The remaining Elo is in the network and in SMP, not
+in these knobs.
