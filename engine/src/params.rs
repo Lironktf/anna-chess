@@ -60,7 +60,7 @@ params! {
     // Late move reductions (the SfLmr path).
     LMR_BASE_OFF, "LmrBaseOff", 697, 200, 1400;
     LMR_STAT, "LmrStat", 439, 150, 900;
-    LMR_CUT, "LmrCut", 4026, 2000, 6000;
+    LMR_CUT, "LmrCut", 2800, 2000, 6000;
     LMR_TTPV, "LmrTtPv", 3023, 1500, 4500;
     LMR_MOVECNT, "LmrMoveCnt", 65, 20, 140;
     LMR_ALLNODE, "LmrAllNode", 276, 80, 500;
