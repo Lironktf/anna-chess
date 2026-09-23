@@ -268,3 +268,14 @@ positions our own search actually reaches. Plan: blend at 10-30% into the next t
 - Unresolved but positive: LmpBase 4 (+3.4 +/- 3.3, LLR 1.89) and SeMargin 72 (+2.6 +/- 3.5, LLR 1.09) both deserve a rerun.
 Conclusion: the synced constants are close to right for this engine. The remaining Elo is in the network and in SMP, not
 in these knobs.
+
+**2026-09-23 status.**
+- **Head-to-head vs Coda 0.9.4** (the other Claude-written engine, CCRL 3630 at 4CPU), 300 games, 4 threads, 60+0.6,
+  frozen binary: **-83.8 +/- 17.3** (45-116-139, 38.2%). The CCRL numbers predicted about -34, so Coda beats us by
+  about 50 more than its list rating implies. Either Coda's 3630 understates it, or it matches up well against our
+  threat-net style. Our own Stormphrax anchor (-38 -> 3596) is unchanged by this; the two measurements simply disagree
+  about Coda.
+- Follow-up tests: LmpBase 4 +2.6 +/- 2.9 (16,545 games, LLR 1.56, unresolved), SeMargin 72 +1.5 +/- 2.7 (19,346, LLR
+  0.54, unresolved), LmrCut 2200 flat (-0.05 over 26,265 games, so 2800 is the floor). None adopted; the knobs are done.
+- **Self-play generation**: 91 chunks, 132M positions, 4.0 GB in about two days at ~600 positions/s.
+- **Lichess**: 488 games, 221 wins, 6 losses, 261 draws. Ratings 3007 blitz, 3029 rapid, 3022 bullet.
