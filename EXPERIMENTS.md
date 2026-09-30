@@ -279,3 +279,8 @@ in these knobs.
   0.54, unresolved), LmrCut 2200 flat (-0.05 over 26,265 games, so 2800 is the floor). None adopted; the knobs are done.
 - **Self-play generation**: 91 chunks, 132M positions, 4.0 GB in about two days at ~600 positions/s.
 - **Lichess**: 488 games, 221 wins, 6 losses, 261 draws. Ratings 3007 blitz, 3029 rapid, 3022 bullet.
+
+**2026-09-30 09:07 self-play generation complete.** Stopped by the 500M watcher after the chunk in progress finished:
+341 files, 500,025,118 positions, 14.9 GB in ~/anna/data/selfplay/ on the server (9 days at ~600 positions/s with the
+1.2 engine, 5000 nodes per position, v5f net). No undersized or partial files. Next: validate with `inspect stats` and
+the label-correlation check before it goes into a training run.
