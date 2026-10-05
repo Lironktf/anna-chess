@@ -9,15 +9,15 @@ use std::time::Instant;
 #[derive(Clone, Copy, Debug)]
 pub struct Instant(f64);
 #[cfg(target_arch = "wasm32")]
-static HOST_MS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
-#[cfg(target_arch = "wasm32")]
-pub fn set_host_ms(ms: f64) {
-    HOST_MS.store(ms.to_bits(), std::sync::atomic::Ordering::Relaxed);
+extern "C" {
+    /// Provided by the host (the wasm entry crate binds it to `performance.now()`), milliseconds.
+    fn anna_host_now_ms() -> f64;
 }
 #[cfg(target_arch = "wasm32")]
 impl Instant {
     pub fn now() -> Self {
-        Instant(f64::from_bits(HOST_MS.load(std::sync::atomic::Ordering::Relaxed)))
+        // SAFETY: the host must export this symbol; the wasm crate in this repository does.
+        Instant(unsafe { anna_host_now_ms() })
     }
     pub fn elapsed(&self) -> std::time::Duration {
         std::time::Duration::from_secs_f64(((Instant::now().0 - self.0) / 1000.0).max(0.0))

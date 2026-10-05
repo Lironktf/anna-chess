@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["engine", "play", "prof", "lc0conv"]
+members = ["engine", "play", "prof", "lc0conv", "wasm"]
 
 [profile.release]
 opt-level = 3

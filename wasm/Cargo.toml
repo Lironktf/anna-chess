@@ -1,0 +1,13 @@
+[package]
+name = "anna-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "Anna chess engine compiled to WebAssembly for in-browser play"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+engine = { path = "../engine" }
+wasm-bindgen = "0.2"
+js-sys = "0.3"
