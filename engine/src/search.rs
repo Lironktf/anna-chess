@@ -1990,7 +1990,27 @@ pub fn go(
         hists.push(History::new());
     }
     let taken: Vec<History> = hists.drain(..threads).collect();
+    // One search thread, run inline: every worker does the same thing, so this is the thread body below
+    // without the spawn. Used on WebAssembly, where there are no threads.
+    let run_one = |id: usize, hist: History| -> (SearchResult, History) {
+        let mut t = Thread::new(id, shared, net, net_fast, policy, limits.clone(), opts, hist);
+        t.iterative_deepening(root, game_keys);
+        if id == 0 {
+            shared.stop.store(true, Ordering::Relaxed);
+        }
+        let (best, ponder, score, pv) = if t.root_moves.is_empty() {
+            (Move::NONE, Move::NONE, VALUE_DRAW, Vec::new())
+        } else {
+            let rm = &t.root_moves[0];
+            (rm.mv, rm.pv.get(1).copied().unwrap_or(Move::NONE), rm.score, rm.pv.clone())
+        };
+        (SearchResult { best_move: best, ponder_move: ponder, score, nodes: t.nodes, depth: t.completed_depth, pv, thread_id: id }, t.hist)
+    };
+    #[cfg(target_arch = "wasm32")]
+    let results: Vec<(SearchResult, History)> = taken.into_iter().enumerate().map(|(id, h)| run_one(id, h)).collect();
+    #[cfg(not(target_arch = "wasm32"))]
     let results: Vec<(SearchResult, History)> = std::thread::scope(|s| {
+        let _ = &run_one;
         let mut handles = Vec::new();
         for (id, hist) in taken.into_iter().enumerate() {
             let limits = limits.clone();

@@ -6,6 +6,7 @@ use crate::types::*;
 use std::ffi::CString;
 use std::sync::atomic::{AtomicU32, Ordering};
 
+#[cfg(not(target_arch = "wasm32"))]
 extern "C" {
     static TB_LARGEST: u32;
     fn tb_init(path: *const std::os::raw::c_char) -> bool;
@@ -13,6 +14,18 @@ extern "C" {
     fn tb_probe_wdl_impl(white: u64, black: u64, kings: u64, queens: u64, rooks: u64, bishops: u64, knights: u64, pawns: u64, ep: u32, turn: bool) -> u32;
     fn tb_probe_root_impl(white: u64, black: u64, kings: u64, queens: u64, rooks: u64, bishops: u64, knights: u64, pawns: u64, rule50: u32, ep: u32, turn: bool, results: *mut u32) -> u32;
 }
+
+// WebAssembly: no Fathom. These stubs make every probe fail and `init` report no tablebases.
+#[cfg(target_arch = "wasm32")]
+mod stub {
+    pub static TB_LARGEST: u32 = 0;
+    pub unsafe fn tb_init(_path: *const std::os::raw::c_char) -> bool { false }
+    pub unsafe fn tb_free() {}
+    pub unsafe fn tb_probe_wdl_impl(_w: u64, _b: u64, _k: u64, _q: u64, _r: u64, _bi: u64, _n: u64, _p: u64, _ep: u32, _t: bool) -> u32 { super::TB_RESULT_FAILED }
+    pub unsafe fn tb_probe_root_impl(_w: u64, _b: u64, _k: u64, _q: u64, _r: u64, _bi: u64, _n: u64, _p: u64, _r50: u32, _ep: u32, _t: bool, _res: *mut u32) -> u32 { super::TB_RESULT_FAILED }
+}
+#[cfg(target_arch = "wasm32")]
+use stub::*;
 
 pub const TB_LOSS: u32 = 0;
 pub const TB_BLESSED_LOSS: u32 = 1;

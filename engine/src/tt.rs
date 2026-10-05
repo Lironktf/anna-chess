@@ -90,6 +90,15 @@ impl TranspositionTable {
         let n = v.len();
         let threads = threads.max(1).min(n.max(1));
         let chunk = n.div_ceil(threads);
+        #[cfg(target_arch = "wasm32")]
+        {
+            let _ = chunk;
+            for c in v.iter_mut() {
+                *c = Cluster::default();
+            }
+            return;
+        }
+        #[cfg(not(target_arch = "wasm32"))]
         std::thread::scope(|s| {
             for part in v.chunks_mut(chunk.max(1)) {
                 s.spawn(move || {

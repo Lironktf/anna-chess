@@ -15,6 +15,11 @@ fn main() {
     }
 
     // Fathom.
+    // WebAssembly targets get Rust stubs for the tablebase symbols (engine/src/tb.rs); there is no C
+    // toolchain for them and no file system to probe. Everything else builds unchanged.
+    if std::env::var("TARGET").map(|t| t.contains("wasm")).unwrap_or(false) {
+        return;
+    }
     let src_dir = Path::new(&manifest).join("csrc").join("fathom");
     let out_dir = std::env::var("OUT_DIR").unwrap();
     let out = Path::new(&out_dir);

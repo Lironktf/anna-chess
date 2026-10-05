@@ -1,6 +1,28 @@
 //! Time management.
 
+#[cfg(not(target_arch = "wasm32"))]
 use std::time::Instant;
+
+/// Monotonic clock. Native: `std::time::Instant`. WebAssembly: a millisecond counter the host advances through
+/// `set_host_ms` (e.g. from `performance.now()`), since `Instant::now()` panics on wasm32-unknown-unknown.
+#[cfg(target_arch = "wasm32")]
+#[derive(Clone, Copy, Debug)]
+pub struct Instant(f64);
+#[cfg(target_arch = "wasm32")]
+static HOST_MS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+#[cfg(target_arch = "wasm32")]
+pub fn set_host_ms(ms: f64) {
+    HOST_MS.store(ms.to_bits(), std::sync::atomic::Ordering::Relaxed);
+}
+#[cfg(target_arch = "wasm32")]
+impl Instant {
+    pub fn now() -> Self {
+        Instant(f64::from_bits(HOST_MS.load(std::sync::atomic::Ordering::Relaxed)))
+    }
+    pub fn elapsed(&self) -> std::time::Duration {
+        std::time::Duration::from_secs_f64(((Instant::now().0 - self.0) / 1000.0).max(0.0))
+    }
+}
 
 #[derive(Clone, Debug, Default)]
 pub struct GoParams {
