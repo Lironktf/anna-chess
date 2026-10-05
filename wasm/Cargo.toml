@@ -9,5 +9,5 @@ crate-type = ["cdylib"]
 
 [dependencies]
 engine = { path = "../engine" }
-wasm-bindgen = "0.2"
+wasm-bindgen = "=0.2.129"
 js-sys = "0.3"
