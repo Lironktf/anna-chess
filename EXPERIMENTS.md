@@ -284,3 +284,20 @@ in these knobs.
 341 files, 500,025,118 positions, 14.9 GB in ~/anna/data/selfplay/ on the server (9 days at ~600 positions/s with the
 1.2 engine, 5000 nodes per position, v5f net). No undersized or partial files. Next: validate with `inspect stats` and
 the label-correlation check before it goes into a training run.
+
+**2026-10-05 self-play data validated** (3 of 341 files decoded record by record: first, middle, last; 4.16M records).
+- Format: every record decodes; 0 bad piece codes, exactly one king per side in every record, king-square fields
+  consistent (opponent king stored flipped, as bulletformat does), no pawns on back ranks, <=16 pieces per side.
+- Labels vs a fresh depth-6 search of the same engine on 6,000 sampled positions: **correlation 0.974-0.979**, sign
+  agreement 97-98% at |score| >= 100, mean |diff| 141-152 cp. (Public sets measured 0.94-0.97 for Stockfish and
+  0.86-0.88 for Leela/relabelled.) Score-vs-result sign agreement on decisive games 93%.
+- Distribution differs from public data, and this is the caveat: results are 32% loss / 35% draw / 32% win from the
+  side to move, versus 10/80/10 in a Leela test91 file after the training filter; 10th/90th score percentiles are
+  +/-1700 cp and mean |score| is 830 cp, so roughly a fifth of positions are already decided. Cause: random-ish
+  openings decided quickly at 5000 nodes, late adjudication (|score| >= 2500), and every quiet position recorded.
+  Blend at 10-20% and apply a score cap (e.g. |score| <= 1000) at training time; next generation run should adjudicate
+  earlier.
+- **Blocker found**: the trainer reads only sfbinpack (`SfBinpackLoader`); self-play is bulletformat. A converter
+  (bulletformat -> sfbinpack via the crate's `CompressedTrainingDataEntryWriter`, assigning a legal quiet move and a
+  ply) is needed before this data can be used. The train-time filter requires ply >= 16, not in check, |score| <=
+  10000, a normal non-capture move.
