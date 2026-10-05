@@ -301,3 +301,19 @@ the label-correlation check before it goes into a training run.
   (bulletformat -> sfbinpack via the crate's `CompressedTrainingDataEntryWriter`, assigning a legal quiet move and a
   ply) is needed before this data can be used. The train-time filter requires ply >= 16, not in check, |score| <=
   10000, a normal non-capture move.
+
+**2026-10-05 WebAssembly feasibility (chess.lironkatsif.com in the browser).** The engine now compiles for
+wasm32-unknown-unknown with three cfg gates (no C tablebases: Rust stubs; no threads: the single search runs
+inline; clock: `Instant::now()` panics there, so the engine imports `anna_host_now_ms` from the host). Native bench
+and tests unchanged. New crate `wasm/` (anna-wasm, wasm-bindgen) exposes new/set_position/legal_moves/go/fen.
+Two traps: `-C target-cpu=native` in .cargo/config.toml leaked into the wasm build and broke wasm-bindgen's
+intrinsic detection ("failed to find intrinsics to enable clone_ref"), fixed by scoping the flags to x86-64; and the
+wasm-bindgen crate must match the CLI version exactly (pinned 0.2.129).
+Measured in Node (V8, same engine as Chrome): net loads, legal moves correct, time limits honoured, **~21k nodes/s**
+versus ~414k native on this laptop, a factor of 20, because the kernels fall back to the scalar path. Enabling the
+simd128 target feature for autovectorisation gives only +10%; hand-written simd128 kernels (8 x i16 lanes) would be
+needed for a real gain, plausibly 3-5x. Module 46.0 MB raw / 28.6 MB gzipped, of which the engine code is 0.35 MB and
+the embedded network is the rest. Depth 16 from the start in 3 s, depth 13 in a middlegame in 2 s.
+Verdict: workable today as "play in your browser" at roughly 2400-2600 strength with no server cost per game;
+not a replacement for the server engine (3600) unless simd128 kernels are written and the network is served
+separately and cached. Not wired into the site yet.

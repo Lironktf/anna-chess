@@ -153,6 +153,15 @@ checklist written in response. Nothing paid starts without an explicit cap and t
 university server has no GPU at all, so there is no free path to training here. A resume-from-checkpoint run on
 the existing data is about 6.5 hours and under $4.
 
+## 7b. WebAssembly build (2026-10-05)
+
+`cargo build --release --target wasm32-unknown-unknown -p anna-wasm` then `wasm-bindgen --target web` produces a
+46 MB module (28.6 MB gzipped; 0.35 MB is code, the rest the embedded net) exposing `new`, `set_position`,
+`legal_moves`, `go(movetime_ms, depth)`, `fen`. Runs in Node at ~21k nodes/s (native ~414k): scalar kernels, no
+threads, tablebases stubbed. The host must export `anna_host_now_ms` (bound to `Date.now()` in the crate). Build
+needs the user-local rustup toolchain (`~/.cargo/bin/cargo`), the wasm32 target, and wasm-bindgen-cli 0.2.129.
+Not wired into the play page; a Web Worker would host it.
+
 ## 8. What is left
 
 1. Release 1.3 (the two search fixes, +14 over 1.2) and submit to CCRL and CEGT. Listing takes four to eight
